@@ -30,7 +30,7 @@
     </div>
     
     <div id="end-date">
-      <span class="range-label">Start Date:</span>
+      <span class="range-label">End Date:</span>
     </div>
   </div>
 </template>
