@@ -74,5 +74,10 @@ export default {
     height: 100vh;
     width: 100%;
   }
+
+  .subpage-title {
+    margin-bottom: 1rem;
+    color: #515151;
+  }
 </style>
 
