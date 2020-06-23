@@ -1,21 +1,27 @@
 <template>
-    <div class="subpage">
-        <h2>I'm the Map Subpage</h2>
-        <v-btn icon color="pink">
-          <v-icon>mdi-heart</v-icon>
-        </v-btn>
+    <div class="subpage" id="map-subpage">
+      <ListingsContainer/>
     </div>
 </template>
 
 <script>
+import ListingsContainer from './sub-components/map-subpage/ListingsContainer.vue'
+
 export default {
   name: 'Template',
+  components: {
+    ListingsContainer
+  },
   props: {
-    msg: String
+    userData: Object
   }
 }
 </script>
 
 <style scoped>
-
+  #map-subpage {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
 </style>
