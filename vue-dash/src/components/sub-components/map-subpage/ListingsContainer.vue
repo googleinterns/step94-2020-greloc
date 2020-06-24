@@ -5,14 +5,14 @@
       :items="offices"
       label="Select Office"
       id="select-office"
-      style="width: 100%; margin-bottom: 0;"
+      style="width: 100%;"
       height="50px"
       solo
     ></v-select>
 
     <DateRangeSelector/>
 
-    <Listings :listings="[]"/>
+    <Listings :listings="listings"/>
   </div>
 </template>
 
@@ -31,6 +31,26 @@ export default {
     offices: [
       "Sunnyvale",
       "Mountain View"
+    ],
+
+    listings: [
+      {
+        name: "Long Stay Villa",
+        type: "Full House",
+        roomsInfo: "6 Guests | 4 Bedroom | 6 Beds | 3 Bath",
+        thumbnail: "assets/long_stay.png",
+        price: "$5,000",
+        googlerOwned: true
+      },
+
+      {
+        name: "Long Stay Villa",
+        type: "Full House",
+        roomsInfo: "6 Guests | 4 Bedroom | 6 Beds | 3 Bath",
+        thumbnail: "assets/long_stay.png",
+        price: "$5,000",
+        googlerOwned: true
+      }      
     ]
   }),
 
@@ -43,7 +63,7 @@ export default {
 <style scoped>
 
   #listings-cont {
-    width: 500px;
+    width: 550px;
     height: 100%;
 
     display: flex;
@@ -51,7 +71,7 @@ export default {
     align-items: flex-start;
     justify-content: flex-start;
 
-    background-color: #dbdbdb;
+    border-right: 1px solid #dbdbdb;
     padding: 16px;
   }
 
