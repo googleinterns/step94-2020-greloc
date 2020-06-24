@@ -34,6 +34,8 @@ export default {
     --branding-red: #ea4335;
     --branding-yellow: #fbbc05;
     --branding-green: #34a853;
+
+    --text-subtle: #727272;
   }
 
   * {

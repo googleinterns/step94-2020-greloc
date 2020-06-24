@@ -1,6 +1,10 @@
 <template>
   <div id="listings-component">
-    <Listing/>
+    <Listing 
+        v-for="(listing, index) in listings"
+        :key="index"
+        :listingInfo="listing"        
+    />
   </div>
 </template>
 
@@ -22,6 +26,5 @@ export default {
   #listings-component {
     height: 100%;
     width: 100%;
-    background-color: cornflowerblue;
   }
 </style>
