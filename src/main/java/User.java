@@ -13,27 +13,27 @@ public class User {
     }
     
     // Getters and Setters
-    public getId() {
+    public String getId() {
     	return id; 
     }
 
-    public setId(String newId) {
+    public void setId(String newId) {
         id = newId; 
     }
 
-    public getType() {
+    public int getType() {
         return type;
     }
 
-    public setType(int newType) {
+    public void setType(int newType) {
         type = newType; 
     }
 
-    public getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public setEmail(String newEmail) {
+    public void setEmail(String newEmail) {
         email = newEmail;
 
     }

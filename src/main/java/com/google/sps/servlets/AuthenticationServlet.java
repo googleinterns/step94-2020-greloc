@@ -19,14 +19,22 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
-@WebServlet("/data")
-public class DataServlet extends HttpServlet {
+@WebServlet("/authentication")
+public class AuthenticationServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.sendRedirect("/dist/index.html");
 
+
+    //how to create a new user? 
+
+    UserService userService = UserServiceFactory.getUserService();
+    AuthLanding.userLoginActions(user,userService);
+    response.getWriter(authLanding.userLoginActions());
   }
 }
