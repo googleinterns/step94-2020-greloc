@@ -60,7 +60,7 @@ public class LocationsServlet extends HttpServlet {
     
     String office = request.getParameter("office");
     Office selectedOffice = OfficeManager.offices.get(office);
-    double distanceInKilometers = CoordinateCalculator.milesToKilometers(2);
+    double distanceInKilometers = CoordinateCalculator.milesToKilometers(2.3);
 
     List<Entity> entityList = getDistanceBasedListings(request, selectedOffice, distanceInKilometers);
     List<Entity> filteredEntityList = CoordinateCalculator.filterOutOfRangeLatitudeEntities(distanceInKilometers, selectedOffice.getLatitude(), selectedOffice.getLongitude(), entityList);
@@ -70,8 +70,7 @@ public class LocationsServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(filteredEntityList));
   }
 
-  private List<Entity> getDistanceBasedListings(HttpServletRequest request, Office selectedOffice, double kilometers) {
-    
+  private List<Entity> getDistanceBasedListings(HttpServletRequest request, Office selectedOffice, double kilometers) {    
     CompositeFilter distanceFromOfficeFilter = CoordinateCalculator.createLongitudeBoundFilter(kilometers, selectedOffice.getLatitude(), selectedOffice.getLongitude());
 
     // Retrieving Listings from DataStore
