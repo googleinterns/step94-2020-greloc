@@ -1,19 +1,19 @@
 <template>
   <div class="indv-listing">
-    <img class="listing-thumbnail" src="assets/long_stay.png" alt="listing-image">
+    <img class="listing-thumbnail" :src="listingInfo.propertyMap.images[0]" alt="listing-image">
     <div class="info-box">
       <div class="top-row">
-        <h1>{{listingInfo.name}}</h1>
-        <span>{{listingInfo.type}}</span>
-        <span>{{listingInfo.roomsInfo}}</span>
+        <h1>{{listingInfo.propertyMap.name}}</h1>
+        <span>{{listingInfo.propertyMap.type}}</span>
+        <span>{{`${listingInfo.propertyMap.guests} Guests | ${listingInfo.propertyMap.bedrooms} Bedroom | ${listingInfo.propertyMap.beds} Beds | ${listingInfo.propertyMap.baths} Bath`}}</span>
       </div>
 
       <div class="bottom-row">
         <v-avatar size="30">
-          <img v-if="listingInfo.googlerOwned" src="assets/google.svg" alt="Google">
+          <img v-if="listingInfo.propertyMap.googlerOwned" src="assets/google.svg" alt="Google">
           <div v-else class="unknown-source-symbol"></div>
         </v-avatar>
-        <span><b>{{listingInfo.price}}</b>/month</span>
+        <span><b>{{listingInfo.propertyMap.price}}</b>/month</span>
       </div>
 
     </div>
