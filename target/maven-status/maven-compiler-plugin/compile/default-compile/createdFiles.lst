@@ -1,1 +1,8 @@
+com/google/sps/data/OfficeManager.class
+com/google/sps/servlets/LocationsServlet$1.class
+com/google/sps/servlets/LocationsServlet.class
+com/google/sps/data/CoordinateCalculator.class
+com/google/sps/data/OfficeManager$1.class
+com/google/sps/data/Listing.class
+com/google/sps/data/Office.class
 com/google/sps/servlets/DataServlet.class

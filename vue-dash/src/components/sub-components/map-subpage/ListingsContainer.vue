@@ -7,6 +7,11 @@
       id="select-office"
       style="width: 100%;"
       height="50px"
+      v-model="selectedOffice"
+      item-text="name"
+      item-value="value"
+      v-on:input="getListings(selectedOffice)"
+      return-object
       solo
     ></v-select>
 
@@ -27,30 +32,16 @@ export default {
     DateRangeSelector
   },
 
+  props: {
+    getListings: Function,
+    listings: Array
+  },
+
   data: () => ({
+    selectedOffice: { name: "", officeId: "default" },
     offices: [
-      "Sunnyvale",
-      "Mountain View"
-    ],
-
-    listings: [
-      {
-        name: "Long Stay Villa",
-        type: "Full House",
-        roomsInfo: "6 Guests | 4 Bedroom | 6 Beds | 3 Bath",
-        thumbnail: "assets/long_stay.png",
-        price: "$5,000",
-        googlerOwned: true
-      },
-
-      {
-        name: "Long Stay Villa",
-        type: "Full House",
-        roomsInfo: "6 Guests | 4 Bedroom | 6 Beds | 3 Bath",
-        thumbnail: "assets/long_stay.png",
-        price: "$5,000",
-        googlerOwned: true
-      }      
+      { name: "Sunnyvale", officeId: "svl" },
+      { name: "Mountain View", officeId: "mtv" },
     ]
   }),
 
