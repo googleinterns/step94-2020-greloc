@@ -2,12 +2,12 @@ package com.google.sps.data;
 
 public final class Office {
   String name;
-  
+
   // Horizontal but shown as North/South
   double latitude;
-  
+
   // Verical but shown as East/West
-  double longitude; 
+  double longitude;
 
   public Office(String name, double latitude, double longitude) {
     this.name = name;
