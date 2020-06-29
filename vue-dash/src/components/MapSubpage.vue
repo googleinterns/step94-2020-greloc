@@ -1,23 +1,13 @@
 <template>
     <div class="subpage" id="map-subpage">
-      <ListingsContainer :getListings="getListings" :listings="listings"/>
-
-      <v-btn
-          v-on:click="createListing()"
-      >
-        create
-      </v-btn>
-
-      <v-btn
-          v-on:click="deleteListings()"
-      >
-        delete
-      </v-btn>
+      <ListingsContainer :officeSelectedEvent="officeSelectedEvent" :listings="listings"/>
+      <MapContainer :selectedOffice="selectedOffice" :listings="listings"/>
     </div>
 </template>
 
 <script>
 import ListingsContainer from './sub-components/map-subpage/ListingsContainer.vue'
+import MapContainer from './sub-components/map-subpage/MapContainer.vue'
 import { WEBSITE_URL } from '../utils/constants.js'
 
 const testComp = {
@@ -49,17 +39,28 @@ export default {
   name: 'Template',
 
   components: {
-    ListingsContainer
+    ListingsContainer,
+    MapContainer
   },
   props: {
     userData: Object
   },
 
   data: () => ({
-    listings: []
+    listings: [],
+    offices: [],
+    selectedOffice: null
   }),
 
   methods: {
+
+    officeSelectedEvent: async function(office) {
+      this.selectedOffice = office;
+      this.$root.$emit('officeChanged', office);
+      console.log("officeSelectedEvent!!");
+      await this.getListings(office);
+    },
+
     getListings: async function(office) {
 
       let response = await fetch(WEBSITE_URL + `/locations?office=${office.officeId}`);
@@ -75,6 +76,8 @@ export default {
       }
 
       this.listings = respData;
+      console.log("getListings!!");
+      this.$root.$emit('newListings', respData);
     },
 
     createListing: async function() {
