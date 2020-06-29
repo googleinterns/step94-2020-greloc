@@ -1,6 +1,6 @@
 package com.google.sps.data;
 
-public final class Office {
+public class Office {
   String name;
 
   // Horizontal but shown as North/South
