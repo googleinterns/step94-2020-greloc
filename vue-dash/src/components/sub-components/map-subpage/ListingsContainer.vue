@@ -10,7 +10,7 @@
       v-model="selectedOffice"
       item-text="name"
       item-value="value"
-      v-on:input="getListings(selectedOffice)"
+      v-on:input="officeSelectedEvent(selectedOffice)"
       return-object
       solo
     ></v-select>
@@ -24,6 +24,7 @@
 <script>
 import Listings from './Listings.vue'
 import DateRangeSelector from './DateRangeSelector.vue'
+import { OFFICES } from '../../../utils/constants.js'
 
 export default {
   name: 'ListingsContainer',
@@ -33,16 +34,13 @@ export default {
   },
 
   props: {
-    getListings: Function,
+    officeSelectedEvent: Function,
     listings: Array
   },
 
   data: () => ({
     selectedOffice: { name: "", officeId: "default" },
-    offices: [
-      { name: "Sunnyvale", officeId: "svl" },
-      { name: "Mountain View", officeId: "mtv" },
-    ]
+    offices: OFFICES
   }),
 
   methods: {
@@ -54,7 +52,7 @@ export default {
 <style scoped>
 
   #listings-cont {
-    width: 550px;
+    min-width: 550px;
     height: 100%;
 
     display: flex;

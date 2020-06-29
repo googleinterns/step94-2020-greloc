@@ -81,5 +81,13 @@ export default {
     margin-bottom: 1rem;
     color: #515151;
   }
+
+  .empty-state-icon {
+    margin-bottom: 1rem;
+  }
+
+  .empty-state-text {
+    color: rgba(0,0,0,.87);
+  }
 </style>
 
