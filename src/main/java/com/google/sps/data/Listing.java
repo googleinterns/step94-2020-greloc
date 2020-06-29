@@ -1,6 +1,7 @@
 package com.google.sps.data;
-import java.util.List;
+
 import com.google.appengine.api.datastore.EmbeddedEntity;
+import java.util.List;
 
 public final class Listing {
   String ownerId;
@@ -50,7 +51,7 @@ public final class Listing {
   public long getStartTimestamp() {
     return this.startTimestamp;
   }
-  
+
   public long getEndTimestamp() {
     return this.endTimestamp;
   }

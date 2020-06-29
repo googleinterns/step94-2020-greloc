@@ -1,11 +1,14 @@
 package com.google.sps.data;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
+
 import java.util.HashMap;
 
 public final class OfficeManager {
-  public static final HashMap<String, Office> offices = new HashMap<String, Office>() {{
-    put("svl", new Office("Sunnyvale", 37.4030, -122.0326));
-    put("mtv", new Office("Mountain View", 37.4220, -122.0841));
-  }};
+  public static final HashMap<String, Office> offices =
+      new HashMap<String, Office>() {
+        {
+          put("svl", new Office("Sunnyvale", 37.4030, -122.0326));
+          put("mtv", new Office("Mountain View", 37.4220, -122.0841));
+        }
+      };
 }
