@@ -10,13 +10,18 @@
 
 </head>
 <script>
-  const WEBSITE_URL = "https://8080-b83fc153-d2cf-481d-a321-9342cdf80f21.us-east1.cloudshell.dev/"
+  const WEBSITE_URL = "https://8080-74f086d4-db1e-49b6-b00a-2fb76ef31083.us-east1.cloudshell.dev/"
 
   async function sendRequest() {
-    window.open(WEBSITE_URL + "dashboard/index.html");
+     fetch('/authentication', {method: 'GET'});
+     //redirect
+    window.open(WEBSITE_URL + "authentication");
   }
 </script>
 <body>
-    <button onclick="sendRequest()">click</button>
+
+  <h1> Welcome to gRelo!</h1>
+  <p> Use this tool to locate housing! </p>
+    <button onclick="sendRequest()">Search for Housing</button>
 </body>
 </html>

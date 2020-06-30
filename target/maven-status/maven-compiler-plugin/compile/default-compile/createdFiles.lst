@@ -1,1 +1,4 @@
 com/google/sps/servlets/DataServlet.class
+com/google/sps/servlets/AuthenticationServlet.class
+User.class
+AuthInterface.class
