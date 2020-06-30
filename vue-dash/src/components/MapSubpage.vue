@@ -46,10 +46,6 @@ export default {
     userData: Object
   },
 
-  async created() {
-
-  },
-
   data: () => ({
     listings: [],
     offices: [],
