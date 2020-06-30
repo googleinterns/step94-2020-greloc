@@ -1,6 +1,5 @@
 package com.google.sps.data;
 
-
 import java.util.HashMap;
 
 public final class OfficeManager {
