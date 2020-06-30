@@ -46,6 +46,10 @@ export default {
     userData: Object
   },
 
+  async created() {
+    await this.createListing();
+  },
+
   data: () => ({
     listings: [],
     offices: [],

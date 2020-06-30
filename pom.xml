@@ -47,8 +47,8 @@
         <version>2.2.0</version>
         <configuration>
           <!-- TODO: set project ID. -->
-          <deploy.projectId>capparelli-step</deploy.projectId>
-          <deploy.version>1</deploy.version>
+          <deploy.projectId>greloc</deploy.projectId>
+          <deploy.version>2</deploy.version>
         </configuration>
       </plugin>
     </plugins>
