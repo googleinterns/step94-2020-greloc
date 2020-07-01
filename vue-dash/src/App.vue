@@ -35,6 +35,7 @@ export default {
     --branding-yellow: #fbbc05;
     --branding-green: #34a853;
 
+    --text-heading: #515151;
     --text-subtle: #727272;
   }
 

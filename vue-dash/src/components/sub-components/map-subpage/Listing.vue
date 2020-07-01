@@ -25,7 +25,11 @@ export default {
   name: 'Listing',
   props: {
     listingInfo: Object
-  }
+  },
+
+  data: () => ({
+    isSelected: false
+  }),
 }
 </script>
 
@@ -39,7 +43,6 @@ export default {
     justify-content: flex-start;
 
     padding: 10px 0;
-    border-bottom: 1px solid #d1d1d1;
   }
   
   .listing-thumbnail {

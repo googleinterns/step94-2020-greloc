@@ -8,7 +8,7 @@
 <script>
 import ListingsContainer from './sub-components/map-subpage/ListingsContainer.vue'
 import MapContainer from './sub-components/map-subpage/MapContainer.vue'
-import { WEBSITE_URL } from '../utils/constants.js'
+import { WEBSITE_URL, EVENTS } from '../utils/constants.js'
 
 const testComp = {
   name: "Cozy Apartment",
@@ -56,8 +56,8 @@ export default {
 
     officeSelectedEvent: async function(office) {
       this.selectedOffice = office;
-      this.$root.$emit('officeChanged', office);
-      console.log("officeSelectedEvent!!");
+      this.$root.$emit(EVENTS.officeChanged, office);
+
       await this.getListings(office);
     },
 
@@ -68,16 +68,12 @@ export default {
       
       if (response.ok) {                
         respData = await response.json();
-        console.log("getListings: success");
-        console.log(respData);
       } else {
-        console.log("getListings: error");
         respData = [];
       }
 
       this.listings = respData;
-      console.log("getListings!!");
-      this.$root.$emit('newListings', respData);
+      this.$root.$emit(EVENTS.newListings, respData);
     },
 
     createListing: async function() {
@@ -119,5 +115,7 @@ export default {
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
+    padding-bottom: 0;
+    padding-right: 0;
   }
 </style>
