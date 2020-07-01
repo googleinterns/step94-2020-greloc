@@ -30,10 +30,14 @@ import com.google.appengine.api.datastore.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/authentication")
 public class AuthenticationServlet extends HttpServlet {
+
+  enum Type {
+    RENTER,
+    TENANT,
+    BOTH
+  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -42,54 +46,48 @@ public class AuthenticationServlet extends HttpServlet {
 
     UserService userService = UserServiceFactory.getUserService();
     
-    // Actions after users are authorized
-    // if (userService.isUserLoggedIn() /*&& userService.getCurrentUser().getAuthDomain() == "google.com" */) {
-    //   response.sendRedirect("/dashboard/index.html");
-    //   String urlToRedirectToAfterUserLogsOut = "/index.html";
-    //   String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
+    //Creating a Query to search through the datastore
+    Query query = new Query("User Data");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();   
+    PreparedQuery results = datastore.prepare(query);
 
-    //   // Actions when users are not authorized
-    // } else {
-    //   System.out.println("NOT LOGGED IN");
-    //   String loginUrl = userService.createLoginURL("/authentication");
-    //   out.println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
+    final String emailLogin = request.getParameter("email");
+    final String pswLogin = request.getParameter("pswd");
+    
+    //Iterating through the entity
+    for(Entity entity: results.asIterable()) {
+      String userEmail = (String) entity.getProperty("Email");
+      String userPass = (String) entity.getProperty("Password");
+      String userType = (String) entity.getProperty("type");
 
-    // }
-
-  Query query = new Query("User Data");
-  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();   
-  PreparedQuery results = datastore.prepare(query);
-
-  final String emailLogin = request.getParameter("email");
-  final String pswLogin = request.getParameter("pswd");
-
-  for(Entity entity: results.asIterable()) {
-    String userEmail = (String) entity.getProperty("Email");
-    String userPass = (String) entity.getProperty("Password");
-    String userType = (String) entity.getProperty("type");
-
-    if(emailLogin.equals(userEmail) && pswLogin.equals(userPass)) {
-      System.out.println(emailLogin);
-      System.out.println(userEmail);
-      System.out.println("Its a match!");
-      response.sendRedirect("/dashboard/index.html");
-    } else {
-      String loginUrl = userService.createLoginURL("/registration");
-      System.out.println("Its not a match");
-      System.out.println(emailLogin);
-      System.out.println(userEmail);
-      response.sendRedirect("/registration.html");
-      // out.println("<p> Either username or password is incorrect. Try again or create an account"
-      // <a href>\+registerUrl + "\"> here </a>. </p>");
+      //Checking to see if user has an account in the entity
+      if(emailLogin.equals(userEmail) && pswLogin.equals(userPass)) {
+        System.out.println("Email thats trying to login: " + emailLogin);
+        System.out.println("Email thats trying to match from entity: " + userEmail);
+        System.out.println("Its a match!");
+        System.out.println("BREAK");
+        response.sendRedirect("/dashboard/index.html");  
+        return;
+      } 
     }
+    response.sendRedirect("/registration.html");
+      
   }
+  
+  //   private Type processType(HttpServletRequest request) {
+  //   Type type = Type.TENANT;
 
-  }
+  //   if(request.getParameter("renter").equals("renter")) {
+  //     type = Type.RENTER;   
+  //   } else if (request.getParameter("both").equals("both")){
+  //     type = Type.BOTH;
+  //   }
+  //   return type;
+  // }
 
-   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
      
-     //Creating a user from the registration page
-
+    //Creating a user from the registration page
     final String emailEntered = request.getParameter("email");
     final String pswEntered = request.getParameter("psw");
     final String typeEntered = request.getParameter("type");
@@ -100,10 +98,12 @@ public class AuthenticationServlet extends HttpServlet {
     taskEntity.setProperty("Password", pswEntered);
     taskEntity.setProperty("Type", typeEntered);
 
-  //Storing the Entity in datastore
+    //Storing the Entity in datastore
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(taskEntity);
 
+    //After user registers, send to the dashboard page
     response.sendRedirect("/dashboard/index.html");
-   }
+  }
+
 }
