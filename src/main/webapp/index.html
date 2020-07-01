@@ -5,15 +5,17 @@
   <meta charset="utf-8">
 
   <title>project-r</title>
+  <link rel="stylesheet" href="style.css">
   <meta name="description" content="desc">
   <meta name="author" content="SitePoint">
 
 </head>
 <script>
+
   const WEBSITE_URL = "https://8080-74f086d4-db1e-49b6-b00a-2fb76ef31083.us-east1.cloudshell.dev/"
 
   async function sendRequest() {
-     fetch('/authentication', {method: 'GET'});
+    fetch('/authentication', {method: 'GET'});
      //redirect
     window.open(WEBSITE_URL + "authentication");
   }
@@ -22,6 +24,13 @@
 
   <h1> Welcome to gRelo!</h1>
   <p> Use this tool to locate housing! </p>
-    <button onclick="sendRequest()">Search for Housing</button>
+  <form class="form-inline" action="/authentication" method = "GET">
+    <label for="email">Email:</label>
+    <input type="email" id="emailLogin" placeholder="Enter email" name="email">
+    <label for="pwd">Password:</label>
+    <input type="password" id="pwdLogin" placeholder="Enter password" name="pswd">
+   <p> To create an account:</p><a href="/registration.html">Click here!</a></p>
+    <button type="submit">Submit</button>
+  </form>
 </body>
 </html>
