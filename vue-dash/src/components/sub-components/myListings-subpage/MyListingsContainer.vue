@@ -1,13 +1,20 @@
 <template>
   <div id="mylistings-cont">
     <h1 class="subpage-title">My Current Listings</h1>
-
     <Listings :listings="listings"/>
+      <v-btn class="add-button"
+        absolute
+        dark
+        fab
+        left
+        color="#3cba54">
+        <v-icon >mdi-plus</v-icon>
+      </v-btn>
   </div>
 </template>
 
 <script>
-import Listings from './Listings.vue'
+import Listings from '../map-subpage/Listings.vue'
 
 export default {
   name: 'MyListingsContainer',
@@ -45,7 +52,6 @@ export default {
 </script>
 
 <style scoped>
-
   #listings-cont {
     width: 550px;
     height: 100%;
@@ -62,5 +68,8 @@ export default {
   #select-office {
     width: 100%;
   }
-
+  
+  .add-button {
+    margin-top: 120px;
+  }
 </style>
