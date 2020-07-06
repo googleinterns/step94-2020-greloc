@@ -17,22 +17,15 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import com.google.sps.data.EntityType;
-import com.google.sps.data.QueryHelper;
 import com.google.sps.data.CoordinateCalculator;
+import com.google.sps.data.EntityType;
 import com.google.sps.data.Office;
 import com.google.sps.data.OfficeManager;
+import com.google.sps.data.QueryHelper;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
@@ -54,7 +47,8 @@ public class BusLocations extends HttpServlet {
     double distanceInKilometers = CoordinateCalculator.milesToKilometers(2.3);
 
     List<Entity> entityList =
-        QueryHelper.getDistanceBasedEntities(EntityType.BUS_STOP, numStops, selectedOffice, distanceInKilometers);
+        QueryHelper.getDistanceBasedEntities(
+            EntityType.BUS_STOP, numStops, selectedOffice, distanceInKilometers);
 
     List<Entity> filteredEntityList =
         CoordinateCalculator.filterOutOfRangeLatitudeEntities(
