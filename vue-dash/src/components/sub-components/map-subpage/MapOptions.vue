@@ -34,12 +34,13 @@ export default {
   
   methods: {
 
-    onOfficeSelected: function (office){
+    onOfficeSelected: async function (office){
       this.office = office;
       
       // If busStopSelected is already selected once a new office is chosen, automatically get the stops for that office
       if (this.busStopSelected) {
-        this.getBusStops(office);
+        let stopList = await this.getBusStops(office);
+        this.$root.$emit(EVENTS.busStopsSelected, stopList)
       }
     },
 
@@ -49,6 +50,9 @@ export default {
       if (selected) {
         stopList = await this.getBusStops(this.office);
       }
+      
+      console.log(selected);
+      console.log(stopList);
       this.$root.$emit(EVENTS.busStopsSelected, stopList);
     },
 
@@ -62,8 +66,7 @@ export default {
         respData = [];
       }
 
-      console.log(respData);
-      this.$root.$emit(EVENTS.busStopsSelected, respData);
+      return respData;
     }
   }
 }

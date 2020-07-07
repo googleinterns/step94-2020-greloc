@@ -31,6 +31,7 @@ import com.google.sps.data.CoordinateCalculator;
 import com.google.sps.data.EntityType;
 import com.google.sps.data.Office;
 import com.google.sps.data.OfficeManager;
+import com.google.sps.data.QueryHelper;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -40,9 +41,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/locations")
 public class LocationsServlet extends HttpServlet {
+
+  private final int numListings = 10;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -52,7 +56,8 @@ public class LocationsServlet extends HttpServlet {
     double distanceInKilometers = CoordinateCalculator.milesToKilometers(2.3);
 
     List<Entity> entityList =
-        getDistanceBasedListings(request, selectedOffice, distanceInKilometers);
+        QueryHelper.getDistanceBasedEntities(EntityType.LISTING, numListings, selectedOffice, distanceInKilometers);
+    
     List<Entity> filteredEntityList =
         CoordinateCalculator.filterOutOfRangeLatitudeEntities(
             distanceInKilometers,
@@ -63,20 +68,6 @@ public class LocationsServlet extends HttpServlet {
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(filteredEntityList));
-  }
-
-  private List<Entity> getDistanceBasedListings(
-      HttpServletRequest request, Office selectedOffice, double kilometers) {
-    CompositeFilter distanceFromOfficeFilter =
-        CoordinateCalculator.createLongitudeBoundFilter(
-            kilometers, selectedOffice.getLatitude(), selectedOffice.getLongitude());
-
-    // Retrieving Listings from DataStore
-    Query query = new Query("Listing").setFilter(distanceFromOfficeFilter);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
-
-    return results.asList(FetchOptions.Builder.withLimit(10));
   }
 
   // MARK: POST
