@@ -7,6 +7,11 @@
       id="select-office"
       style="width: 100%;"
       height="50px"
+      v-model="selectedOffice"
+      item-text="name"
+      item-value="value"
+      v-on:input="officeSelectedEvent(selectedOffice)"
+      return-object
       solo
     ></v-select>
 
@@ -19,6 +24,7 @@
 <script>
 import Listings from './Listings.vue'
 import DateRangeSelector from './DateRangeSelector.vue'
+import { OFFICES } from '../../../utils/constants.js'
 
 export default {
   name: 'ListingsContainer',
@@ -27,31 +33,14 @@ export default {
     DateRangeSelector
   },
 
+  props: {
+    officeSelectedEvent: Function,
+    listings: Array
+  },
+
   data: () => ({
-    offices: [
-      "Sunnyvale",
-      "Mountain View"
-    ],
-
-    listings: [
-      {
-        name: "Long Stay Villa",
-        type: "Full House",
-        roomsInfo: "6 Guests | 4 Bedroom | 6 Beds | 3 Bath",
-        thumbnail: "assets/long_stay.png",
-        price: "$5,000",
-        googlerOwned: true
-      },
-
-      {
-        name: "Long Stay Villa",
-        type: "Full House",
-        roomsInfo: "6 Guests | 4 Bedroom | 6 Beds | 3 Bath",
-        thumbnail: "assets/long_stay.png",
-        price: "$5,000",
-        googlerOwned: true
-      }      
-    ]
+    selectedOffice: { name: "", officeId: "default" },
+    offices: OFFICES
   }),
 
   methods: {
@@ -63,7 +52,7 @@ export default {
 <style scoped>
 
   #listings-cont {
-    width: 550px;
+    min-width: 550px;
     height: 100%;
 
     display: flex;

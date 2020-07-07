@@ -35,6 +35,7 @@ export default {
     --branding-yellow: #fbbc05;
     --branding-green: #34a853;
 
+    --text-heading: #515151;
     --text-subtle: #727272;
   }
 
@@ -80,6 +81,14 @@ export default {
   .subpage-title {
     margin-bottom: 1rem;
     color: #515151;
+  }
+
+  .empty-state-icon {
+    margin-bottom: 1rem;
+  }
+
+  .empty-state-text {
+    color: rgba(0,0,0,.87);
   }
 </style>
 

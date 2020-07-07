@@ -1,4 +1,19 @@
+<<<<<<< HEAD
 com/google/sps/servlets/AuthenticationServlet$Type.class
+=======
+com/google/sps/data/EntityType.class
+com/google/sps/data/CoordinateCalculator$Bounds.class
+com/google/sps/data/CoordinateCalculator$CoordinateType.class
+com/google/sps/servlets/BusLocations.class
+com/google/sps/data/QueryHelper.class
+com/google/sps/data/CoordinateCalculator.class
+com/google/sps/data/OfficeManager$1.class
+com/google/sps/data/Listing.class
+com/google/sps/data/Office.class
+com/google/sps/data/OfficeManager.class
+com/google/sps/servlets/LocationsServlet$1.class
+com/google/sps/servlets/LocationsServlet.class
+>>>>>>> 0fec24c0baf1d6e4ce29c1f5d925407bc73f8bf3
 com/google/sps/servlets/DataServlet.class
 com/google/sps/servlets/AuthenticationServlet.class
 User.class
