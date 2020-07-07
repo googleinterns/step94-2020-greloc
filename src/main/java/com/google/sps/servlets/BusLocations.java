@@ -64,10 +64,10 @@ public class BusLocations extends HttpServlet {
 
   @Override // Creates a new BusStop
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    createListing(request);
+    createBusStop(request);
   }
 
-  private void createListing(HttpServletRequest request) throws IOException {
+  private void createBusStop(HttpServletRequest request) throws IOException {
 
     // To be used for timestamp
     long timestamp = System.currentTimeMillis();

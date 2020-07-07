@@ -12,6 +12,29 @@
 import gmapsInit from '../../../utils/gmaps.js'
 import { EVENTS } from '../../../utils/constants.js'
 
+const MarkerTypeEnum = Object.freeze({
+  LISTING: 0,
+  MARKER: 1
+});
+
+const defaultOptionsForMarkers = {
+  DEFAULT: {
+    size: 20,
+    url: '',    
+  },
+
+  LISTING: {
+    size: 40, 
+    url: "assets/googler_listing_marker_25px.png"
+  },
+
+  BUS_STOP: {
+    size: 40, 
+    url: "assets/bus_pin.png"
+  }
+}
+
+
 export default {
   name: 'ReloMap',
   async created () {
@@ -35,7 +58,6 @@ export default {
     });
 
     this.$root.$on(EVENTS.busStopsSelected, data => {
-      console.log(data);
       this.onBusStopsSelected(data);
     });
   },
@@ -90,7 +112,7 @@ export default {
     showSelectedOffice: function(office) {
       
       // Clear markers of previously selected office, if there are any
-      this.clearListingMarkers();
+      this.clearSelectMarkers(MarkerTypeEnum.LISTING);
 
       let location = { 
           lat: office.coordinates.latitude, 
@@ -119,15 +141,16 @@ export default {
      */ 
     showListingsOnMap: function(listings) {      
       for (let listing of listings){
-        this.addListingMarker(listing);
+        // this.addListingMarker(listing);
+        this.addMarkerForEntity(listing, MarkerTypeEnum.LISTING, defaultOptionsForMarkers.LISTING);
       }
     },
 
     showBusStopsOnMap: function(stopList) {
       for (let stop of stopList){
-        this.addBusStopMarker(stop);
+        this.addMarkerForEntity(stop, MarkerTypeEnum.BUS_STOP, defaultOptionsForMarkers.BUS_STOP);
       }
-    },    
+    },   
 
     /**
      * When passed a listing object, this method will decrease the height to 25% and display a route from the `listing` to the 
@@ -144,7 +167,8 @@ export default {
     },
 
     onBusStopsSelected: function(stopList) {
-      this.clearBusStopMarkers();
+      this.clearSelectMarkers(MarkerTypeEnum.BUS_STOP);
+      
       if (stopList.length > 0) {
         this.showBusStopsOnMap(stopList);
       }
@@ -236,43 +260,63 @@ export default {
       this.listingMarkers.push(marker);
       marker.setMap(this.map);
     },
-
+    
     /**
-     * Removes all listing markers from the embedded map. Does NOT remove office markers
-     */    
-    clearListingMarkers: function() {
-      for (let marker of this.listingMarkers) {
-        marker.setMap(null);
-      }
-      this.listingMarkers = [];
-    },
-
-    clearBusStopMarkers: function (){
-      for (let marker of this.stopMarkers) {
-        marker.setMap(null);
-      }
-      this.stopMarkers = [];
-    },
-
-    addBusStopMarker: function(stop)  {      
+     * Adds a marker on the map for the specified entity given a markerType and options
+     * 
+     * @param markerType: The type of marker that should be cleared from the map
+     */        
+    addMarkerForEntity: function (entity, markerType, options = defaultOptionsForMarkers.DEFAULT) {
       let location = {
-        lat: Number(stop.propertyMap.latitude),
-        lng: Number(stop.propertyMap.longitude)
+        lat: Number(entity.propertyMap.latitude),
+        lng: Number(entity.propertyMap.longitude)
       };
 
       let marker = new this.google.maps.Marker({
         position: location,
-        title: stop.propertyMap.name,
+        title: entity.propertyMap.name,
         icon: {
-          url: "assets/bus_pin.png",
-          size: new this.google.maps.Size(40, 40),
+          url: options.url,
+          size: new this.google.maps.Size(options.size, options.size),
           origin: new this.google.maps.Point(0, 0),
           anchor: new this.google.maps.Point(17, 34),
         }
       });
 
-      this.stopMarkers.push(marker);
+      let markerList = getMarkerList(markerType);      
+      markerList.push(marker);
       marker.setMap(this.map);
+    },    
+    
+    /**
+     * Removes ALL markers of `markerType` from the map
+     * 
+     * @param markerType: The type of marker that should be cleared from the map
+     */
+    clearSelectMarkers: function(markerType) {
+      let markerList = this.getMarkerList(markerType);      
+      for (let marker of markerList) {
+        marker.setMap(null);
+      }
+      markerList = [];
+    },
+
+    /**
+     * Returns the stored list of markers for the given `markerType`
+     * 
+     * @param markerType: The type of marker that should be cleared from the map
+     */
+    getMarkerList: function(markerType) {
+      switch(markerType) {
+        case MarkerTypeEnum.LISTING:
+          return this.listingMarkers;
+
+        case MarkerTypeEnum.BUS_STOP:
+          return this.stopMarkers;
+
+        default:
+          throw "MarkerTypeEnum does not exist"
+      }      
     }
   }
 }
