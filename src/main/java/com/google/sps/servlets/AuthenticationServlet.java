@@ -29,14 +29,13 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 @WebServlet("/authentication")
 public class AuthenticationServlet extends HttpServlet {
 
-  enum Type {
-    RENTER,
-    TENANT,
-    BOTH
+  public enum Type {
+    RENTER,HOST,BOTH;
   }
 
   @Override
@@ -73,24 +72,40 @@ public class AuthenticationServlet extends HttpServlet {
     response.sendRedirect("/registration.html");
       
   }
-  
-  //   private Type processType(HttpServletRequest request) {
-  //   Type type = Type.TENANT;
 
-  //   if(request.getParameter("renter").equals("renter")) {
-  //     type = Type.RENTER;   
-  //   } else if (request.getParameter("both").equals("both")){
-  //     type = Type.BOTH;
+  //A helper method that helps identifies the UserType
+  private Type processType(HttpServletRequest request) {
+    Type type = null;
+    String userType = request.getParameter("type");
+    System.out.println(userType);
+    if (userType.equals("renter")) {
+        type = Type.RENTER;
+      } else if (userType.equals("host")) {
+        type = Type.HOST;
+      } else {
+        type = Type.BOTH;
+      }
+      System.out.println(type);
+    return type;
+  }
+
+  // // Helper method that makes sure the password matches
+  // private void passwordMatch() {
+  //   String pass = request.getParameter("psw");
+  //   String repeatPass = request.getParameter("psw-repeat");
+
+  //   if(pass.equals(repeatPass)) {
+  //     return pass;
+  //   } else {
+       
   //   }
-  //   return type;
   // }
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-     
     //Creating a user from the registration page
     final String emailEntered = request.getParameter("email");
     final String pswEntered = request.getParameter("psw");
-    final String typeEntered = request.getParameter("type");
+    final String typeEntered = processType(request).toString();
 
     //Creating an UserEntity
     Entity taskEntity = new Entity("User Data");

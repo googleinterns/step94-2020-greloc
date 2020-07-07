@@ -1,0 +1,31 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>project-r</title>
+  <meta name="description" content="desc">
+  <meta name="author" content="SitePoint">
+
+</head>
+<script>
+  const WEBSITE_URL = "https://8080-74f086d4-db1e-49b6-b00a-2fb76ef31083.us-east1.cloudshell.dev/"
+
+  async function loginRequest() {
+     fetch('/authentication', {method: 'GET'});
+     //redirect
+    window.open(WEBSITE_URL + "dashboard/index.html");
+  }
+</script>
+<body>
+
+  <h1> Login Page</h1>
+  <p> Enter your email to verify your account </p>
+  out.println("<form method=\"POST\" action=\"/login\">");
+    out.println("<input name=\"login\" value=\"" + email + "\" />");
+    out.println("<br/>");
+    out.println("</form>");
+    <button onclick="loginRequest()">Login</button>
+</body>
+</html>
