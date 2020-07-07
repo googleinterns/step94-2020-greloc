@@ -18,10 +18,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -41,7 +37,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/locations")
 public class LocationsServlet extends HttpServlet {
@@ -56,8 +51,9 @@ public class LocationsServlet extends HttpServlet {
     double distanceInKilometers = CoordinateCalculator.milesToKilometers(2.3);
 
     List<Entity> entityList =
-        QueryHelper.getDistanceBasedEntities(EntityType.LISTING, numListings, selectedOffice, distanceInKilometers);
-    
+        QueryHelper.getDistanceBasedEntities(
+            EntityType.LISTING, numListings, selectedOffice, distanceInKilometers);
+
     List<Entity> filteredEntityList =
         CoordinateCalculator.filterOutOfRangeLatitudeEntities(
             distanceInKilometers,
