@@ -13,6 +13,8 @@
        :style="[(selectedOffice === null || selectedOffice.officeId === 'default') 
         ? {'display': 'none'} : {'display': 'block'}]"
     />
+        
+    <MapOptions/>
 
     <ListingInfo 
       v-if="selectedListing != null"
@@ -23,6 +25,7 @@
 
 <script>
 import ReloMap from './ReloMap.vue'
+import MapOptions from './MapOptions.vue'
 import ListingInfo from './ListingInfo.vue'
 import { EVENTS } from '../../../utils/constants.js'
 export default {
@@ -36,7 +39,8 @@ export default {
 
   components: {
     ReloMap,
-    ListingInfo
+    ListingInfo,
+    MapOptions
   },
   props: {
     listings: Array,

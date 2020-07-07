@@ -28,6 +28,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.sps.data.CoordinateCalculator;
+import com.google.sps.data.EntityType;
 import com.google.sps.data.Office;
 import com.google.sps.data.OfficeManager;
 import java.io.IOException;
@@ -95,7 +96,7 @@ public class LocationsServlet extends HttpServlet {
     JsonObject listingJson = new Gson().fromJson(requestData, JsonObject.class);
 
     // Creating DataStore Entity
-    Entity taskEntity = new Entity("Listing");
+    Entity taskEntity = new Entity(EntityType.BUS_STOP.getValue());
     taskEntity.setProperty("userID", userID);
     taskEntity.setProperty("timestamp", timestamp);
     addJsonPropertiesToListingEntity(listingJson, taskEntity);

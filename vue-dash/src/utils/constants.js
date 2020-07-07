@@ -6,7 +6,8 @@ const EVENTS = {
   officeChanged: "officeChanged",
   newListings: "newListings",
   listingSelected: "listingSelected",
-  listingDeselected: "listingDeselected"
+  listingDeselected: "listingDeselected",
+  busStopsSelected: "busStopsSelected"
 }
 
 const OFFICES = [

@@ -4,11 +4,11 @@
     :style="[(selectedListing != null) 
     ? {'height': '25%'} : {'height': '100%'}]"
   >
-
   </div>
 </template>
 
 <script>
+
 import gmapsInit from '../../../utils/gmaps.js'
 import { EVENTS } from '../../../utils/constants.js'
 
@@ -33,16 +33,23 @@ export default {
     this.$root.$on(EVENTS.listingSelected, data => {
       this.onListingSelected(data);
     });
+
+    this.$root.$on(EVENTS.busStopsSelected, data => {
+      console.log(data);
+      this.onBusStopsSelected(data);
+    });
   },
 
-  mounted () {
-    
+  components: {
   },
+
   props: {
     listings: Array,
   },
+
   data: () => ({
     listingMarkers: [],
+    stopMarkers: [],
     google: null,
     map: null,
     selectedOffice: null,
@@ -116,6 +123,12 @@ export default {
       }
     },
 
+    showBusStopsOnMap: function(stopList) {
+      for (let stop of stopList){
+        this.addBusStopMarker(stop);
+      }
+    },    
+
     /**
      * When passed a listing object, this method will decrease the height to 25% and display a route from the `listing` to the 
      * selected office. When passed null, it will return this component to its normal state. 
@@ -129,6 +142,13 @@ export default {
         this.removeRoutesFromMap();
       }      
     },
+
+    onBusStopsSelected: function(stopList) {
+      this.clearBusStopMarkers();
+      if (stopList.length > 0) {
+        this.showBusStopsOnMap(stopList);
+      }
+    },    
 
     /**
      * Shows a route between listing and office, set's the map's center
@@ -225,6 +245,34 @@ export default {
         marker.setMap(null);
       }
       this.listingMarkers = [];
+    },
+
+    clearBusStopMarkers: function (){
+      for (let marker of this.stopMarkers) {
+        marker.setMap(null);
+      }
+      this.stopMarkers = [];
+    },
+
+    addBusStopMarker: function(stop)  {      
+      let location = {
+        lat: Number(stop.propertyMap.latitude),
+        lng: Number(stop.propertyMap.longitude)
+      };
+
+      let marker = new this.google.maps.Marker({
+        position: location,
+        title: stop.propertyMap.name,
+        icon: {
+          url: "assets/bus_pin.png",
+          size: new this.google.maps.Size(40, 40),
+          origin: new this.google.maps.Point(0, 0),
+          anchor: new this.google.maps.Point(17, 34),
+        }
+      });
+
+      this.stopMarkers.push(marker);
+      marker.setMap(this.map);
     }
   }
 }
@@ -232,6 +280,7 @@ export default {
 
 <style scoped>
   #relo-map {
+    position: relative;
     width: 100%;
   }
 </style>
