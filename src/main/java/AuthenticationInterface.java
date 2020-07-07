@@ -1,8 +1,8 @@
 interface AuthInterface {
-    
-    User getUser();
-    User setUser();
-    void userLoginActions();
 
+  User getUser();
+
+  User setUser();
+
+  void userLoginActions();
 }
-

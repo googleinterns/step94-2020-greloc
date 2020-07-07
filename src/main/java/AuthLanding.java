@@ -1,5 +1,5 @@
 // public class AuthLanding implements AuthInterface {
-	
+
 //     //Instance Variables
 //     private User user;
 //     // private UserService userService = UserServiceFactory.getUserService();
@@ -16,7 +16,7 @@
 //     }
 
 //     private void setUser(User user) {
-//         this.user = user; 
+//         this.user = user;
 //     }
 
 // 	public void userLoginActions() {
@@ -35,7 +35,7 @@
 //             String urlToRedirectToAfterUserLogsIn = "/";
 //       	    String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
 //         }
-            
+
 //     }
-    
+
 // }
