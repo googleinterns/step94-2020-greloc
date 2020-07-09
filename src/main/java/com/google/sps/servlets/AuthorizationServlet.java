@@ -58,7 +58,7 @@ public class AuthorizationServlet extends HttpServlet {
    for(Entity entity: results.asIterable()) {
      String userEmail = (String) entity.getProperty("Email");
      String userPass = (String) entity.getProperty("Password");
-     String userType = (String) entity.getProperty("type");
+     String userType = (String) entity.getProperty("Type");
  
      //Checking to see if user has an account in the entity
      if(emailLogin.equals(userEmail) && pswLogin.equals(userPass)) {
