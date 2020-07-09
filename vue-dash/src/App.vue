@@ -72,7 +72,7 @@ export default {
   }
 
   .subpage {
-    padding: 16px;
+
     background-color: var(--background-color-light);
     height: 100vh;
     width: 100%;

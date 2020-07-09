@@ -7,7 +7,8 @@ const EVENTS = {
   newListings: "newListings",
   listingSelected: "listingSelected",
   listingDeselected: "listingDeselected",
-  busStopsSelected: "busStopsSelected"
+  busStopsSelected: "busStopsSelected",
+  mapSubpageLoading: "mapSubpageLoading"
 }
 
 const OFFICES = [
