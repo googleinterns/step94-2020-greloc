@@ -17,7 +17,24 @@
 
     <DateRangeSelector/>
 
-    <Listings :listings="listings"/>
+    <Listings 
+      v-if="(selectedOffice.officeId != 'default') && (listings.length > 0)"
+      :listings="listings"
+    />
+
+    <div 
+      v-else-if="(selectedOffice.officeId != 'default') && (listings.length === 0)"
+      id="listings-empty-state" 
+    >
+      <v-icon class="empty-state-icon">mdi-emoticon-frown-outline</v-icon>
+      <span class="empty-state-text">Sorry, there are no available listings for these parameters</span>
+    </div>
+
+    <div id="listings-empty-state" v-else>
+      <v-icon class="empty-state-icon">mdi-map-marker</v-icon>
+      <span class="empty-state-text">Select an office from the dropdown to view listings near that area</span>
+    </div>    
+
   </div>
 </template>
 
@@ -66,6 +83,19 @@ export default {
 
   #select-office {
     width: 100%;
+  }
+
+  #listings-empty-state {
+    width: 100%;
+    height: 100%;
+    padding: 4rem 20%;
+    
+    display: flex;    
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    
+    text-align: center;    
   }
 
 </style>

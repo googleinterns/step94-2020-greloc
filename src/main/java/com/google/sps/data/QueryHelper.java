@@ -9,7 +9,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
 import java.util.List;
 
-public class QueryHelper {
+public final class QueryHelper {
 
   /**
    * Returns a list of entities that have been filtered based on their longitude in relation to the

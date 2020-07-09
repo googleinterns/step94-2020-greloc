@@ -4,8 +4,8 @@
     ? {'align-items': 'center'} : {'align-items': 'flex-end'}]"
   >
     <div id="map-empty-state" v-if="(selectedOffice === null || selectedOffice.officeId === 'default')">
-      <v-icon class="empty-state-icon">mdi-map-marker</v-icon>
-      <span class="empty-state-text">Select an office from the dropdown to view listings near that area</span>
+      <v-icon class="empty-state-icon">mdi-map</v-icon>
+      <span class="empty-state-text">A map of all available listings will appear here once an office is selected</span>
     </div>
     
     <ReloMap
