@@ -283,7 +283,7 @@ export default {
         }
       });
 
-      let markerList = getMarkerList(markerType);      
+      let markerList = this.getMarkerList(markerType);      
       markerList.push(marker);
       marker.setMap(this.map);
     },    
