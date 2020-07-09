@@ -15,6 +15,10 @@ public class Office {
     this.longitude = longitude;
   }
 
+  public String getName() {
+    return this.name;
+  }
+
   public double getLatitude() {
     return this.latitude;
   }
