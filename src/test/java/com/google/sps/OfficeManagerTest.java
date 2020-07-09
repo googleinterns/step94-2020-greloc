@@ -28,7 +28,7 @@ public final class OfficeManagerTest {
     Office svlOffice = OfficeManager.offices.get("svl");
     double svlLatitude = 37.4030;
     double svlLongitude = -122.0326;
-        
+
     Assert.assertEquals("Sunnyvale", svlOffice.getName());
     Assert.assertEquals(svlLatitude, svlOffice.getLatitude(), coordinateMarginError);
     Assert.assertEquals(svlLongitude, svlOffice.getLongitude(), coordinateMarginError);
@@ -39,7 +39,7 @@ public final class OfficeManagerTest {
     Office mtvOffice = OfficeManager.offices.get("mtv");
     double svlLatitude = 37.4220;
     double svlLongitude = -122.0841;
-        
+
     Assert.assertEquals("Mountain View", mtvOffice.getName());
     Assert.assertEquals(svlLatitude, mtvOffice.getLatitude(), coordinateMarginError);
     Assert.assertEquals(svlLongitude, mtvOffice.getLongitude(), coordinateMarginError);

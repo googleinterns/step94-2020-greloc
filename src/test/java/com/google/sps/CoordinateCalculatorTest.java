@@ -14,19 +14,17 @@
 
 package com.google.sps.data;
 
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.After;
-import org.junit.Before;
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
-import java.util.List;
-import java.util.ArrayList;
-
-import com.google.appengine.api.datastore.Entity;
 
 @RunWith(JUnit4.class)
 public final class CoordinateCalculatorTest {
@@ -65,25 +63,29 @@ public final class CoordinateCalculatorTest {
 
     double miles = 10;
     double kilometers = CoordinateCalculator.milesToKilometers(miles);
-    
+
     double expectedKilometers = 16.0934;
     Assert.assertEquals(expectedKilometers, kilometers, marginError);
   }
 
   @Test
   public void testFilterOutOfRangeLatitudeEntitiesNotEmpty() {
-    
+
     List<Entity> unfilteredList = createTestListingsList();
-    List<Entity> filteredList = CoordinateCalculator.filterOutOfRangeLatitudeEntities(distanceFromOfficeInKilometers, baseLatitude, baseLongitude, unfilteredList);
+    List<Entity> filteredList =
+        CoordinateCalculator.filterOutOfRangeLatitudeEntities(
+            distanceFromOfficeInKilometers, baseLatitude, baseLongitude, unfilteredList);
 
     Assert.assertEquals(1, filteredList.size());
   }
 
   @Test
   public void testFilterOutOfRangeLatitudeEntitiesReturnsInRange() {
-    
+
     List<Entity> unfilteredList = createTestListingsList();
-    List<Entity> filteredList = CoordinateCalculator.filterOutOfRangeLatitudeEntities(distanceFromOfficeInKilometers, baseLatitude, baseLongitude, unfilteredList);
+    List<Entity> filteredList =
+        CoordinateCalculator.filterOutOfRangeLatitudeEntities(
+            distanceFromOfficeInKilometers, baseLatitude, baseLongitude, unfilteredList);
 
     String listingName = (String) filteredList.get(0).getProperty("name");
     Assert.assertEquals("near", listingName);
@@ -91,7 +93,7 @@ public final class CoordinateCalculatorTest {
 
   private List<Entity> createTestListingsList() {
     List<Entity> entityList = new ArrayList<>();
-    
+
     // Located roughly 1km from (1,1)
     Entity testListingNear = new Entity("Listing");
     testListingNear.setProperty("name", "near");
@@ -100,13 +102,13 @@ public final class CoordinateCalculatorTest {
 
     // Located roughly 10km from (1,1)
     Entity testListingFar = new Entity("Listing");
-    testListingFar.setProperty("name", "far");        
+    testListingFar.setProperty("name", "far");
     testListingFar.setProperty("latitude", 1.063);
     testListingFar.setProperty("longitude", 1.063);
 
     entityList.add(testListingNear);
     entityList.add(testListingFar);
-    
+
     return entityList;
   }
 }

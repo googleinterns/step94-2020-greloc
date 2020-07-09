@@ -14,19 +14,18 @@
 
 package com.google.sps.data;
 
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
 import java.util.List;
-
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -60,8 +59,10 @@ public final class QueryHelperTest {
   public void testDistanceBasedEntitiesReturnsInRange() {
     insertNearListing();
     int distanceFromOfficeKilometers = 2;
-    
-    List<Entity> results = QueryHelper.getDistanceBasedEntities(EntityType.LISTING, 10, testOffice, distanceFromOfficeKilometers);
+
+    List<Entity> results =
+        QueryHelper.getDistanceBasedEntities(
+            EntityType.LISTING, 10, testOffice, distanceFromOfficeKilometers);
     Assert.assertEquals(1, results.size());
 
     String listingName = (String) results.get(0).getProperty("name");
@@ -72,19 +73,21 @@ public final class QueryHelperTest {
   public void testDistanceBasedEntitiesDoesNotReturnOutOfRange() {
     insertFarListing();
     int distanceFromOfficeKilometers = 2;
-    
-    List<Entity> results = QueryHelper.getDistanceBasedEntities(EntityType.LISTING, 10, testOffice, distanceFromOfficeKilometers);
+
+    List<Entity> results =
+        QueryHelper.getDistanceBasedEntities(
+            EntityType.LISTING, 10, testOffice, distanceFromOfficeKilometers);
     Assert.assertEquals(0, results.size());
   }
 
   private void insertNearListing() {
-    
+
     // Located roughly 1km from (1,1)
     Entity testListingNear = new Entity("Listing");
     testListingNear.setProperty("name", "near");
     testListingNear.setProperty("latitude", 1.0063);
     testListingNear.setProperty("longitude", 1.0063);
-            
+
     ds.put(testListingNear);
 
     Assert.assertEquals(1, ds.prepare(new Query("Listing")).countEntities(withLimit(10)));
@@ -94,12 +97,12 @@ public final class QueryHelperTest {
 
     // Located roughly 10km from (1,1)
     Entity testListingFar = new Entity("Listing");
-    testListingFar.setProperty("name", "far");        
+    testListingFar.setProperty("name", "far");
     testListingFar.setProperty("latitude", 1.063);
     testListingFar.setProperty("longitude", 1.063);
-            
+
     ds.put(testListingFar);
 
     Assert.assertEquals(1, ds.prepare(new Query("Listing")).countEntities(withLimit(10)));
-  }  
+  }
 }
