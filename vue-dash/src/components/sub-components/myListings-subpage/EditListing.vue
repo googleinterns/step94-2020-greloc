@@ -19,14 +19,13 @@
             label="City"
             filled>
           </v-text-field>
-          <v-text-field class="listing-state-entry"
-            solo
-            label="State/Province"
-            filled>
-          </v-text-field>
+          <div class="divider"/>
+          <v-select class="listing-state-entry"
+            :items ="states"
+            label="State/Province">
+          </v-select>
         </div>
     </div>
-    <!--Insert Image Components Here/Drag and Drop-->
     <div class="dates">
       <div class="start-date">
         <v-menu
@@ -54,7 +53,7 @@
             </v-date-picker>
         </v-menu>
       </div>
-
+      <div class="divider"/>
       <div class="end-date">
         <v-menu
           ref="menu"
@@ -83,6 +82,7 @@
       </div>
     </div>
     <div class="description-entry">
+      <ImageInput/>
       <v-textarea
         solo
         name="input-7-4"
@@ -93,10 +93,12 @@
             :items="items"
             label="Total Number of Beds">
           </v-select>
+          <div class="divider"/>
           <v-select class="total-bedrooms"
               :items="bedrooms"
               label="Bedrooms">
           </v-select>
+          <div class="divider"/>
           <v-select class="total-baths"
             :items="baths"
             label="Baths">
@@ -125,9 +127,12 @@
 </template>
 
 <script>
+import ImageInput from './InsertImage.vue'
+
 export default {
   name: 'ListingForm',
   components: {
+    ImageInput
   },
   props: {
     msg: String
@@ -136,6 +141,22 @@ export default {
     items: ['1', '2', '3', '4', '5'],
     bedrooms: ['1', '2', '3', '4', '5'],
     baths: ['1', '2', '3'],
+    states: [
+      'Alabama', 'Alaska', 'American Samoa', 'Arizona',
+      'Arkansas', 'California', 'Colorado', 'Connecticut',
+      'Delaware', 'District of Columbia', 'Federated States of Micronesia',
+      'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho',
+      'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+      'Louisiana', 'Maine', 'Marshall Islands', 'Maryland',
+      'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
+      'Missouri', 'Montana', 'Nebraska', 'Nevada',
+      'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
+      'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio',
+      'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico',
+      'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee',
+      'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia',
+      'Washington', 'West Virginia', 'Wisconsin', 'Wyoming',
+    ],
   }),
   methods: {
     
@@ -157,6 +178,7 @@ export default {
 .location {
   display: flex;
   justify-content: space-evenly;
+  
 }
 
 .selectors {
@@ -168,5 +190,11 @@ export default {
 .submit-button {
   display: flex;
   justify-content: flex-end;
+}
+
+.divider{
+    width:20px;
+    height:auto;
+    display:inline-block;
 }
 </style>
