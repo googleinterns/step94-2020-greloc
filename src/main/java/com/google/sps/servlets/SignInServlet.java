@@ -12,8 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(
     name = "SignInAPI",
     description = "SignInAPI: Login with UserService",
-    urlPatterns = "/signinapi"
-)
+    urlPatterns = "/signinapi")
 public class SignInServlet extends HttpServlet {
 
   @Override
@@ -26,7 +25,8 @@ public class SignInServlet extends HttpServlet {
     if (req.getUserPrincipal() != null) {
       System.out.println("USER IS LOGGED IN");
       resp.sendRedirect("/authorization");
-    } if(!userService.isUserLoggedIn()) {
+    }
+    if (!userService.isUserLoggedIn()) {
       resp.sendRedirect(userService.createLoginURL(thisUrl));
     }
   }

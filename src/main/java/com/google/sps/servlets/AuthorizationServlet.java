@@ -40,11 +40,10 @@ public class AuthorizationServlet extends HttpServlet {
     UNKNOWN;
   }
 
-   
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-   System.out.println("Entered doPOST method");
+    System.out.println("Entered doPOST method");
 
-   // Creating a user from the registration page
+    // Creating a user from the registration page
     final String emailEntered = request.getUserPrincipal().toString();
     final String typeEntered = processType(request).toString();
 
@@ -59,70 +58,66 @@ public class AuthorizationServlet extends HttpServlet {
 
     // After user registers, send to the dashboard page
     response.sendRedirect("/dashboard/index.html");
-
   }
- 
-   //After user is logged in, send to the dashboard
-   //response.sendRedirect("/dashboard/index.html"); 
+
+  // After user is logged in, send to the dashboard
+  // response.sendRedirect("/dashboard/index.html");
 
   @Override
- public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-   response.setContentType("text/html;");
-   PrintWriter out = response.getWriter();
- 
-   UserService userService = UserServiceFactory.getUserService();
-  
-   //Creating a Query to search through the datastore
-   Query query = new Query("User Data");
-   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();  
-   PreparedQuery results = datastore.prepare(query);
-   
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.setContentType("text/html;");
+    PrintWriter out = response.getWriter();
 
-  
-   //Iterating through the entity
-   for(Entity entity: results.asIterable()) {
-    final String currentEmail = request.getUserPrincipal().toString();
-     String emailStored = (String) entity.getProperty("Email");
-     String userType = (String) entity.getProperty("Type");
- 
-     //Checking to see if user has an account in the entity
-     if(currentEmail.equals(emailStored) && userType != null) {
-       System.out.println("Email thats trying to login: " + currentEmail);
-       System.out.println("Email thats trying to match from entity: " + emailStored);
-       System.out.println("Its a match!");
-        if(userType == null) {
+    UserService userService = UserServiceFactory.getUserService();
+
+    // Creating a Query to search through the datastore
+    Query query = new Query("User Data");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    // Iterating through the entity
+    for (Entity entity : results.asIterable()) {
+      final String currentEmail = request.getUserPrincipal().toString();
+      String emailStored = (String) entity.getProperty("Email");
+      String userType = (String) entity.getProperty("Type");
+
+      // Checking to see if user has an account in the entity
+      if (currentEmail.equals(emailStored) && userType != null) {
+        System.out.println("Email thats trying to login: " + currentEmail);
+        System.out.println("Email thats trying to match from entity: " + emailStored);
+        System.out.println("Its a match!");
+        if (userType == null) {
           System.out.println("This user does not have a userType");
           response.sendRedirect("/registration.html");
           return;
         }
-       response.sendRedirect("/dashboard/index.html"); 
-       return;
-      } 
-    
-      if(currentEmail == null) {
-       System.out.println("EMAIL IS NULL!!");
-       response.sendRedirect("/registration.html");
-       return;
+        response.sendRedirect("/dashboard/index.html");
+        return;
+      }
+
+      if (currentEmail == null) {
+        System.out.println("EMAIL IS NULL!!");
+        response.sendRedirect("/registration.html");
+        return;
       }
     }
-   System.out.println("Cannot find that email in the datastore");
-   response.sendRedirect("/registration.html");
+    System.out.println("Cannot find that email in the datastore");
+    response.sendRedirect("/registration.html");
   }
- 
- //A helper method that helps identifies the UserType
- private Type processType(HttpServletRequest request) {
-   Type type = null;
-   String userType = request.getParameter("type");
-   if ("renter".equals(userType)) {
-       type = Type.RENTER;
-     } else if ("host".equals(userType)) {
-       type = Type.HOST;
-     } else if ("both".equals(userType)) {
-       type = Type.BOTH;
-     } else if(userType == null) {
-       type = Type.UNKNOWN;
-     }
-   return type;
- }
 
+  // A helper method that helps identifies the UserType
+  private Type processType(HttpServletRequest request) {
+    Type type = null;
+    String userType = request.getParameter("type");
+    if ("renter".equals(userType)) {
+      type = Type.RENTER;
+    } else if ("host".equals(userType)) {
+      type = Type.HOST;
+    } else if ("both".equals(userType)) {
+      type = Type.BOTH;
+    } else if (userType == null) {
+      type = Type.UNKNOWN;
+    }
+    return type;
+  }
 }

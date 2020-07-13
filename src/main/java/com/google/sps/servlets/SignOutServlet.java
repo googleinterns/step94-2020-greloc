@@ -12,15 +12,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(
     name = "SignOutAPI",
     description = "SignOutAPI:Logout with UserService",
-    urlPatterns = "/signoutapi"
-)
+    urlPatterns = "/signoutapi")
 public class SignOutServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     resp.setContentType("text/html");
-    
+
     System.out.println("ENTERED THE SIGN OUT SERVER");
     if (userService.isUserLoggedIn()) {
       resp.sendRedirect(userService.createLogoutURL("/index.html"));
@@ -28,10 +27,3 @@ public class SignOutServlet extends HttpServlet {
     }
   }
 }
-  
-   
-   
-   
-   
-   
-   
