@@ -51,76 +51,69 @@ public class AuthorizationServlet extends HttpServlet {
    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();  
    PreparedQuery results = datastore.prepare(query);
  
-   final String emailLogin = request.getParameter("email");
-   final String pswLogin = request.getParameter("pswd");
+   final String emailLogin = request.getUserPrincipal().toString();
   
    //Iterating through the entity
    for(Entity entity: results.asIterable()) {
      String userEmail = (String) entity.getProperty("Email");
-     String userPass = (String) entity.getProperty("Password");
      String userType = (String) entity.getProperty("Type");
  
      //Checking to see if user has an account in the entity
-     if(emailLogin.equals(userEmail) && pswLogin.equals(userPass)) {
+     if(emailLogin.equals(userEmail) && userType != null) {
        System.out.println("Email thats trying to login: " + emailLogin);
        System.out.println("Email thats trying to match from entity: " + userEmail);
        System.out.println("Its a match!");
        System.out.println("BREAK");
+        if(userType == null) {
+          System.out.println("This user does not have a userType");
+          response.sendRedirect("/registration.html");
+          return;
+        }
        response.sendRedirect("/dashboard/index.html"); 
+       return;
+     } if(emailLogin == null) {
+       System.out.println("EMAIL IS NULL!!");
+       response.sendRedirect("/registration.html");
        return;
      }
    }
+   System.out.println("The emails don't match");
    response.sendRedirect("/registration.html");
-    
- }
+   }
  
  //A helper method that helps identifies the UserType
  private Type processType(HttpServletRequest request) {
    Type type = null;
    String userType = request.getParameter("type");
-   System.out.println(userType);
-   if (userType.equals("renter")) {
+   if ("renter".equals(userType)) {
        type = Type.RENTER;
-     } else if (userType.equals("host")) {
+     } else if ("host".equals(userType)) {
        type = Type.HOST;
-     } else if (userType.equals("both")) {
+     } else if ("both".equals(userType)) {
        type = Type.BOTH;
-     } else {
+     } else if(userType == null) {
        type = Type.UNKNOWN;
      }
-     System.out.println(type);
    return type;
  }
  
- // // Helper method that makes sure the password matches
- // private void passwordMatch() {
- //   String pass = request.getParameter("psw");
- //   String repeatPass = request.getParameter("psw-repeat");
- 
- //   if(pass.equals(repeatPass)) {
- //     return pass;
- //   } else {
-     
- //   }
- // }
- 
  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+   
+
    //Creating a user from the registration page
-   final String emailEntered = request.getParameter("email");
-   final String pswEntered = request.getParameter("psw");
+   final String emailEntered = request.getUserPrincipal().toString();
    final String typeEntered = processType(request).toString();
  
    //Creating an UserEntity
    Entity taskEntity = new Entity("User Data");
    taskEntity.setProperty("Email", emailEntered);
-   taskEntity.setProperty("Password", pswEntered);
    taskEntity.setProperty("Type", typeEntered);
  
    //Storing the Entity in datastore
    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
    datastore.put(taskEntity);
  
-   //After user registers, send to the dashboard page
+   //After user is logged in, send to the dashboard
    response.sendRedirect("/dashboard/index.html");
  }
  
