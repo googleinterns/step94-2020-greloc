@@ -1,5 +1,12 @@
 <template>
     <div class="subpage" id="map-subpage">
+        <v-progress-linear 
+          absolute 
+          indeterminate
+          color="var(--branding-blue)"
+          height="10px"
+          :active="isLoading"
+        ></v-progress-linear>
       <ListingsContainer :officeSelectedEvent="officeSelectedEvent" :listings="listings"/>
       <MapContainer :selectedOffice="selectedOffice" :listings="listings"/>
     </div>
@@ -38,10 +45,17 @@ const testComp = {
 export default {
   name: 'Template',
 
+  created() {
+    this.$root.$on(EVENTS.mapSubpageLoading, isLoading => {
+      this.isLoading = isLoading;
+    });
+  },
+
   components: {
     ListingsContainer,
     MapContainer
   },
+
   props: {
     userData: Object
   },
@@ -49,7 +63,8 @@ export default {
   data: () => ({
     listings: [],
     offices: [],
-    selectedOffice: null
+    selectedOffice: null,
+    isLoading: false
   }),
 
   methods: {
@@ -63,6 +78,7 @@ export default {
 
     getListings: async function(office) {
 
+      this.isLoading = true;
       let response = await fetch(WEBSITE_URL + `/locations?office=${office.officeId}`);
       let respData;
       
@@ -74,6 +90,7 @@ export default {
 
       this.listings = respData;
       this.$root.$emit(EVENTS.newListings, respData);
+      this.isLoading = false;
     },
 
     createListing: async function() {

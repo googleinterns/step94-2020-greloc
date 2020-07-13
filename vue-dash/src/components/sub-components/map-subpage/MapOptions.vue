@@ -40,7 +40,7 @@ export default {
       // If busStopSelected is already selected once a new office is chosen, automatically get the stops for that office
       if (this.busStopSelected) {
         let stopList = await this.getBusStops(office);
-        this.$root.$emit(EVENTS.busStopsSelected, stopList)
+        this.$root.$emit(EVENTS.busStopsSelected, stopList);
       }
     },
 
@@ -57,6 +57,8 @@ export default {
     },
 
     getBusStops: async function (office){
+
+      this.$root.$emit(EVENTS.mapSubpageLoading, true);
       let response = await fetch(WEBSITE_URL + `/busLocations?office=${office.officeId}`);
       let respData;
       
@@ -65,7 +67,8 @@ export default {
       } else {
         respData = [];
       }
-
+      
+      this.$root.$emit(EVENTS.mapSubpageLoading, false);
       return respData;
     }
   }
