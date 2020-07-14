@@ -25,11 +25,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.sps.data.CoordinateCalculator;
 import com.google.sps.data.EntityType;
+import com.google.sps.data.InvalidDateRangeException;
 import com.google.sps.data.Office;
 import com.google.sps.data.OfficeManager;
 import com.google.sps.data.QueryHelper;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
@@ -47,6 +49,8 @@ public class LocationsServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     String office = request.getParameter("office");
+    long startDate = (long) Double.parseDouble(request.getParameter("start"));
+    long endDate = (long) Double.parseDouble(request.getParameter("end"));
     Office selectedOffice = OfficeManager.offices.get(office);
     double distanceInKilometers = CoordinateCalculator.milesToKilometers(2.3);
 
@@ -54,16 +58,45 @@ public class LocationsServlet extends HttpServlet {
         QueryHelper.getDistanceBasedEntities(
             EntityType.LISTING, numListings, selectedOffice, distanceInKilometers);
 
-    List<Entity> filteredEntityList =
+    List<Entity> filteredEntityListByLatitude =
         CoordinateCalculator.filterOutOfRangeLatitudeEntities(
             distanceInKilometers,
             selectedOffice.getLatitude(),
             selectedOffice.getLongitude(),
             entityList);
 
+    List<Entity> filteredListByDateRange;
+    try {
+      filteredListByDateRange =
+          QueryHelper.filterOutOfDateRangeListings(
+              filteredEntityListByLatitude, startDate, endDate);
+    } catch (InvalidDateRangeException e) {
+      // If DateRange malformed
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return;
+    }
+
     Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(filteredEntityList));
+    response.getWriter().println(gson.toJson(filteredListByDateRange));
+  }
+
+  private List<Entity> filterOutOfDateRangeListings(
+      List<Entity> listings, long baseStart, long baseEnd) {
+
+    List<Entity> filteredListings = new ArrayList<>();
+    for (Entity listing : listings) {
+      long listingStartTimeStamp =
+          Long.parseLong((String) listing.getProperty("listingStartTimestamp"));
+      long listingEndTimestamp =
+          Long.parseLong((String) listing.getProperty("listingEndTimestamp"));
+
+      if (baseStart >= listingStartTimeStamp && baseEnd <= listingEndTimestamp) {
+        filteredListings.add(listing);
+      }
+    }
+
+    return filteredListings;
   }
 
   // MARK: POST
@@ -83,7 +116,7 @@ public class LocationsServlet extends HttpServlet {
     JsonObject listingJson = new Gson().fromJson(requestData, JsonObject.class);
 
     // Creating DataStore Entity
-    Entity taskEntity = new Entity(EntityType.BUS_STOP.getValue());
+    Entity taskEntity = new Entity(EntityType.LISTING.getValue());
     taskEntity.setProperty("userID", userID);
     taskEntity.setProperty("timestamp", timestamp);
     addJsonPropertiesToListingEntity(listingJson, taskEntity);
@@ -98,17 +131,23 @@ public class LocationsServlet extends HttpServlet {
 
       if (key.equals("contactInfo")) {
         taskEntity.setProperty(key, createEmbeddedContactInfo(listingJson.getAsJsonObject(key)));
+
       } else if (key.equals("images")) {
         JsonArray jsonArray = listingJson.getAsJsonArray(key);
 
         Gson gson = new Gson();
         Type listType = new TypeToken<List<String>>() {}.getType();
         List<String> imageLinkList = gson.fromJson(jsonArray.toString(), listType);
-
         taskEntity.setProperty(key, imageLinkList);
+
       } else if (key.equals("longitude") || key.equals("latitude")) {
         JsonElement element = listingJson.get(key);
         taskEntity.setProperty(key, element.getAsJsonPrimitive().getAsDouble());
+
+      } else if (key.equals("listingStartTimestamp") || key.equals("listingEndTimestamp")) {
+        JsonElement element = listingJson.get(key);
+        taskEntity.setProperty(key, element.getAsJsonPrimitive().getAsLong());
+
       } else {
         JsonElement element = listingJson.get(key);
         taskEntity.setProperty(key, element.getAsJsonPrimitive().getAsString());
