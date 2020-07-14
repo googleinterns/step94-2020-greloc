@@ -11,6 +11,6 @@ com/google/sps/data/Office.class
 com/google/sps/data/OfficeManager.class
 com/google/sps/servlets/LocationsServlet$1.class
 com/google/sps/servlets/LocationsServlet.class
-com/google/sps/servlets/AuthorizationServlet$Type.class
-com/google/sps/data/InvalidDateRangeException.class
+com/example/appengine/users/SignOutServlet.class
 com/google/sps/servlets/DataServlet.class
+com/example/appengine/users/SignInServlet.class
