@@ -25,14 +25,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.sps.data.CoordinateCalculator;
 import com.google.sps.data.EntityType;
+import com.google.sps.data.InvalidDateRangeException;
 import com.google.sps.data.Office;
 import com.google.sps.data.OfficeManager;
 import com.google.sps.data.QueryHelper;
-import com.google.sps.data.InvalidDateRangeException;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -64,10 +64,12 @@ public class LocationsServlet extends HttpServlet {
             selectedOffice.getLatitude(),
             selectedOffice.getLongitude(),
             entityList);
-    
-    List<Entity> filteredListByDateRange;    
+
+    List<Entity> filteredListByDateRange;
     try {
-      filteredListByDateRange = QueryHelper.filterOutOfDateRangeListings(filteredEntityListByLatitude, startDate, endDate);
+      filteredListByDateRange =
+          QueryHelper.filterOutOfDateRangeListings(
+              filteredEntityListByLatitude, startDate, endDate);
     } catch (InvalidDateRangeException e) {
       // If DateRange malformed
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -79,12 +81,15 @@ public class LocationsServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(filteredListByDateRange));
   }
 
-  private List<Entity> filterOutOfDateRangeListings(List<Entity> listings, long baseStart, long baseEnd){
-    
+  private List<Entity> filterOutOfDateRangeListings(
+      List<Entity> listings, long baseStart, long baseEnd) {
+
     List<Entity> filteredListings = new ArrayList<>();
-    for (Entity listing : listings){
-      long listingStartTimeStamp = Long.parseLong((String) listing.getProperty("listingStartTimestamp"));
-      long listingEndTimestamp = Long.parseLong((String) listing.getProperty("listingEndTimestamp"));
+    for (Entity listing : listings) {
+      long listingStartTimeStamp =
+          Long.parseLong((String) listing.getProperty("listingStartTimestamp"));
+      long listingEndTimestamp =
+          Long.parseLong((String) listing.getProperty("listingEndTimestamp"));
 
       if (baseStart >= listingStartTimeStamp && baseEnd <= listingEndTimestamp) {
         filteredListings.add(listing);
