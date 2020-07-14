@@ -7,7 +7,9 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.sps.data.InvalidDateRangeException;
 import java.util.List;
+import java.util.ArrayList;
 
 public final class QueryHelper {
 
@@ -35,4 +37,32 @@ public final class QueryHelper {
 
     return results.asList(FetchOptions.Builder.withLimit(entityLimit));
   }
+
+
+  /**
+   * Filters out entities that aren't listed within a give start and end timestamp
+   *
+   * @param listings: List of entities with listingStartTimestamp and listingEndTimestamp properties
+   * @param baseStart: Start of date range epoch
+   * @param baseEnd: End of date range epoch
+   * @return List of filtered entities
+   */
+  public static List<Entity> filterOutOfDateRangeListings(List<Entity> listings, long checkIn, long checkOut) throws InvalidDateRangeException{
+    if (checkIn > checkOut) {
+      throw new InvalidDateRangeException("Invalid Range: checkIn is after checkOut"); 
+    }
+
+    List<Entity> filteredListings = new ArrayList<>();
+    for (Entity listing : listings){
+      long listingStartTimeStamp = (long) listing.getProperty("listingStartTimestamp");
+      long listingEndTimestamp = (long) listing.getProperty("listingEndTimestamp");    
+
+      if (listingStartTimeStamp <= checkIn && listingEndTimestamp >= checkOut) {
+        filteredListings.add(listing);
+      }
+    }
+
+    return filteredListings;
+  }
+
 }

@@ -1,22 +1,38 @@
 <!doctype html>
-
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-
-  <title>project-r</title>
-  <meta name="description" content="desc">
-  <meta name="author" content="SitePoint">
-
-</head>
-<script>
-  const WEBSITE_URL = "https://8080-b83fc153-d2cf-481d-a321-9342cdf80f21.us-east1.cloudshell.dev/"
-
-  async function sendRequest() {
-    window.open(WEBSITE_URL + "dashboard/index.html");
-  }
-</script>
-<body>
-    <button onclick="sendRequest()">click</button>
-</body>
+ <head>
+   <meta charset="utf-8">
+ 
+   <title>project-r</title>
+   <link rel="stylesheet" href="style.css">
+   <meta name="description" content="desc">
+   <meta name="author" content="SitePoint">
+ 
+ </head>
+ <script>
+ 
+   const WEBSITE_URL = "https://8080-74f086d4-db1e-49b6-b00a-2fb76ef31083.us-east1.cloudshell.dev/"
+ 
+   async function sendRequest() {
+     fetch('/authorization', {method: 'GET'});
+     //redirect
+     window.open(WEBSITE_URL + "authentization");
+   }
+ </script>
+ <body>
+ 
+   <!-- Heading-->
+   <h1> Welcome to gRelo!</h1>
+   <p> Use this tool to locate housing! </p>
+ 
+   <!--Sign in Form-->
+   <form class="form-inline" action="/authorization" method = "GET">
+     <label for="email">Email:</label>
+     <input type="email" id="emailLogin" placeholder="Enter email" name="email">
+     <label for="pwd">Password:</label>
+     <input type="password" id="pwdLogin" placeholder="Enter password" name="pswd">
+     <p> To create an account:</p><a href="/registration.html">Click here!</a></p>
+     <button type="submit">Submit</button>
+   </form>
+ </body>
 </html>
