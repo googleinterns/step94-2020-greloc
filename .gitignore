@@ -1,0 +1,42 @@
+.DS_Store
+node_modules
+/vue-dash/dist
+
+# Vue Buildfiles for Dashboard
+/src/main/webapp/dashboard/*
+/target/classes/*
+/target/gRelo-1/dashboard/*
+/target/gRelo-1/dashboard
+/target/gRelo-1/dist/*
+/target/gRelo-1/WEB-INF/classes/*
+/target/gRelo-1/WEB-INF/appengine-generated/
+/target/gRelo-1/maven-compiler-plugin/
+/target/gRelo-1/WEB-INF/lib/*
+/target/test-classes/*
+/target/surefire-reports/*
+/target/maven-archiver/pom.properties
+/target/gRelo-1/WEB-INF/appengine-generated/datastore-indexes-auto.xml
+/target/gRelo-1/index.html
+/target/gRelo-1/registration.html
+/target/gRelo-1/style.css
+
+
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

@@ -8,7 +8,7 @@
           :active="isLoading"
         ></v-progress-linear>
       <ListingsContainer :officeSelectedEvent="officeSelectedEvent" :listings="listings"/>
-      <MapContainer :selectedOffice="selectedOffice" :listings="listings"/>
+      <MapContainer :dateRange="selectedDateRange" :selectedOffice="selectedOffice" :listings="listings"/>
     </div>
 </template>
 
@@ -18,7 +18,7 @@ import MapContainer from './sub-components/map-subpage/MapContainer.vue'
 import { WEBSITE_URL, EVENTS } from '../utils/constants.js'
 
 const testComp = {
-  name: "Cozy Apartment",
+  name: "Cozy Apartment - July 14",
   price: "$2,500",
   type: "Full Apartment",
   desc: "Tidy apartment with beatiful furniture",
@@ -36,8 +36,8 @@ const testComp = {
     email: "epierre@google.com"
   },
   googlerOwned: true,
-  startTimestamp: 123089213,
-  endTimestamp: 123099213,
+  listingStartTimestamp: 1594684800, // July 14th
+  listingEndTimestamp: 1595368312,// July 21st
   latitude: 37.395720,
   longitude: -122.028570,
 };
@@ -49,6 +49,12 @@ export default {
     this.$root.$on(EVENTS.mapSubpageLoading, isLoading => {
       this.isLoading = isLoading;
     });
+
+    this.$root.$on(EVENTS.dateRangeSelected, dateRange => {
+      this.dateRangeSelectedEvent(dateRange);
+    });
+
+    // this.createListing();
   },
 
   components: {
@@ -64,22 +70,37 @@ export default {
     listings: [],
     offices: [],
     selectedOffice: null,
+    selectedDateRange: null,
     isLoading: false
   }),
 
   methods: {
 
-    officeSelectedEvent: async function(office) {
+    officeSelectedEvent: function(office) {
       this.selectedOffice = office;
       this.$root.$emit(EVENTS.officeChanged, office);
 
-      await this.getListings(office);
+      this.attemptRetrieveListings(office);
     },
 
-    getListings: async function(office) {
+    dateRangeSelectedEvent: function(dateRange) {
+      this.selectedDateRange = dateRange;
+      this.attemptRetrieveListings(this.selectedOffice);
+    },    
+
+    attemptRetrieveListings: async function(office) {
+
+      if (this.getListingsConditionsNotMet()) {
+        return;
+      }
 
       this.isLoading = true;
-      let response = await fetch(WEBSITE_URL + `/locations?office=${office.officeId}`);
+      let startDateTimestamp = new Date(this.selectedDateRange[0]).getTime() / 1000;
+      let endDateTimestamp = new Date(this.selectedDateRange[1]).getTime() / 1000;
+
+      console.log(startDateTimestamp);
+      console.log(endDateTimestamp);
+      let response = await fetch(WEBSITE_URL + `/locations?office=${office.officeId}&start=${startDateTimestamp}&end=${endDateTimestamp}`);
       let respData;
       
       if (response.ok) {                
@@ -92,6 +113,10 @@ export default {
       this.$root.$emit(EVENTS.newListings, respData);
       this.isLoading = false;
     },
+
+    getListingsConditionsNotMet: function() {      
+      return this.selectedOffice == null || this.selectedDateRange == null;
+    },    
 
     createListing: async function() {
         
@@ -111,17 +136,6 @@ export default {
         console.log("createListing: error");
       }
     },
-
-    // PROTOTYPE PURPOSES ONLY
-    deleteListings: async function() {
-      let response = await fetch(WEBSITE_URL + '/data');
-
-      if (response.ok) {
-        console.log("deleteListings: Success");
-      } else {
-        console.log("deleteListings: Failure");
-      }      
-    }
   },
 
 }

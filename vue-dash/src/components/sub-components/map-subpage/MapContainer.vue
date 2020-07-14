@@ -1,20 +1,23 @@
 <template>
   <div id="map-cont"
-    :style="[(selectedOffice === null || selectedOffice.officeId === 'default') 
+    :style="[showMapRequirementsNotMet
     ? {'align-items': 'center'} : {'align-items': 'flex-end'}]"
   >
-    <div id="map-empty-state" v-if="(selectedOffice === null || selectedOffice.officeId === 'default')">
+    <div id="map-empty-state" v-if="showMapRequirementsNotMet">
       <v-icon class="empty-state-icon">mdi-map</v-icon>
       <span class="empty-state-text">A map of all available listings will appear here once an office is selected</span>
     </div>
     
     <ReloMap
        :listings="listings"
-       :style="[(selectedOffice === null || selectedOffice.officeId === 'default') 
+       :style="[showMapRequirementsNotMet
         ? {'display': 'none'} : {'display': 'block'}]"
     />
         
-    <MapOptions/>
+    <MapOptions 
+      :style="[showMapRequirementsNotMet
+      ? {'display': 'none'} : {'display': 'block'}]"    
+    />
 
     <ListingInfo 
       v-if="selectedListing != null"
@@ -45,11 +48,19 @@ export default {
   props: {
     listings: Array,
     selectedOffice: Object,
+    dateRange: Array,
     selectedListing: Object
   },
   data: () => ({
     
   }),
+
+  computed: {
+    showMapRequirementsNotMet: function() {
+      return this.selectedOffice === null || this.selectedOffice.officeId === 'default' || this.dateRange === null;
+    }
+  },
+
   methods: {
     listingSelectedEvent: function(listing) {
       this.selectedListing = listing;

@@ -8,7 +8,8 @@ const EVENTS = {
   listingSelected: "listingSelected",
   listingDeselected: "listingDeselected",
   busStopsSelected: "busStopsSelected",
-  mapSubpageLoading: "mapSubpageLoading"
+  mapSubpageLoading: "mapSubpageLoading",
+  dateRangeSelected: "dateRangeSelected"
 }
 
 const OFFICES = [
