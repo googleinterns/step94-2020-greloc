@@ -22,6 +22,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.util.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -45,11 +46,11 @@ public final class QueryHelperTest {
   private final String JULY_LISTING_ID = "JULY_11_21";
   private final String AUGUST_LISTING_ID = "AUGUST_2_15";
 
-  private final long JULY_ELEVENTH = 1594504312;
-  private final long JULY_TWENTY_FIRST = 1595368312;
+  private final Instant JULY_ELEVENTH = Instant.ofEpochMilli(1594504312000L);
+  private final Instant JULY_TWENTY_FIRST = Instant.ofEpochMilli(1595368312000L);
 
-  private final long AUGUST_SECOND = 1596354860;
-  private final long AUGUST_FIFTEENTH = 1597478060;
+  private final Instant AUGUST_SECOND = Instant.ofEpochMilli(1596354860000L);
+  private final Instant AUGUST_FIFTEENTH = Instant.ofEpochMilli(1597478060000L);
 
   @Before
   public void setUp() {
@@ -99,11 +100,11 @@ public final class QueryHelperTest {
 
     List<Entity> listings = getDateRangeTestingEntityList();
 
-    long oneDayAfterEleventh =
-        Instant.ofEpochMilli(JULY_ELEVENTH * 1000).plus(1, ChronoUnit.DAYS).getEpochSecond();
+    Instant oneDayAfterEleventh =
+        JULY_ELEVENTH.plus(1, ChronoUnit.DAYS);
 
-    long oneDayBeforeTwentieth =
-        Instant.ofEpochMilli(JULY_TWENTY_FIRST * 1000).minus(1, ChronoUnit.DAYS).getEpochSecond();
+    Instant oneDayBeforeTwentieth =
+        JULY_TWENTY_FIRST.minus(1, ChronoUnit.DAYS);
 
     List<Entity> results =
         QueryHelper.filterOutOfDateRangeListings(
@@ -132,8 +133,8 @@ public final class QueryHelperTest {
 
     List<Entity> listings = getDateRangeTestingEntityList();
 
-    long oneDayBeforeEleventh =
-        Instant.ofEpochMilli(JULY_ELEVENTH * 1000).minus(1, ChronoUnit.DAYS).getEpochSecond();
+    Instant oneDayBeforeEleventh =
+      JULY_ELEVENTH.minus(1, ChronoUnit.DAYS);
 
     List<Entity> results =
         QueryHelper.filterOutOfDateRangeListings(listings, oneDayBeforeEleventh, JULY_TWENTY_FIRST);
@@ -145,8 +146,8 @@ public final class QueryHelperTest {
 
     List<Entity> listings = getDateRangeTestingEntityList();
 
-    long oneDayAfterTwentyFirst =
-        Instant.ofEpochMilli(JULY_TWENTY_FIRST * 1000).plus(1, ChronoUnit.DAYS).getEpochSecond();
+    Instant oneDayAfterTwentyFirst =
+        JULY_TWENTY_FIRST.plus(1, ChronoUnit.DAYS);
 
     List<Entity> results =
         QueryHelper.filterOutOfDateRangeListings(listings, JULY_ELEVENTH, oneDayAfterTwentyFirst);
@@ -157,8 +158,8 @@ public final class QueryHelperTest {
   public void dateRangeThrowsExceptionWithBadRangeParameters() throws Exception {
     List<Entity> listings = getDateRangeTestingEntityList();
 
-    long julyTwentySecond =
-        Instant.ofEpochMilli(JULY_TWENTY_FIRST * 1000).plus(1, ChronoUnit.DAYS).getEpochSecond();
+    Instant julyTwentySecond =
+        JULY_TWENTY_FIRST.plus(1, ChronoUnit.DAYS);
 
     QueryHelper.filterOutOfDateRangeListings(listings, julyTwentySecond, JULY_TWENTY_FIRST);
   }
@@ -196,14 +197,14 @@ public final class QueryHelperTest {
     // Entity listed from July 11th to July 21st
     Entity inDateRangeEntity = new Entity("Listing");
     inDateRangeEntity.setProperty("name", JULY_LISTING_ID);
-    inDateRangeEntity.setProperty("listingStartTimestamp", JULY_ELEVENTH);
-    inDateRangeEntity.setProperty("listingEndTimestamp", JULY_TWENTY_FIRST);
+    inDateRangeEntity.setProperty("listingStartDate", Date.from(JULY_ELEVENTH));
+    inDateRangeEntity.setProperty("listingEndDate", Date.from(JULY_TWENTY_FIRST));
 
     // Entity listed from July August 2nd to August 15th
     Entity outDateRangeEntity = new Entity("Listing");
     outDateRangeEntity.setProperty("name", AUGUST_LISTING_ID);
-    outDateRangeEntity.setProperty("listingStartTimestamp", AUGUST_SECOND);
-    outDateRangeEntity.setProperty("listingEndTimestamp", AUGUST_FIFTEENTH);
+    outDateRangeEntity.setProperty("listingStartDate", Date.from(AUGUST_SECOND));
+    outDateRangeEntity.setProperty("listingEndDate", Date.from(AUGUST_FIFTEENTH));
 
     testingListings.add(inDateRangeEntity);
     testingListings.add(outDateRangeEntity);

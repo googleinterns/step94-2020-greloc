@@ -9,6 +9,8 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
+import java.time.Instant;
 
 public final class QueryHelper {
 
@@ -46,17 +48,18 @@ public final class QueryHelper {
    * @return List of filtered entities
    */
   public static List<Entity> filterOutOfDateRangeListings(
-      List<Entity> listings, long checkIn, long checkOut) throws InvalidDateRangeException {
-    if (checkIn > checkOut) {
-      throw new InvalidDateRangeException("Invalid Range: checkIn is after checkOut");
+      List<Entity> listings, Instant dateRangeStart, Instant dateRangeEnd) throws InvalidDateRangeException {
+
+    if (dateRangeStart.isAfter(dateRangeEnd)) {
+      throw new InvalidDateRangeException("Invalid Range: dateRangeStart is after dateRangeEnd");
     }
 
     List<Entity> filteredListings = new ArrayList<>();
     for (Entity listing : listings) {
-      long listingStartTimeStamp = (long) listing.getProperty("listingStartTimestamp");
-      long listingEndTimestamp = (long) listing.getProperty("listingEndTimestamp");
+      Instant listingStartInstant = ((Date) listing.getProperty("listingStartDate")).toInstant();
+      Instant listingEndInstant = ((Date) listing.getProperty("listingEndDate")).toInstant();
 
-      if (listingStartTimeStamp <= checkIn && listingEndTimestamp >= checkOut) {
+      if (listingStartInstant.compareTo(dateRangeStart) <= 0 && listingEndInstant.compareTo(dateRangeEnd) >= 0) {
         filteredListings.add(listing);
       }
     }
