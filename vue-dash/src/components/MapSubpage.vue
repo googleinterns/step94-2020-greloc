@@ -54,7 +54,7 @@ export default {
       this.dateRangeSelectedEvent(dateRange);
     });
 
-    this.createListing();
+    // this.createListing();
   },
 
   components: {

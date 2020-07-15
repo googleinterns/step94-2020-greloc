@@ -51,8 +51,8 @@ public class LocationsServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     String office = request.getParameter("office");
-    Instant startDate = Instant.ofEpochMilli((long) Double.parseDouble(request.getParameter("startMillis")));
-    Instant endDate = Instant.ofEpochMilli((long) Double.parseDouble(request.getParameter("endMillis")));
+    Instant startDate = Instant.ofEpochMilli(Long.parseLong(request.getParameter("startMillis")));
+    Instant endDate = Instant.ofEpochMilli(Long.parseLong(request.getParameter("endMillis")));
 
     Office selectedOffice = OfficeManager.offices.get(office);
     double distanceInKilometers = CoordinateCalculator.milesToKilometers(2.3);
