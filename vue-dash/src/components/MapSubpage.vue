@@ -36,8 +36,8 @@ const testComp = {
     email: "epierre@google.com"
   },
   googlerOwned: true,
-  listingStartTimestamp: 1594684800, // July 14th
-  listingEndTimestamp: 1595368312,// July 21st
+  listingStartDate: 1594684800000, // July 14th
+  listingEndDate: 1595368312000,// July 21st
   latitude: 37.395720,
   longitude: -122.028570,
 };
@@ -95,12 +95,12 @@ export default {
       }
 
       this.isLoading = true;
-      let startDateTimestamp = new Date(this.selectedDateRange[0]).getTime() / 1000;
-      let endDateTimestamp = new Date(this.selectedDateRange[1]).getTime() / 1000;
+      let startDateTimestamp = new Date(this.selectedDateRange[0]).getTime();
+      let endDateTimestamp = new Date(this.selectedDateRange[1]).getTime();
 
       console.log(startDateTimestamp);
       console.log(endDateTimestamp);
-      let response = await fetch(WEBSITE_URL + `/locations?office=${office.officeId}&start=${startDateTimestamp}&end=${endDateTimestamp}`);
+      let response = await fetch(WEBSITE_URL + `/locations?office=${office.officeId}&startMillis=${startDateTimestamp}&endMillis=${endDateTimestamp}`);
       let respData;
       
       if (response.ok) {                

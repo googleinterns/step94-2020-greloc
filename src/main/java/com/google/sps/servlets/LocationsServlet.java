@@ -31,7 +31,9 @@ import com.google.sps.data.OfficeManager;
 import com.google.sps.data.QueryHelper;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
@@ -49,8 +51,9 @@ public class LocationsServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     String office = request.getParameter("office");
-    long startDate = (long) Double.parseDouble(request.getParameter("start"));
-    long endDate = (long) Double.parseDouble(request.getParameter("end"));
+    Instant startDate = Instant.ofEpochMilli(Long.parseLong(request.getParameter("startMillis")));
+    Instant endDate = Instant.ofEpochMilli(Long.parseLong(request.getParameter("endMillis")));
+
     Office selectedOffice = OfficeManager.offices.get(office);
     double distanceInKilometers = CoordinateCalculator.milesToKilometers(2.3);
 
@@ -144,10 +147,10 @@ public class LocationsServlet extends HttpServlet {
         JsonElement element = listingJson.get(key);
         taskEntity.setProperty(key, element.getAsJsonPrimitive().getAsDouble());
 
-      } else if (key.equals("listingStartTimestamp") || key.equals("listingEndTimestamp")) {
+      } else if (key.equals("listingStartDate") || key.equals("listingEndDate")) {
         JsonElement element = listingJson.get(key);
-        taskEntity.setProperty(key, element.getAsJsonPrimitive().getAsLong());
-
+        Date millisToDate = new Date(element.getAsJsonPrimitive().getAsLong());
+        taskEntity.setProperty(key, millisToDate);
       } else {
         JsonElement element = listingJson.get(key);
         taskEntity.setProperty(key, element.getAsJsonPrimitive().getAsString());

@@ -1,26 +1,55 @@
+src/main/webapp/dashboard/
+target/classes/
+target/gRelo-1/WEB-INF/appengine-generated/
+target/gRelo-1/WEB-INF/classes/
+target/gRelo-1/WEB-INF/lib/
+target/gRelo-1/dashboard/
+target/gRelo-1/index.html
+target/gRelo-1/registration.html
+target/gRelo-1/style.css
+target/maven-archiver/
+target/maven-status/
+target/surefire-reports/
+target/test-classes/
+vue-dash/dist/
+vue-dash/node_modules/
+
 .DS_Store
 node_modules
 /vue-dash/dist
 
 # Vue Buildfiles for Dashboard
-/src/main/webapp/dashboard/*
-/target/classes/*
-/target/gRelo-1/dashboard/*
+/src/main/webapp/dashboard
+/target/classes
 /target/gRelo-1/dashboard
-/target/gRelo-1/dist/*
-/target/gRelo-1/WEB-INF/classes/*
-/target/gRelo-1/WEB-INF/appengine-generated/
-/target/gRelo-1/maven-compiler-plugin/
-/target/gRelo-1/WEB-INF/lib/*
-/target/test-classes/*
-/target/surefire-reports/*
+/target/gRelo-1/dist
+/target/gRelo-1/WEB-INF/classes
+/target/gRelo-1/WEB-INF/appengine-generated
+
+/target/gRelo-1/maven-compiler-plugin
+/target/gRelo-1/WEB-INF/lib
+/target/test-classes
+/target/surefire-reports
 /target/maven-archiver/pom.properties
 /target/gRelo-1/WEB-INF/appengine-generated/datastore-indexes-auto.xml
 /target/gRelo-1/index.html
 /target/gRelo-1/registration.html
 /target/gRelo-1/style.css
+/target/test-classes
+/target/surefire-reports
+/target/maven-archiver
+/target/maven-status
+/target/gRelo-1/WEB-INF/appengine-generated
+/target/gRelo-1/WEB-INF/classes/com
+/target/gRelo-1/WEB-INF/lib
+/target/generated-sources
+/target/generated-test-sources
+target/gRelo-1/WEB-INF/lib
 
-
+/target/gRelo-1/favicon.ico
+/target/gRelo-1/index.html
+/target/gRelo-1/registration.html
+/target/gRelo-1/style.css
 
 # local env files
 .env.local
@@ -36,7 +65,7 @@ pnpm-debug.log*
 .idea
 .vscode
 *.suo
-*.ntvs*
+.ntvs
 *.njsproj
 *.sln
 *.sw?
