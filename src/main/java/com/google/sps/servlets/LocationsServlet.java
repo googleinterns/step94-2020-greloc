@@ -31,15 +31,15 @@ import com.google.sps.data.OfficeManager;
 import com.google.sps.data.QueryHelper;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.time.Instant;
-import java.util.Date;
 
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/locations")

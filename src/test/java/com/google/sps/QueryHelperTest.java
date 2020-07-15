@@ -22,10 +22,10 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import java.util.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
@@ -100,11 +100,9 @@ public final class QueryHelperTest {
 
     List<Entity> listings = getDateRangeTestingEntityList();
 
-    Instant oneDayAfterEleventh =
-        JULY_ELEVENTH.plus(1, ChronoUnit.DAYS);
+    Instant oneDayAfterEleventh = JULY_ELEVENTH.plus(1, ChronoUnit.DAYS);
 
-    Instant oneDayBeforeTwentieth =
-        JULY_TWENTY_FIRST.minus(1, ChronoUnit.DAYS);
+    Instant oneDayBeforeTwentieth = JULY_TWENTY_FIRST.minus(1, ChronoUnit.DAYS);
 
     List<Entity> results =
         QueryHelper.filterOutOfDateRangeListings(
@@ -133,8 +131,7 @@ public final class QueryHelperTest {
 
     List<Entity> listings = getDateRangeTestingEntityList();
 
-    Instant oneDayBeforeEleventh =
-      JULY_ELEVENTH.minus(1, ChronoUnit.DAYS);
+    Instant oneDayBeforeEleventh = JULY_ELEVENTH.minus(1, ChronoUnit.DAYS);
 
     List<Entity> results =
         QueryHelper.filterOutOfDateRangeListings(listings, oneDayBeforeEleventh, JULY_TWENTY_FIRST);
@@ -146,8 +143,7 @@ public final class QueryHelperTest {
 
     List<Entity> listings = getDateRangeTestingEntityList();
 
-    Instant oneDayAfterTwentyFirst =
-        JULY_TWENTY_FIRST.plus(1, ChronoUnit.DAYS);
+    Instant oneDayAfterTwentyFirst = JULY_TWENTY_FIRST.plus(1, ChronoUnit.DAYS);
 
     List<Entity> results =
         QueryHelper.filterOutOfDateRangeListings(listings, JULY_ELEVENTH, oneDayAfterTwentyFirst);
@@ -158,8 +154,7 @@ public final class QueryHelperTest {
   public void dateRangeThrowsExceptionWithBadRangeParameters() throws Exception {
     List<Entity> listings = getDateRangeTestingEntityList();
 
-    Instant julyTwentySecond =
-        JULY_TWENTY_FIRST.plus(1, ChronoUnit.DAYS);
+    Instant julyTwentySecond = JULY_TWENTY_FIRST.plus(1, ChronoUnit.DAYS);
 
     QueryHelper.filterOutOfDateRangeListings(listings, julyTwentySecond, JULY_TWENTY_FIRST);
   }

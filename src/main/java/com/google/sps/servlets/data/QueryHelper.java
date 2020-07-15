@@ -7,10 +7,10 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public final class QueryHelper {
 
@@ -48,7 +48,8 @@ public final class QueryHelper {
    * @return List of filtered entities
    */
   public static List<Entity> filterOutOfDateRangeListings(
-      List<Entity> listings, Instant dateRangeStart, Instant dateRangeEnd) throws InvalidDateRangeException {
+      List<Entity> listings, Instant dateRangeStart, Instant dateRangeEnd)
+      throws InvalidDateRangeException {
 
     if (dateRangeStart.isAfter(dateRangeEnd)) {
       throw new InvalidDateRangeException("Invalid Range: dateRangeStart is after dateRangeEnd");
@@ -59,7 +60,8 @@ public final class QueryHelper {
       Instant listingStartInstant = ((Date) listing.getProperty("listingStartDate")).toInstant();
       Instant listingEndInstant = ((Date) listing.getProperty("listingEndDate")).toInstant();
 
-      if (listingStartInstant.compareTo(dateRangeStart) <= 0 && listingEndInstant.compareTo(dateRangeEnd) >= 0) {
+      if (listingStartInstant.compareTo(dateRangeStart) <= 0
+          && listingEndInstant.compareTo(dateRangeEnd) >= 0) {
         filteredListings.add(listing);
       }
     }
