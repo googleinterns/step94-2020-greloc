@@ -3,6 +3,7 @@
     <div class="listing-title"> 
       <v-text-field class="listing-title-entry"
       label = "Listing Title"
+      v-model="listingTitle"
       filled>
       </v-text-field>
     </div>
@@ -10,6 +11,7 @@
       <v-text-field class="listing-address-entry"
         solo
         label="Street Address"
+        v-model="streetAddress"
         prepend-inner-icon="mdi-map-marker"
         filled>
       </v-text-field>
@@ -17,11 +19,13 @@
           <v-text-field class="listing-city-entry"
             solo
             label="City"
+            v-model="listingCity"
             filled>
           </v-text-field>
           <div class="divider"/>
           <v-select class="listing-state-entry"
             :items ="states"
+            v-model="listingState"
             label="State/Province">
           </v-select>
         </div>
@@ -86,8 +90,25 @@
       <v-textarea
         solo
         name="input-7-4"
+        v-model="listingDescription"
         label="Property Description">
+        
       </v-textarea>
+        <div class="property-type">
+          <v-select class="property-types"
+            :items="properties"
+            v-model="type"
+            item-value="value"
+            label="Type of Property">
+          </v-select>
+          <div class="divider"/>
+          <v-text-field class="listing-price"
+            solo
+            label='Price Per Month (Ex: "$2000")'
+            v-model="price"
+            filled>
+          </v-text-field>
+        </div>
         <div class="selectors">
           <v-select class="total-beds"
             :items="items"
@@ -109,20 +130,27 @@
       <v-text-field class="name-entry"
         solo
         label="Owner Full Name"
+        v-model="ownerName"
         filled>
       </v-text-field>
       <v-text-field class="email-entry"
         solo
         label="Contact Email"
+        v-model="ownerEmail"
         filled>
       </v-text-field>
       <v-text-field class="phone-number-entry"
         solo
         label="Contact Number"
+        v-model="ownerNumber"
         filled>
       </v-text-field>
     </div>
-    <v-btn class="submit-button" rounded color="primary" dark>Submit Listing</v-btn>
+    <v-btn 
+    class="submit-button" 
+    rounded color="primary"
+    @click="addListing"
+    dark> Submit Listing</v-btn>
   </div>
 </template>
 
@@ -138,9 +166,23 @@ export default {
     msg: String
   },
   data: () => ({
+    
+    listingTitle: "",
+    streetAddress: "",
+    listingCity: "",
+    listingState: "",
+    //listingImages = [], will use temp images for now
+    listingDescription: "",
+    ownerName: "",
+    ownerEmail: "",
+    ownerNumber: "",
+    price: "",
+    propertyType: "",
+
     items: ['1', '2', '3', '4', '5'],
     bedrooms: ['1', '2', '3', '4', '5'],
-    baths: ['1', '2', '3'],
+    baths: ['1', '1.5', '2', '2.5', '3', '3.5'],
+    properties: ["Entire House", "Full Apartment", "Private Room",],
     states: [
       'Alabama', 'Alaska', 'American Samoa', 'Arizona',
       'Arkansas', 'California', 'Colorado', 'Connecticut',
@@ -159,7 +201,57 @@ export default {
     ],
   }),
   methods: {
-    
+
+    addListing: async function() {
+
+      const listingTitle = this.listingTitle;
+      const streetAddress = this.streetAddress;
+      const listingCity = this.listingTitle;
+      const listingDescription = this.listingDescription;
+      const ownerName = this.ownerName;
+      const ownerEmail = this.ownerEmail;
+      const ownerNumber = this.ownerNumber;
+      const listingPrice = this.price;
+      const listingState = this.listingState;
+      const propertyType = this.propertyType;
+
+      
+      const currentListing = {
+        name: listingTitle,
+        price: listingPrice,
+        type: propertyType,
+        desc: listingDescription,
+        images: [
+          "https://cdngeneral.rentcafe.com/dmslivecafe/3/1104500/METRO%20GATEWAY%20IMG%2003(2).jpg?crop=(0,0,300,191.25000000000028)&cropxunits=300&cropyunits=200&quality=85&scale=both",
+          "https://cdngeneral.rentcafe.com/dmslivecafe/3/984399/Hearth-Model-Unit-IMG-0370_webopt_2MB.jpg?crop=(0,8,300,199.25000000000028)&cropxunits=300&cropyunits=200&quality=85&scale=both&"
+        ],
+        contactInfo: {
+          name: ownerName,
+          phone: ownerNumber,
+          email: ownerEmail
+        },
+        streetAddress: streetAddress,
+        listingCity: listingCity,
+        listingState: listingState,
+        //startTimeStamp: <START_TIME HERE>,
+        //endTimeStamp: <END_TIME HERE>
+      }
+      
+      let response = await fetch('/locations', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(currentListing)
+      })
+
+      if (response.ok){
+        // Success Alert
+      } else {
+        // Unsuccessful Alert
+      }
+
+    }
   }
 }
 </script>
@@ -178,7 +270,6 @@ export default {
 .location {
   display: flex;
   justify-content: space-evenly;
-  
 }
 
 .selectors {
@@ -192,9 +283,15 @@ export default {
   justify-content: flex-end;
 }
 
-.divider{
-    width:20px;
-    height:auto;
-    display:inline-block;
+.divider {
+  width:20px;
+  height:auto;
+  display:inline-block;
+}
+
+.property-type {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 10px;
 }
 </style>
