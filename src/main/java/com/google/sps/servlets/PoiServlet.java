@@ -14,37 +14,16 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.EmbeddedEntity;
-import com.google.appengine.api.datastore.Entity;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import com.google.sps.data.CoordinateCalculator;
-import com.google.sps.data.EntityType;
-import com.google.sps.data.InvalidDateRangeException;
+import com.google.maps.errors.ApiException;
 import com.google.sps.data.Office;
 import com.google.sps.data.OfficeManager;
-import com.google.sps.data.QueryHelper;
+import com.google.sps.data.util.CategoryGroup;
+import com.google.sps.data.util.GmapsHelper;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.sps.data.util.GmapsHelper;
-import com.google.sps.data.util.CategoryGroup;
-import com.google.maps.errors.ApiException;
-import java.io.IOException;
-
 
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/poi")
@@ -62,9 +41,14 @@ public class PoiServlet extends HttpServlet {
 
     CategoryGroup categoryGroup = gmapsHelper.getCategoryGroupById(poiGroup);
     try {
-      String results = gmapsHelper.searchNearbyCategoryGroup(categoryGroup, selectedOffice.getLatitude(), selectedOffice.getLongitude(), radiusMeters);
+      String results =
+          gmapsHelper.searchNearbyCategoryGroup(
+              categoryGroup,
+              selectedOffice.getLatitude(),
+              selectedOffice.getLongitude(),
+              radiusMeters);
       response.setContentType("application/json;");
-      response.getWriter().println(results);      
+      response.getWriter().println(results);
     } catch (ApiException e) {
       e.printStackTrace();
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -74,7 +58,5 @@ public class PoiServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
-
   }
-
 }
