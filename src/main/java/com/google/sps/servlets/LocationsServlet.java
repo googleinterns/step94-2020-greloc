@@ -84,24 +84,6 @@ public class LocationsServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(filteredListByDateRange));
   }
 
-  private List<Entity> filterOutOfDateRangeListings(
-      List<Entity> listings, long baseStart, long baseEnd) {
-
-    List<Entity> filteredListings = new ArrayList<>();
-    for (Entity listing : listings) {
-      long listingStartTimeStamp =
-          Long.parseLong((String) listing.getProperty("listingStartTimestamp"));
-      long listingEndTimestamp =
-          Long.parseLong((String) listing.getProperty("listingEndTimestamp"));
-
-      if (baseStart >= listingStartTimeStamp && baseEnd <= listingEndTimestamp) {
-        filteredListings.add(listing);
-      }
-    }
-
-    return filteredListings;
-  }
-
   // MARK: POST
   @Override // Creates a new listing
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
