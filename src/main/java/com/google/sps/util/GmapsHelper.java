@@ -1,6 +1,5 @@
 package com.google.sps.util;
 
-import com.google.sps.enums.CategoryGroup;
 import com.google.gson.Gson;
 import com.google.maps.GaeRequestHandler;
 import com.google.maps.GeoApiContext;
@@ -11,11 +10,11 @@ import com.google.maps.model.PlaceType;
 import com.google.maps.model.PlacesSearchResponse;
 import com.google.maps.model.PlacesSearchResult;
 import com.google.maps.model.RankBy;
+import com.google.sps.enums.CategoryGroup;
+import com.google.sps.exception.InvalidCategoryGroupException;
+import io.github.cdimascio.dotenv.Dotenv;
 import java.io.IOException;
 import java.util.Arrays;
-import io.github.cdimascio.dotenv.Dotenv;
-import com.google.sps.exception.InvalidCategoryGroupException;
-
 
 public class GmapsHelper {
 
@@ -57,13 +56,9 @@ public class GmapsHelper {
     String key = dotenv.get("GMAPS_API_KEY");
 
     if (useAppEngineContextBuilder) {
-      this.context = new GeoApiContext.Builder(new GaeRequestHandler.Builder())
-      .apiKey(key)
-      .build();
+      this.context = new GeoApiContext.Builder(new GaeRequestHandler.Builder()).apiKey(key).build();
     } else {
-      this.context = new GeoApiContext.Builder()
-        .apiKey(key)
-        .build();
+      this.context = new GeoApiContext.Builder().apiKey(key).build();
     }
   }
 
@@ -73,7 +68,7 @@ public class GmapsHelper {
    * @param Id: An integer between 2-4 (inclusive)
    * @return The corresponding CategoryGroup to Id
    */
-  public CategoryGroup getCategoryGroupById(int Id) throws InvalidCategoryGroupException{
+  public CategoryGroup getCategoryGroupById(int Id) throws InvalidCategoryGroupException {
     switch (Id) {
       case 2:
         return CategoryGroup.RECREATION;
@@ -83,7 +78,7 @@ public class GmapsHelper {
         return CategoryGroup.GROCERY;
       default:
         throw new InvalidCategoryGroupException("ID " + Id + " is not a valid ID");
-      }
+    }
   }
 
   /**

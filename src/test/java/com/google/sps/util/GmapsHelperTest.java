@@ -20,6 +20,8 @@ import com.google.maps.model.PlaceType;
 import com.google.maps.model.PlacesSearchResult;
 import com.google.sps.data.util.CategoryGroup;
 import com.google.sps.data.util.GmapsHelper;
+import com.google.sps.enums.CategoryGroup;
+import com.google.sps.exception.InvalidCategoryGroupException;
 import java.io.IOException;
 import org.junit.After;
 import org.junit.Assert;
@@ -27,19 +29,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import com.google.sps.util.GmapsHelper;
-import com.google.sps.enums.CategoryGroup;
-import com.google.maps.model.PlacesSearchResult;
-import org.mockito.Mockito;
 import org.mockito.ArgumentMatchers;
-import com.google.maps.model.PlaceType;
-import java.io.IOException;
-import com.google.maps.errors.ApiException;
-import com.google.gson.Gson;
-import com.google.sps.object.Office;
-import com.google.sps.exception.InvalidDateRangeException;
-import com.google.sps.exception.InvalidCategoryGroupException;
-
+import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 public final class GmapsHelperTest {
@@ -67,17 +58,18 @@ public final class GmapsHelperTest {
   }
 
   @Test(expected = InvalidCategoryGroupException.class)
-  public void testGetCategoryGroupByIdWithInvalidIdLowerBound() throws InvalidCategoryGroupException {
+  public void testGetCategoryGroupByIdWithInvalidIdLowerBound()
+      throws InvalidCategoryGroupException {
     CategoryGroup invalidBelowRange = gmaps.getCategoryGroupById(0);
     Assert.assertEquals(CategoryGroup.GROCERY, invalidBelowRange);
   }
 
   @Test(expected = InvalidCategoryGroupException.class)
-  public void testGetCategoryGroupByIdWithInvalidIdUpperBound() throws InvalidCategoryGroupException {
+  public void testGetCategoryGroupByIdWithInvalidIdUpperBound()
+      throws InvalidCategoryGroupException {
     CategoryGroup invalidAboveRange = gmaps.getCategoryGroupById(5);
     Assert.assertEquals(CategoryGroup.GROCERY, invalidAboveRange);
   }
-
 
   @Test
   public void testSearchNearbyCategoryGroupReturnsValidJSON()

@@ -14,11 +14,11 @@
 
 package com.google.sps.util;
 
+import com.google.sps.object.Office;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import com.google.sps.object.Office;
 
 @RunWith(JUnit4.class)
 public final class OfficeManagerTest {

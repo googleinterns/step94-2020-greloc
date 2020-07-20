@@ -14,32 +14,17 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.EmbeddedEntity;
-import com.google.appengine.api.datastore.Entity;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import com.google.sps.util.CoordinateCalculator;
-import com.google.sps.enums.EntityType;
-import com.google.sps.exception.InvalidDateRangeException;
+import com.google.maps.errors.ApiException;
+import com.google.sps.enums.CategoryGroup;
+import com.google.sps.exception.InvalidCategoryGroupException;
 import com.google.sps.object.Office;
+import com.google.sps.util.GmapsHelper;
 import com.google.sps.util.OfficeManager;
-import com.google.sps.util.QueryHelper;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.sps.util.GmapsHelper;
-import com.google.sps.enums.CategoryGroup;
-import com.google.maps.errors.ApiException;
-import java.io.IOException;
-import com.google.sps.exception.InvalidCategoryGroupException;
-
 
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/poi")
@@ -57,9 +42,14 @@ public class PoiServlet extends HttpServlet {
 
     try {
       CategoryGroup categoryGroup = gmapsHelper.getCategoryGroupById(poiGroup);
-      String results = gmapsHelper.searchNearbyCategoryGroup(categoryGroup, selectedOffice.getLatitude(), selectedOffice.getLongitude(), radiusMeters);
+      String results =
+          gmapsHelper.searchNearbyCategoryGroup(
+              categoryGroup,
+              selectedOffice.getLatitude(),
+              selectedOffice.getLongitude(),
+              radiusMeters);
       response.setContentType("application/json;");
-      response.getWriter().println(results);      
+      response.getWriter().println(results);
     } catch (ApiException | InvalidCategoryGroupException e) {
       e.printStackTrace();
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

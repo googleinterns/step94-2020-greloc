@@ -1,7 +1,7 @@
 package com.google.sps.util;
 
-import java.util.HashMap;
 import com.google.sps.object.Office;
+import java.util.HashMap;
 
 public final class OfficeManager {
   public static final HashMap<String, Office> offices =

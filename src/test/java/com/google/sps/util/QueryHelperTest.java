@@ -16,13 +16,15 @@ package com.google.sps.util;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 
-import com.google.sps.object.Office;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.sps.enums.EntityType;
+import com.google.sps.exception.InvalidDateRangeException;
+import com.google.sps.object.Office;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -34,9 +36,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import com.google.sps.exception.InvalidDateRangeException;
-import com.google.sps.enums.EntityType;
-
 
 @RunWith(JUnit4.class)
 public final class QueryHelperTest {
