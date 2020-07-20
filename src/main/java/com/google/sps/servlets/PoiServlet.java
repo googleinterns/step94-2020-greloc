@@ -15,10 +15,11 @@
 package com.google.sps.servlets;
 
 import com.google.maps.errors.ApiException;
-import com.google.sps.data.Office;
-import com.google.sps.data.OfficeManager;
-import com.google.sps.data.util.CategoryGroup;
-import com.google.sps.data.util.GmapsHelper;
+import com.google.sps.enums.CategoryGroup;
+import com.google.sps.exception.InvalidCategoryGroupException;
+import com.google.sps.object.Office;
+import com.google.sps.util.GmapsHelper;
+import com.google.sps.util.OfficeManager;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -39,8 +40,8 @@ public class PoiServlet extends HttpServlet {
     int poiGroup = Integer.parseInt(request.getParameter("group"));
     Office selectedOffice = OfficeManager.offices.get(office);
 
-    CategoryGroup categoryGroup = gmapsHelper.getCategoryGroupById(poiGroup);
     try {
+      CategoryGroup categoryGroup = gmapsHelper.getCategoryGroupById(poiGroup);
       String results =
           gmapsHelper.searchNearbyCategoryGroup(
               categoryGroup,
@@ -49,7 +50,7 @@ public class PoiServlet extends HttpServlet {
               radiusMeters);
       response.setContentType("application/json;");
       response.getWriter().println(results);
-    } catch (ApiException e) {
+    } catch (ApiException | InvalidCategoryGroupException e) {
       e.printStackTrace();
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       return;
