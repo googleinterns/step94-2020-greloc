@@ -32,7 +32,6 @@ import com.google.sps.data.QueryHelper;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -82,24 +81,6 @@ public class LocationsServlet extends HttpServlet {
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(filteredListByDateRange));
-  }
-
-  private List<Entity> filterOutOfDateRangeListings(
-      List<Entity> listings, long baseStart, long baseEnd) {
-
-    List<Entity> filteredListings = new ArrayList<>();
-    for (Entity listing : listings) {
-      long listingStartTimeStamp =
-          Long.parseLong((String) listing.getProperty("listingStartTimestamp"));
-      long listingEndTimestamp =
-          Long.parseLong((String) listing.getProperty("listingEndTimestamp"));
-
-      if (baseStart >= listingStartTimeStamp && baseEnd <= listingEndTimestamp) {
-        filteredListings.add(listing);
-      }
-    }
-
-    return filteredListings;
   }
 
   // MARK: POST

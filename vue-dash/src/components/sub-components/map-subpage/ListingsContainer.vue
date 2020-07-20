@@ -18,30 +18,42 @@
     <DateRangeSelector/>
 
     <Listings 
-      v-if="(selectedOffice.officeId != 'default') && (listings.length > 0)"
+      v-if="showListings"
       :listings="listings"
     />
 
     <div 
-      v-else-if="(selectedOffice.officeId != 'default') && (listings.length === 0)"
-      id="listings-empty-state" 
+      v-else-if="showEmptyState"
+      id="listings-empty-state"
     >
       <v-icon class="empty-state-icon">mdi-emoticon-frown-outline</v-icon>
       <span class="empty-state-text">Sorry, there are no available listings for these parameters</span>
     </div>
 
+    <div id="skeleton-container" v-else-if="showSkeleton">
+      <v-skeleton-loader 
+        class="comment-skeleton"
+        tile 
+        type="list-item-avatar-three-line"
+        v-for="i in 5"
+        :key="i"
+        color="#555555"
+        min-width="500px"
+      > 
+      </v-skeleton-loader>
+    </div>    
+
     <div id="listings-empty-state" v-else>
       <v-icon class="empty-state-icon">mdi-map-marker</v-icon>
       <span class="empty-state-text">Select an office from the dropdown to view listings near that area</span>
-    </div>    
-
+    </div>
   </div>
 </template>
 
 <script>
 import Listings from './Listings.vue'
 import DateRangeSelector from './DateRangeSelector.vue'
-import { OFFICES } from '../../../utils/constants.js'
+import { OFFICES, EVENTS } from '../../../utils/constants.js'
 
 export default {
   name: 'ListingsContainer',
@@ -50,18 +62,40 @@ export default {
     DateRangeSelector
   },
 
+  created() {
+    this.$root.$on(EVENTS.mapSubpageLoading, loadingEventData => {
+      this.onLoadingEventReceived(loadingEventData);
+    });    
+  },
+
   props: {
     officeSelectedEvent: Function,
+    dateRange: Array,
     listings: Array
+  },
+
+  computed: {
+    showListings: function() {
+      return (this.selectedOffice.officeId != 'default') && (this.listings.length > 0) && (this.dateRange != null);
+    },
+
+    showEmptyState: function() {
+      return (this.selectedOffice.officeId != 'default') && (this.listings.length === 0) && (this.dateRange != null) && !this.showSkeleton;
+    },
   },
 
   data: () => ({
     selectedOffice: { name: "", officeId: "default" },
-    offices: OFFICES
+    offices: OFFICES,
+    showSkeleton: false
   }),
 
   methods: {
-
+    onLoadingEventReceived: function(loadingEventData) {
+      if (loadingEventData.forEvent === EVENTS.newListings) {
+        this.showSkeleton = loadingEventData.isLoading;
+      }
+    },
   }
 }
 </script>
@@ -97,5 +131,20 @@ export default {
     
     text-align: center;    
   }
+
+  #skeleton-container {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .comment-skeleton {
+    width: 100%; 
+    margin-bottom: 1rem;
+  }  
 
 </style>

@@ -11,7 +11,7 @@
         <Listing :listingInfo="listing"/>
         <v-divider></v-divider>
       </v-list-item>
-    </v-list-item-group>    
+    </v-list-item-group>
   </v-list>
 </template>
 
@@ -24,7 +24,7 @@ export default {
   created () {    
     this.$root.$on(EVENTS.listingDeselected, () => {
       this.clearSelection();
-    });    
+    });
   },
 
   components: {
@@ -35,10 +35,10 @@ export default {
   },
 
   data: () => ({
-    selectedListing: null
+    selectedListing: null,
   }),
 
-  methods: {    
+  methods: {
     onUserSelectsListing: function(listing) {
       if (this.selectedListing != null) {
         this.clearSelection();

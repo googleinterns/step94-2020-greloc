@@ -3,11 +3,11 @@
         <v-progress-linear 
           absolute 
           indeterminate
-          color="var(--branding-blue)"
+          :color="loadingBarColor"
           height="10px"
           :active="isLoading"
         ></v-progress-linear>
-      <ListingsContainer :officeSelectedEvent="officeSelectedEvent" :listings="listings"/>
+      <ListingsContainer :dateRange=selectedDateRange :officeSelectedEvent="officeSelectedEvent" :listings="listings"/>
       <MapContainer :dateRange="selectedDateRange" :selectedOffice="selectedOffice" :listings="listings"/>
     </div>
 </template>
@@ -15,7 +15,7 @@
 <script>
 import ListingsContainer from './sub-components/map-subpage/ListingsContainer.vue'
 import MapContainer from './sub-components/map-subpage/MapContainer.vue'
-import { WEBSITE_URL, EVENTS } from '../utils/constants.js'
+import { WEBSITE_URL, EVENTS, COLORS } from '../utils/constants.js'
 
 const testComp = {
   name: "Cozy Apartment - July 14",
@@ -46,8 +46,8 @@ export default {
   name: 'Template',
 
   created() {
-    this.$root.$on(EVENTS.mapSubpageLoading, isLoading => {
-      this.isLoading = isLoading;
+    this.$root.$on(EVENTS.mapSubpageLoading, loadingEventData => {
+      this.loadingEvent(loadingEventData);
     });
 
     this.$root.$on(EVENTS.dateRangeSelected, dateRange => {
@@ -71,10 +71,22 @@ export default {
     offices: [],
     selectedOffice: null,
     selectedDateRange: null,
-    isLoading: false
+    
+    
+    isLoading: false,
+    loadingBarColor: "#4285f4"
   }),
 
   methods: {
+
+    loadingEvent: function(loadingEventData){
+      if (loadingEventData.isLoading) {
+        this.loadingBarColor = loadingEventData.color ? loadingEventData.color : COLORS.BRANDING_BLUE;
+        this.isLoading = true;
+      } else {
+        this.isLoading = false;
+      }
+    },
 
     officeSelectedEvent: function(office) {
       this.selectedOffice = office;
@@ -94,12 +106,15 @@ export default {
         return;
       }
 
-      this.isLoading = true;
+      this.$root.$emit(EVENTS.mapSubpageLoading, {
+        isLoading: true,
+        color: COLORS.BRANDING_BLUE,
+        forEvent: EVENTS.newListings 
+      });
+
       let startDateTimestamp = new Date(this.selectedDateRange[0]).getTime();
       let endDateTimestamp = new Date(this.selectedDateRange[1]).getTime();
 
-      console.log(startDateTimestamp);
-      console.log(endDateTimestamp);
       let response = await fetch(WEBSITE_URL + `/locations?office=${office.officeId}&startMillis=${startDateTimestamp}&endMillis=${endDateTimestamp}`);
       let respData;
       
@@ -111,7 +126,10 @@ export default {
 
       this.listings = respData;
       this.$root.$emit(EVENTS.newListings, respData);
-      this.isLoading = false;
+      this.$root.$emit(EVENTS.mapSubpageLoading, {
+        isLoading: false,
+        forEvent: EVENTS.newListings 
+      });
     },
 
     getListingsConditionsNotMet: function() {      

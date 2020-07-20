@@ -8,8 +8,16 @@ const EVENTS = {
   listingSelected: "listingSelected",
   listingDeselected: "listingDeselected",
   busStopsSelected: "busStopsSelected",
+  poiSelected: "poiSelected",
   mapSubpageLoading: "mapSubpageLoading",
   dateRangeSelected: "dateRangeSelected"
+}
+
+const COLORS = {
+  BRANDING_BLUE: "#4285f4",
+  BRANDING_RED: "#ea4335",
+  BRANDING_YELLOW: "#fbbc05",
+  BRANDING_GREEN: "#34a853",
 }
 
 const OFFICES = [
@@ -31,5 +39,13 @@ const OFFICES = [
   },
 ]
 
+const MarkerTypeEnum = Object.freeze({
+  LISTING: 0,
+  BUS_STOP: 1,
+  RECREATION: 2,
+  DINING: 3,
+  GROCERY: 4,
+});
 
-export { EVENTS, WEBSITE_URL, OFFICES };
+
+export { EVENTS, WEBSITE_URL, OFFICES, COLORS, MarkerTypeEnum};

@@ -10,12 +10,7 @@
 <script>
 
 import gmapsInit from '../../../utils/gmaps.js'
-import { EVENTS } from '../../../utils/constants.js'
-
-const MarkerTypeEnum = Object.freeze({
-  LISTING: 0,
-  MARKER: 1
-});
+import { EVENTS, MarkerTypeEnum } from '../../../utils/constants.js'
 
 const defaultOptionsForMarkers = {
   DEFAULT: {
@@ -23,15 +18,30 @@ const defaultOptionsForMarkers = {
     url: '',    
   },
 
-  LISTING: {
+  [MarkerTypeEnum.LISTING]: {
     size: 40, 
     url: "assets/googler_listing_marker_25px.png"
   },
 
-  BUS_STOP: {
+  [MarkerTypeEnum.BUS_STOP]: {
     size: 40, 
     url: "assets/bus_pin.png"
-  }
+  },
+
+  [MarkerTypeEnum.RECREATION]: {
+    size: 40, 
+    url: "assets/recreation_pin.png"
+  },
+
+  [MarkerTypeEnum.DINING]: {
+    size: 40, 
+    url: "assets/dining_pin.png" 
+  },
+  
+  [MarkerTypeEnum.GROCERY]: {
+    size: 40, 
+    url: "assets/grocery_pin.png"
+  },
 }
 
 
@@ -60,6 +70,10 @@ export default {
     this.$root.$on(EVENTS.busStopsSelected, data => {
       this.onBusStopsSelected(data);
     });
+
+    this.$root.$on(EVENTS.poiSelected, data => {
+      this.onPoiSelected(data.markerType, data.poiList);
+    });
   },
 
   components: {
@@ -72,6 +86,10 @@ export default {
   data: () => ({
     listingMarkers: [],
     stopMarkers: [],
+    recreationMarkers: [],
+    diningMarkers: [],
+    groceryMarkers: [],
+
     google: null,
     map: null,
     selectedOffice: null,
@@ -92,7 +110,8 @@ export default {
         // geocoder = new google.maps.Geocoder();
         this.google = await gmapsInit();
         this.map = new this.google.maps.Map(document.getElementById('relo-map'), {
-          zoom: 8
+          zoom: 8,
+          mapId: 'f43e88d5033dbf3f'
         });
 
         this.directionsService = new this.google.maps.DirectionsService();
@@ -142,15 +161,21 @@ export default {
     showListingsOnMap: function(listings) {      
       for (let listing of listings){
         // this.addListingMarker(listing);
-        this.addMarkerForEntity(listing, MarkerTypeEnum.LISTING, defaultOptionsForMarkers.LISTING);
+        this.addMarkerForEntity(listing, MarkerTypeEnum.LISTING, defaultOptionsForMarkers[MarkerTypeEnum.LISTING]);
       }
     },
 
     showBusStopsOnMap: function(stopList) {
       for (let stop of stopList){
-        this.addMarkerForEntity(stop, MarkerTypeEnum.BUS_STOP, defaultOptionsForMarkers.BUS_STOP);
+        this.addMarkerForEntity(stop, MarkerTypeEnum.BUS_STOP, defaultOptionsForMarkers[MarkerTypeEnum.BUS_STOP]);
       }
-    },   
+    },
+
+    showPoiOnMap: function(markerType, poiList) {
+      for (let poi of poiList){
+        this.addMarkerForPoi(poi, markerType, defaultOptionsForMarkers[markerType]);
+      }
+    },    
 
     /**
      * When passed a listing object, this method will decrease the height to 25% and display a route from the `listing` to the 
@@ -172,7 +197,15 @@ export default {
       if (stopList.length > 0) {
         this.showBusStopsOnMap(stopList);
       }
-    },    
+    },
+
+    onPoiSelected: function(markerType, poiList) {
+      this.clearSelectMarkers(markerType);
+      
+      if (poiList.length > 0) {
+        this.showPoiOnMap(markerType, poiList);
+      }
+    },
 
     /**
      * Shows a route between listing and office, set's the map's center
@@ -286,7 +319,30 @@ export default {
       let markerList = this.getMarkerList(markerType);      
       markerList.push(marker);
       marker.setMap(this.map);
-    },    
+    },
+
+    /**
+     * Adds a marker on the map for the specified Point of Interest (Poi) given a markerType and options
+     * 
+     * @param markerType: The type of marker that should be cleared from the map
+     */        
+    addMarkerForPoi: function (poi, markerType, options = defaultOptionsForMarkers.DEFAULT) {
+
+      let marker = new this.google.maps.Marker({
+        position: poi.geometry.location,
+        title: poi.name,
+        icon: {
+          url: options.url,
+          size: new this.google.maps.Size(options.size, options.size),
+          origin: new this.google.maps.Point(0, 0),
+          anchor: new this.google.maps.Point(17, 34),
+        }
+      });
+
+      let markerList = this.getMarkerList(markerType);      
+      markerList.push(marker);
+      marker.setMap(this.map);
+    },
     
     /**
      * Removes ALL markers of `markerType` from the map
@@ -313,6 +369,15 @@ export default {
 
         case MarkerTypeEnum.BUS_STOP:
           return this.stopMarkers;
+
+        case MarkerTypeEnum.RECREATION:
+          return this.recreationMarkers;
+        
+        case MarkerTypeEnum.DINING:
+          return this.diningMarkers;
+
+        case MarkerTypeEnum.GROCERY:
+          return this.groceryMarkers;
 
         default:
           throw "MarkerTypeEnum does not exist"
