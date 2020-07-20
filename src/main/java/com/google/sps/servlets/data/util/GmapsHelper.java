@@ -85,7 +85,7 @@ public class GmapsHelper {
         placeTypes = this.diningTypes;
         break;
       case GROCERY:
-        placeTypes = this.groceryTypes;;
+        placeTypes = this.groceryTypes;
         break;
       default:
         placeTypes = new PlaceType[0];
