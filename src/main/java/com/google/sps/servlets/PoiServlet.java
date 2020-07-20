@@ -23,12 +23,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.google.sps.data.CoordinateCalculator;
-import com.google.sps.data.EntityType;
-import com.google.sps.data.InvalidDateRangeException;
-import com.google.sps.data.Office;
-import com.google.sps.data.OfficeManager;
-import com.google.sps.data.QueryHelper;
+import com.google.sps.util.CoordinateCalculator;
+import com.google.sps.enums.EntityType;
+import com.google.sps.exception.InvalidDateRangeException;
+import com.google.sps.object.Office;
+import com.google.sps.util.OfficeManager;
+import com.google.sps.util.QueryHelper;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.Instant;
@@ -40,10 +40,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.sps.data.util.GmapsHelper;
-import com.google.sps.data.util.CategoryGroup;
+import com.google.sps.util.GmapsHelper;
+import com.google.sps.enums.CategoryGroup;
 import com.google.maps.errors.ApiException;
 import java.io.IOException;
+import com.google.sps.exception.InvalidCategoryGroupException;
 
 
 /** Servlet that handles adding and retreiving listings & locations */
@@ -60,12 +61,12 @@ public class PoiServlet extends HttpServlet {
     int poiGroup = Integer.parseInt(request.getParameter("group"));
     Office selectedOffice = OfficeManager.offices.get(office);
 
-    CategoryGroup categoryGroup = gmapsHelper.getCategoryGroupById(poiGroup);
     try {
+      CategoryGroup categoryGroup = gmapsHelper.getCategoryGroupById(poiGroup);
       String results = gmapsHelper.searchNearbyCategoryGroup(categoryGroup, selectedOffice.getLatitude(), selectedOffice.getLongitude(), radiusMeters);
       response.setContentType("application/json;");
       response.getWriter().println(results);      
-    } catch (ApiException e) {
+    } catch (ApiException | InvalidCategoryGroupException e) {
       e.printStackTrace();
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       return;
