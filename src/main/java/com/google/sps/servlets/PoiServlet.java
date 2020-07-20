@@ -30,12 +30,6 @@ import com.google.sps.object.Office;
 import com.google.sps.util.OfficeManager;
 import com.google.sps.util.QueryHelper;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -75,7 +69,5 @@ public class PoiServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
-
   }
-
 }
