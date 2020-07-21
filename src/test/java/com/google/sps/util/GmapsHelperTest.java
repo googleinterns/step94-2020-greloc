@@ -19,8 +19,6 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.PlaceType;
 import com.google.maps.model.PlacesSearchResult;
 import com.google.sps.enums.CategoryGroup;
-import com.google.sps.util.GmapsHelper;
-import com.google.sps.enums.CategoryGroup;
 import com.google.sps.exception.InvalidCategoryGroupException;
 import java.io.IOException;
 import org.junit.After;
