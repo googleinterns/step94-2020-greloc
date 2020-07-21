@@ -21,7 +21,7 @@ export default {
     msg: String
   },
   data: () => ({
-
+    rules: [],
   }),
   methods: {
     

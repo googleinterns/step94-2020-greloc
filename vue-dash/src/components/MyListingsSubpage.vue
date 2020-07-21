@@ -1,7 +1,13 @@
 <template>
   <div class="subpage" id="my-listings-subpage">
-    <MyListingsContainer class="property-list"/>
-      <ListingForm class="form"/>
+    <MyListingsContainer class="property-list"/> 
+    <ListingForm class="form"/>
+
+      <div id="form-empty-state" v-if=false>
+        <v-icon class="form-empty-state-icon">mdi-map</v-icon>
+        <span class="form-empty-state-text">Click a current listing to Edit or the '+' to create a new listing</span>
+      </div>
+
   </div>
 </template>
 
@@ -44,5 +50,16 @@ export default {
   display: flex; 
   align-items: flex-start;
   justify-content: flex-start;
+}
+
+#form-empty-state {
+  width: 300px;
+    
+  display: flex;    
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+    
+  text-align: center;
 }
 </style>
