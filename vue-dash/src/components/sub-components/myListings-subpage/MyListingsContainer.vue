@@ -2,14 +2,6 @@
   <div id="mylistings-cont">
     <h1 class="subpage-title">My Current Listings</h1>
     <Listings :listings="listings"/>
-      <v-btn class="add-button"
-        absolute
-        dark
-        fab
-        left
-        color="#3cba54">
-        <v-icon >mdi-plus</v-icon>
-      </v-btn>
   </div>
 </template>
 
@@ -68,8 +60,5 @@ export default {
   #select-office {
     width: 100%;
   }
-  
-  .add-button {
-    margin-top: 120px;
-  }
+
 </style>
