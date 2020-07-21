@@ -7,15 +7,12 @@ target/gRelo-1/dashboard/
 target/gRelo-1/index.html
 target/gRelo-1/registration.html
 target/gRelo-1/style.css
-target/gRelo-1/.env
 target/maven-archiver/
 target/maven-status/
 target/surefire-reports/
 target/test-classes/
 vue-dash/dist/
 vue-dash/node_modules/
-target/appengine-staging
-.env
 
 .DS_Store
 node_modules
