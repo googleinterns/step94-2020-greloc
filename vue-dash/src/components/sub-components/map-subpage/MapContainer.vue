@@ -16,7 +16,13 @@
         
     <MapOptions 
       :style="[showMapRequirementsNotMet
-      ? {'display': 'none'} : {'display': 'block'}]"    
+      ? {'display': 'none'} : {'display': 'block'}]"
+    />
+
+    <GmapsAutoComplete
+      :forReloMap="true"
+      :style="[showMapRequirementsNotMet
+      ? {'display': 'none'} : {'display': 'flex'}]"    
     />
 
     <ListingInfo 
@@ -29,6 +35,7 @@
 <script>
 import ReloMap from './ReloMap.vue'
 import MapOptions from './MapOptions.vue'
+import GmapsAutoComplete from './GmapsAutoComplete.vue'
 import ListingInfo from './ListingInfo.vue'
 import { EVENTS } from '../../../utils/constants.js'
 export default {
@@ -43,16 +50,17 @@ export default {
   components: {
     ReloMap,
     ListingInfo,
-    MapOptions
+    MapOptions,
+    GmapsAutoComplete
   },
   props: {
     listings: Array,
     selectedOffice: Object,
     dateRange: Array,
-    selectedListing: Object
+    selectedListing: Object,
   },
   data: () => ({
-    
+    google: null
   }),
 
   computed: {
@@ -90,4 +98,5 @@ export default {
     
     text-align: center;
   }
+
 </style>

@@ -42,6 +42,10 @@ const defaultOptionsForMarkers = {
     size: 40, 
     url: "assets/grocery_pin.png"
   },
+  
+  [MarkerTypeEnum.SEARCH]: {
+    size: 40
+  }
 }
 
 
@@ -49,31 +53,7 @@ export default {
   name: 'ReloMap',
   async created () {
     await this.initializeGoogleMaps();
-    this.map.setCenter({
-      lat: 0,
-      lng: 0
-    });
-
-    this.$root.$on(EVENTS.officeChanged, data => {
-      this.selectedOffice = data;
-      this.showSelectedOffice(data);
-    });
-
-    this.$root.$on(EVENTS.newListings, data => {
-      this.showListingsOnMap(data);  
-    });
-
-    this.$root.$on(EVENTS.listingSelected, data => {
-      this.onListingSelected(data);
-    });
-
-    this.$root.$on(EVENTS.busStopsSelected, data => {
-      this.onBusStopsSelected(data);
-    });
-
-    this.$root.$on(EVENTS.poiSelected, data => {
-      this.onPoiSelected(data.markerType, data.poiList);
-    });
+    this.initializeEventBusListeners();
   },
 
   components: {
@@ -89,6 +69,7 @@ export default {
     recreationMarkers: [],
     diningMarkers: [],
     groceryMarkers: [],
+    userSearchMarkers: [],
 
     google: null,
     map: null,
@@ -117,11 +98,47 @@ export default {
         this.directionsService = new this.google.maps.DirectionsService();
         this.directionsRenderer = new this.google.maps.DirectionsRenderer({suppressMarkers: true});
         this.directionsRenderer.setMap(this.map);
+        
+        this.map.setCenter({
+          lat: 0,
+          lng: 0
+        });        
       }
       
       catch (error) {
         console.error(error);
       }
+    },
+
+    initializeEventBusListeners: function() {
+      this.$root.$on(EVENTS.officeChanged, data => {
+        this.selectedOffice = data;
+        this.showSelectedOffice(data);
+      });
+
+      this.$root.$on(EVENTS.newListings, data => {
+        this.showListingsOnMap(data);  
+      });
+
+      this.$root.$on(EVENTS.listingSelected, data => {
+        this.onListingSelected(data);
+      });
+
+      this.$root.$on(EVENTS.busStopsSelected, data => {
+        this.onBusStopsSelected(data);
+      });
+
+      this.$root.$on(EVENTS.poiSelected, data => {
+        this.onPoiSelected(data.markerType, data.poiList);
+      });
+
+      this.$root.$on(EVENTS.userPlaceSearch, data => {
+        this.onUserPlaceSearch(data);
+      });
+
+      this.$root.$on(EVENTS.clearPlaceSearchMakers, () => {
+        this.onClearSearchMarkers();
+      });
     },
 
     /**
@@ -205,6 +222,33 @@ export default {
       if (poiList.length > 0) {
         this.showPoiOnMap(markerType, poiList);
       }
+    },
+
+    onUserPlaceSearch: function(place) {
+      
+      this.map.setCenter(place.geometry.location);
+
+      let address = '';
+      if (place.address_components) {
+        address = [
+          (place.address_components[0] && place.address_components[0].short_name || ''),
+          (place.address_components[1] && place.address_components[1].short_name || ''),
+          (place.address_components[2] && place.address_components[2].short_name || '')
+        ].join(' ');
+      }
+
+      let marker = new this.google.maps.Marker({
+        position: place.geometry.location,
+        title: address,
+      });
+
+      marker.setPosition(place.geometry.location);
+      this.userSearchMarkers.push(marker);
+      marker.setMap(this.map);      
+    },
+
+    onClearSearchMarkers: function () {
+      this.clearSelectMarkers(MarkerTypeEnum.SEARCH);
     },
 
     /**
@@ -378,6 +422,9 @@ export default {
 
         case MarkerTypeEnum.GROCERY:
           return this.groceryMarkers;
+
+        case MarkerTypeEnum.SEARCH:
+          return this.userSearchMarkers;
 
         default:
           throw "MarkerTypeEnum does not exist"
