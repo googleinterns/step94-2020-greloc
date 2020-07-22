@@ -15,17 +15,17 @@
     />
         
     <MapOptions 
-      :style="[showMapRequirementsNotMet
+      :style="[showMapToolsRequirementsNotMet
       ? {'display': 'none'} : {'display': 'block'}]"
     />
 
     <GmapsAutoComplete
       :forReloMap="true"
-      :style="[showMapRequirementsNotMet
+      :style="[showMapToolsRequirementsNotMet
       ? {'display': 'none'} : {'display': 'flex'}]"    
     />
 
-    <ListingInfo 
+    <ListingInfo
       v-if="selectedListing != null"
       :selectedListing="selectedListing"
     />
@@ -66,11 +66,16 @@ export default {
   computed: {
     showMapRequirementsNotMet: function() {
       return this.selectedOffice === null || this.selectedOffice.officeId === 'default' || this.dateRange === null;
-    }
+    },
+
+    showMapToolsRequirementsNotMet: function() {
+      return this.selectedOffice === null || this.selectedOffice.officeId === 'default' || this.dateRange === null || this.selectedListing != null;
+    }    
   },
 
   methods: {
     listingSelectedEvent: function(listing) {
+      console.log("weee");
       this.selectedListing = listing;
     }
   }

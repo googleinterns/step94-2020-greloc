@@ -38,8 +38,22 @@
 
     <div id="sidebar-container">
       <div id="contact-card">
-        
+        <h3 class="sidebar-titles">Owner</h3>
       </div>
+
+      <ul 
+        v-if="visibleAmenities.length > 0"
+        id="amenities-card"
+      >
+        <h3 class="sidebar-titles">Amenities</h3>
+        <li 
+        v-for="(amenity, index) in visibleAmenities"
+        :key="index"
+        >
+          <v-icon class="amenity-icon">{{amenityMap[amenity]["icon"]}}</v-icon> 
+          <span class="amenity-title">{{amenityMap[amenity]["name"]}}</span>
+        </li>
+      </ul>
 
     </div>
 
@@ -55,6 +69,44 @@
 <script>
 import { EVENTS } from '../../../utils/constants.js'
 
+const amenityMap = {
+  "wifi": {
+    "icon": "mdi-wifi",
+    "name": "Wi-Fi"
+  },
+
+  "washer": {
+    "icon": "mdi-washing-machine",    
+    "name": "Washer/Dryer"
+  },
+
+  "gym": {
+    "icon": "mdi-dumbbell",
+    "name": "Gym"
+  },
+
+  "pool": { 
+    "icon":"mdi-pool",
+    "name": "Pool"
+  },
+
+  "greenspace": {
+    "icon": "mdi-nature",
+    "name": "Greenspace"
+  },
+
+  "parking": {
+    "icon": "mdi-parking",
+    "name": "Parking"
+  },
+  
+  "ac": {
+    "icon": "mdi-snowflake",
+    "name": "Air Conditioning"
+  },
+
+}
+
 export default {
   name: 'ListingInfo',
 
@@ -63,22 +115,25 @@ export default {
   props: {
     selectedListing: Object
   },
+
+  computed: {
+    visibleAmenities: function() {
+      let selectedListingObject = this.selectedListing.propertyMap;
+      if (!selectedListingObject.amenities) return [];
+      
+      let amenities = [];
+      for (let [key, value] of Object.entries(selectedListingObject.amenities.value.propertyMap)) {
+        if (value) {
+          amenities.push(key);
+        }
+      }
+      return amenities;
+    }
+  },
+
   data: () => ({
     distanceToOffice: 3.8,
-    colors: [
-      'indigo',
-      'warning',
-      'pink darken-2',
-      'red lighten-1',
-      'deep-purple accent-4',
-    ],
-    slides: [
-      'First',
-      'Second',
-      'Third',
-      'Fourth',
-      'Fifth',
-    ]
+    amenityMap: amenityMap
   }),
   methods: {
     onCloseClick: function () {
@@ -184,6 +239,10 @@ export default {
     justify-self: end;
   }
 
+  .sidebar-titles {
+    color: var(--text-subtle);
+  }
+
   #contact-card {
     width: 100%;
     height: 250px;
@@ -191,6 +250,29 @@ export default {
     border: 1px solid #C4C4C4;
     box-sizing: border-box;
     border-radius: 5px;
+    margin-bottom: 1rem;
+    padding: 16px;
+  }
+
+  #amenities-card {
+    width: 100%;
+    height: auto;
+
+    border: 1px solid #C4C4C4;
+    box-sizing: border-box;
+    border-radius: 5px;    
+
+    list-style: none;
+    padding: 16px 16px 0px 16px;
+  }
+
+  #amenities-card li {
+    margin: 1.5rem 0;
+  }
+
+  .amenity-title {
+    margin-left: 1rem;
+    text-transform:capitalize;
   }
 
   #footing-container {

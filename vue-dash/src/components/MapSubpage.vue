@@ -18,7 +18,7 @@ import MapContainer from './sub-components/map-subpage/MapContainer.vue'
 import { WEBSITE_URL, EVENTS, COLORS } from '../utils/constants.js'
 
 const testComp = {
-  name: "Cozy Apartment - July 14",
+  name: "Cozy Apartment - (July 21st - August 30th)",
   price: "$2,500",
   type: "Full Apartment",
   desc: "Tidy apartment with beatiful furniture",
@@ -36,8 +36,8 @@ const testComp = {
     email: "epierre@google.com"
   },
   googlerOwned: true,
-  listingStartDate: 1594684800000, // July 14th
-  listingEndDate: 1595368312000,// July 21st
+  listingStartDate: 1595373644000, // July 21st
+  listingEndDate: 1598829644000,// August 30th
   latitude: 37.395720,
   longitude: -122.028570,
 };
