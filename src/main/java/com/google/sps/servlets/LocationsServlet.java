@@ -114,7 +114,7 @@ public class LocationsServlet extends HttpServlet {
     for (String key : listingJson.keySet()) {
 
       if (key.equals("contactInfo")) {
-        taskEntity.setProperty(key, createEmbeddedContactInfo(listingJson.getAsJsonObject(key)));
+        taskEntity.setProperty(key, createEmbeddedEntity(listingJson.getAsJsonObject(key), false));
 
       } else if (key.equals("images")) {
         JsonArray jsonArray = listingJson.getAsJsonArray(key);
@@ -132,6 +132,8 @@ public class LocationsServlet extends HttpServlet {
         JsonElement element = listingJson.get(key);
         Date millisToDate = new Date(element.getAsJsonPrimitive().getAsLong());
         taskEntity.setProperty(key, millisToDate);
+      } else if (key.equals("amenities")) {
+        taskEntity.setProperty(key, createEmbeddedEntity(listingJson.getAsJsonObject(key), true));
       } else {
         JsonElement element = listingJson.get(key);
         taskEntity.setProperty(key, element.getAsJsonPrimitive().getAsString());
@@ -145,13 +147,17 @@ public class LocationsServlet extends HttpServlet {
    * @param contactInfo: Json object containing contact information
    * @return the created embedded entity
    */
-  private EmbeddedEntity createEmbeddedContactInfo(JsonObject contactInfo) {
-    EmbeddedEntity embeddedContactInfo = new EmbeddedEntity();
-    for (String embeddedKey : contactInfo.keySet()) {
-      JsonElement element = contactInfo.get(embeddedKey);
-      embeddedContactInfo.setProperty(embeddedKey, element.getAsJsonPrimitive().getAsString());
+  private EmbeddedEntity createEmbeddedEntity(JsonObject info, boolean saveAsBool) {
+    EmbeddedEntity embeddedInfo = new EmbeddedEntity();
+    for (String embeddedKey : info.keySet()) {
+      JsonElement element = info.get(embeddedKey);
+      if (saveAsBool) {
+        embeddedInfo.setProperty(embeddedKey, element.getAsJsonPrimitive().getAsBoolean());
+      } else {
+        embeddedInfo.setProperty(embeddedKey, element.getAsJsonPrimitive().getAsString());
+      }
     }
 
-    return embeddedContactInfo;
+    return embeddedInfo;
   }
 }

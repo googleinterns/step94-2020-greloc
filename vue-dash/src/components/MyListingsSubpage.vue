@@ -1,6 +1,6 @@
 <template>
   <div class="subpage" id="my-listings-subpage">
-    <MyListingsContainer class="property-list"/> 
+    <!--<MyListingsContainer class="property-list"/> -->
     <ListingForm class="form"/>
 
       <div id="form-empty-state" v-if=false>
@@ -13,7 +13,6 @@
 
 <script>
 import ListingForm from './sub-components/myListings-subpage/EditListing.vue'
-import MyListingsContainer from './sub-components/myListings-subpage/MyListingsContainer.vue'
 
 export default {
   name: 'MyListingsSubpage',
@@ -22,7 +21,6 @@ export default {
   },
   components: {
     ListingForm,
-    MyListingsContainer
   }
 }
 </script>
@@ -36,6 +34,7 @@ export default {
   justify-content: flex-start;
   border-right: 1px solid #dbdbdb;
   padding: 16px;
+  flex-direction: column;
 }
 
 .form {

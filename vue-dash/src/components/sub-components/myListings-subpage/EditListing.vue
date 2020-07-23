@@ -18,33 +18,22 @@
       </v-text-field>
     </div>
     <div class="listing-address">
-      <v-text-field class="listing-address-entry"
-        solo
-        label="Street Address"
-        v-model="streetAddress"
-        prepend-inner-icon="mdi-map-marker"
-        filled>
-      </v-text-field>
-        <div class="location">
-          <v-text-field class="listing-city-entry"
-            solo
-            label="City"
-            v-model="listingCity"
-            filled>
-          </v-text-field>
-          <div class="divider"/>
-          <v-select class="listing-state-entry"
-            :items ="states"
-            v-model="listingState"
-            label="State/Province">
-          </v-select>
-        </div>
+      <GmapsAutoComplete class="listing-address-entry" :forReloMap="false"/>
     </div>
     <div class="dates">
-    <DateRangeSelector/>
+      <DateRangeSelector/>
     </div>
     <div class="description-entry">
-      <ImageInput/>
+      <!--<ImageInput/> -->
+      <v-file-input
+      v-model="files"
+      accept="image/png, image/jpeg, image/bmp"
+      placeholder="Upload Property Images"
+      prepend-icon="mdi-camera"
+      label="Images"
+      multiple
+      chips
+    ></v-file-input>
       <v-textarea
         solo
         name="input-7-4"
@@ -69,20 +58,20 @@
         </div>
         <div class="selectors">
           <v-select class="total-beds"
-            :items="items"
+            :items="totalBeds"
             v-model="beds"
             label="Total Number of Beds">
           </v-select>
           <div class="divider"/>
           <v-select class="total-bedrooms"
-              :items="bedrooms"
+              :items="totalBedrooms"
               v-model="bedrooms"
               label="Bedrooms">
           </v-select>
           <div class="divider"/>
           <v-select class="total-baths"
-            :items="baths"
-            v-model="bathrooms"
+            :items="totalBaths"
+            v-model="baths"
             label="Baths">
           </v-select>
         </div>
@@ -127,25 +116,34 @@
 </template>
 
 <script>
-import ImageInput from './InsertImage.vue'
 import DateRangeSelector from '../map-subpage/DateRangeSelector.vue'
+import GmapsAutoComplete from '../map-subpage/GmapsAutoComplete'
+import {EVENTS, WEBSITE_URL} from '../../../utils/constants.js'
 
 export default {
   name: 'ListingForm',
+  created(){
+    this.$root.$on(EVENTS.dateRangeSelected, dateRange => {
+      this.dateRange = dateRange;
+    });
+    this.$root.$on(EVENTS.userSelectedAddress, place => {
+      console.log("From Listener!");
+      console.log(place);
+      this.onUserSelectedAddress(place);
+    });
+  },
   components: {
-    ImageInput,
     DateRangeSelector,
+    GmapsAutoComplete,
   },
   props: {
     msg: String,
-    dateRange: Array
   },
   data: () => ({
     
+    //files: [],
     listingTitle: "",
     streetAddress: "",
-    listingCity: "",
-    listingState: "",
     //listingImages = [], will use temp images for now
     listingDescription: "",
     ownerName: "",
@@ -165,10 +163,14 @@ export default {
     poolCheckbox: false,
     parkingCheckbox: false,
     greenspaceCheckbox: false,
-
-    items: ['1', '2', '3', '4', '5'],
-    bedrooms: ['1', '2', '3', '4', '5'],
-    baths: ['1', '1.5', '2', '2.5', '3', '3.5'],
+    userSelectedPlace: "",
+    beds: "",
+    bedrooms: "",
+    baths: "",
+    dateRange: [], 
+    totalBeds: ['1', '2', '3', '4', '5'],
+    totalBedrooms: ['1', '2', '3', '4', '5'],
+    totalBaths: ['1', '1.5', '2', '2.5', '3', '3.5'],
     properties: ["Entire House", "Full Apartment", "Private Room",],
     states: [
       'Alabama', 'Alaska', 'American Samoa', 'Arizona',
@@ -200,18 +202,15 @@ export default {
       
       // Set variables equal to inputs from forms
       const listingTitle = this.listingTitle;
-      const streetAddress = this.streetAddress;
-      const listingCity = this.listingTitle;
       const listingDescription = this.listingDescription;
       const ownerName = this.ownerName;
       const ownerEmail = this.ownerEmail;
       const ownerNumber = this.ownerNumber;
       const listingPrice = this.price;
-      const listingState = this.listingState;
       const propertyType = this.type;
       const totalBeds = this.beds; 
       const totalBedrooms = this.bedrooms; 
-      const totalBaths = this.bathrooms; 
+      const totalBaths = this.baths; 
       const hasWifi = this.wifiCheckbox;
       const hasAC = this.acCheckbox;
       const hasWasherDryer = this.washerCheckbox;
@@ -219,6 +218,16 @@ export default {
       const hasPool = this.poolCheckbox;
       const hasParking = this.parkingCheckbox;
       const hasGreenspace = this.greenspaceCheckbox;
+      //const files = this.files;
+
+      let address = '';
+      if (this.userSelectedPlace.address_components) {
+        address = [
+          (this.userSelectedPlace.address_components[0] && this.userSelectedPlace.address_components[0].short_name || ''),
+          (this.userSelectedPlace.address_components[1] && this.userSelectedPlace.address_components[1].short_name || ''),
+          (this.userSelectedPlace.address_components[2] && this.userSelectedPlace.address_components[2].short_name || '')
+        ].join(' ');
+      }
 
       // Create Listing Object
       const currentListing = {
@@ -237,37 +246,31 @@ export default {
           email: ownerEmail
         },
         amenities: {
-          hasWifi: hasWifi,
-          hasAC: hasAC,
-          hasWasherDryer: hasWasherDryer,
-          hasGym: hasGym,
-          hasPool: hasPool,
-          hasParking: hasParking,
-          hasGreenspace: hasGreenspace
+          wifi: hasWifi,
+          ac: hasAC,
+          washer: hasWasherDryer,
+          gym: hasGym,
+          pool: hasPool,
+          parking: hasParking,
+          greenspace: hasGreenspace
         },
-        streetAddress: streetAddress,
-        listingCity: listingCity,
-        listingState: listingState,
+        streetAddress: address,
         totalBeds: totalBeds,
         totalBedrooms: totalBedrooms,
         totalBaths: totalBaths,
         startTimeStamp: this.dateRange[0],
-        endTimeStamp: this.dateRange[1]
+        endTimeStamp: this.dateRange[1],
+        longitude: this.userSelectedPlace.geometry.location.lng(),
+        latitude: this.userSelectedPlace.geometry.location.lat(),
       }
-      
-      console.log(this.dateRange);
 
-      let response = await fetch('/locations', {
+      let response = await fetch(WEBSITE_URL + '/locations', {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(currentListing)
       })
-      
-      console.log(totalBeds);
-      console.log(totalBedrooms);
-      console.log(totalBaths);
 
       if (response.ok){
         // Success Alert
@@ -279,7 +282,11 @@ export default {
 
     showForm: function() {
       this.isEmptyState = false;
-    }
+    },
+
+    onUserSelectedAddress: function(place) {
+      this.userSelectedPlace = place;
+    },
 
   }
 }
@@ -291,6 +298,11 @@ export default {
   width: 500px;
 }
 
+.listing-address-entry {
+  display: flex;
+  width: 500px !important;
+  position: relative !important;
+}
 .dates {
   display: flex;
   justify-content: space-evenly;
