@@ -134,7 +134,7 @@ public class LocationsServlet extends HttpServlet {
         taskEntity.setProperty(key, millisToDate);
       } else if (key.equals("amenities")) {
         taskEntity.setProperty(key, createEmbeddedEntity(listingJson.getAsJsonObject(key), true));
-      }else {
+      } else {
         JsonElement element = listingJson.get(key);
         taskEntity.setProperty(key, element.getAsJsonPrimitive().getAsString());
       }
@@ -151,12 +151,11 @@ public class LocationsServlet extends HttpServlet {
     EmbeddedEntity embeddedInfo = new EmbeddedEntity();
     for (String embeddedKey : info.keySet()) {
       JsonElement element = info.get(embeddedKey);
-      if (saveAsBool){ 
+      if (saveAsBool) {
         embeddedInfo.setProperty(embeddedKey, element.getAsJsonPrimitive().getAsBoolean());
       } else {
         embeddedInfo.setProperty(embeddedKey, element.getAsJsonPrimitive().getAsString());
       }
-      
     }
 
     return embeddedInfo;
