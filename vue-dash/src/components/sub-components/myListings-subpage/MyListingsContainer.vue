@@ -52,7 +52,7 @@ export default {
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-
+    
     border-right: 1px solid #dbdbdb;
     padding: 16px;
   }

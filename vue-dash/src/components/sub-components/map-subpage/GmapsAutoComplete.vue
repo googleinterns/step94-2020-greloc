@@ -1,5 +1,5 @@
 <template>
-  <div id="gmaps-auto-complete-container">
+  <div :id="forReloMap ? 'gmaps-auto-complete-container': 'gmaps-auto-complete-container-edit-listing'">
     <div 
       id="relo-search-container"
       :style="[showClearMarkers
@@ -105,7 +105,8 @@ export default {
             return;
           }
           
-          // TODO: Erik, create your implementation here        
+          this.$root.$emit(EVENTS.userSelectedAddress, place);
+
       }.bind(this));
     },
 
@@ -139,6 +140,19 @@ export default {
     background: #FAFAFA;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.12), 0px 0px 2px rgba(0, 0, 0, 0.14);
   }
+
+  #gmaps-auto-complete-container-edit-listing {
+    position: relative;
+    height: 56px;
+    width: 500px;
+    
+    align-items: center;
+    justify-content: space-between;
+
+    background: #FAFAFA;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.12), 0px 0px 2px rgba(0, 0, 0, 0.14);
+  }
+
 
   #relo-search-container {
     height: 100%;    
