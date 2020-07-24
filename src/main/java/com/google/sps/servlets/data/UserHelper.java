@@ -1,23 +1,20 @@
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
-import javax.servlet.http.HttpServletRequest;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import javax.servlet.http.HttpServletRequest;
 import com.google.sps.servlets.AuthorizationServlet;
+import javax.servlet.http.HttpServletRequest;
 
 public final class UserHelper {
 
-  private DatastoreService datastore; 
+  private DatastoreService datastore;
 
   public UserHelper(DatastoreService datastore) {
     this.datastore = datastore;
-  
   }
 
   public Boolean doesUserEmailExist(HttpServletRequest request) {
@@ -27,7 +24,7 @@ public final class UserHelper {
     Query query = new Query("User Data");
     PreparedQuery results = datastore.prepare(query);
 
-    if(request.getUserPrincipal().getName() == null) {
+    if (request.getUserPrincipal().getName() == null) {
       return false;
     }
 
@@ -37,22 +34,22 @@ public final class UserHelper {
       Long userType = (Long) entity.getProperty("Type");
 
       // Checking to see if user has an account in the entity
-     if (userType == 4) {
-      } else if(emailStored == null) {
+      if (userType == 4) {
+      } else if (emailStored == null) {
       } else if (currentEmail.equals(emailStored)) {
         return true;
       }
     }
     return false;
-  } 
+  }
 
   public Type getUserType(HttpServletRequest request) {
     Type type = null;
 
-    if(doesUserEmailExist(request) == true) {
-      type = AuthorizationServlet.processType(request); 
+    if (doesUserEmailExist(request) == true) {
+      type = AuthorizationServlet.processType(request);
     }
-    System.out.println(type); 
+    System.out.println(type);
     return type;
   }
 }

@@ -28,9 +28,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
-
 /* This class handles authorization of the user*/
 
 @WebServlet("/authorization")
@@ -63,7 +60,6 @@ public class AuthorizationServlet extends HttpServlet {
     response.sendRedirect("/dashboard/index.html");
   }
 
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html;");
@@ -75,7 +71,6 @@ public class AuthorizationServlet extends HttpServlet {
     Query query = new Query("User Data");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-
 
     // Iterating through the entity
     for (Entity entity : results.asIterable()) {
@@ -105,7 +100,7 @@ public class AuthorizationServlet extends HttpServlet {
     }
     System.out.println("Cannot find that email in the datastore");
     response.sendRedirect("/registration.html");
-   }
+  }
 
   // A helper method that helps identifies the UserType
   private Type processType(HttpServletRequest request) {
