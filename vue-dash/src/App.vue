@@ -2,8 +2,9 @@
   <div id="app">
     <v-app>
         <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons" rel="stylesheet">
-        <div id="dashboard-container">
-          <NavBar/>
+        <div id="dashboard-container">          
+          <NavBarMobile v-if="$vuetify.breakpoint.mobile"/>
+          <NavBar v-else/>
           
           <v-main>
             <router-view :key="$route.fullPath"/>
@@ -15,11 +16,13 @@
 
 <script>
 import NavBar from './components/NavBar.vue'
+import NavBarMobile from './components/NavBarMobile.vue'
 
 export default {
   name: 'App',
   components: {
-    NavBar
+    NavBar,
+    NavBarMobile
   }
 }
 </script>
@@ -35,8 +38,13 @@ export default {
     --branding-yellow: #fbbc05;
     --branding-green: #34a853;
 
+    --nav-bar-color: #505050;
+
     --text-heading: #515151;
     --text-subtle: #727272;
+
+    --size-sm-max-width: 600px;
+    --size-md-max-width: 960px;
   }
 
   * {
@@ -89,6 +97,12 @@ export default {
 
   .empty-state-text {
     color: rgba(0,0,0,.87);
+  }
+
+  @media screen and (max-width: var(--size-md-max-width)) {
+    div.example {
+      flex-direction: column;
+    }
   }
 </style>
 

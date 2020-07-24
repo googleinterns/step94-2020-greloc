@@ -70,7 +70,7 @@ export default {
   }
 
   #dash-nav-drawer {
-    background-color: #505050;
+    background-color: var(--nav-bar-color);
   }
 
   #dash-nav-header {

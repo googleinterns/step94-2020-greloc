@@ -54,6 +54,12 @@ export default {
       this.dateRangeSelectedEvent(dateRange);
     });
 
+    console.log(this.$vuetify.breakpoint.xs)
+    console.log(this.$vuetify.breakpoint.sm)
+    console.log(this.$vuetify.breakpoint.md)
+    console.log(this.$vuetify.breakpoint.lg)
+    console.log(this.$vuetify.breakpoint.xl)
+
     // this.createListing();
   },
 
