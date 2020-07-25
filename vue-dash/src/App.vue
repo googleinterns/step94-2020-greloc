@@ -3,7 +3,9 @@
     <v-app>
         <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons" rel="stylesheet">
         <div id="dashboard-container">          
-          <NavBarMobile v-if="$vuetify.breakpoint.mobile"/>
+          <NavBarMobileBottom 
+            v-if="$vuetify.breakpoint.mobile"
+          />
           <NavBar v-else/>
           
           <v-main>
@@ -16,13 +18,13 @@
 
 <script>
 import NavBar from './components/NavBar.vue'
-import NavBarMobile from './components/NavBarMobile.vue'
+import NavBarMobileBottom from './components/NavBarMobileBottom.vue'
 
 export default {
   name: 'App',
   components: {
     NavBar,
-    NavBarMobile
+    NavBarMobileBottom
   }
 }
 </script>
@@ -42,9 +44,10 @@ export default {
 
     --text-heading: #515151;
     --text-subtle: #727272;
+    --text-main: #5c5c5c;
 
     --size-sm-max-width: 600px;
-    --size-md-max-width: 960px;
+    --size-md-max-width: 1025px;
   }
 
   * {
@@ -80,7 +83,6 @@ export default {
   }
 
   .subpage {
-
     background-color: var(--background-color-light);
     height: 100vh;
     width: 100%;
@@ -99,9 +101,9 @@ export default {
     color: rgba(0,0,0,.87);
   }
 
-  @media screen and (max-width: var(--size-md-max-width)) {
-    div.example {
-      flex-direction: column;
+  @media screen and (max-width: 1025px) {
+    .subpage {
+      padding-bottom: 60px !important;
     }
   }
 </style>

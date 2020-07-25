@@ -1,15 +1,38 @@
 <template>
-    <div class="subpage" id="map-subpage">
-        <v-progress-linear 
-          absolute 
-          indeterminate
-          :color="loadingBarColor"
-          height="10px"
-          :active="isLoading"
-        ></v-progress-linear>
-      <ListingsContainer :dateRange=selectedDateRange :officeSelectedEvent="officeSelectedEvent" :listings="listings"/>
-      <MapContainer :dateRange="selectedDateRange" :selectedOffice="selectedOffice" :listings="listings"/>
-    </div>
+  <div class="subpage" id="map-subpage">
+    <v-progress-linear 
+      absolute 
+      indeterminate
+      :color="loadingBarColor"
+      height="10px"
+      :active="isLoading"
+    ></v-progress-linear>
+
+    <ListingsContainer 
+      :style="[(mapVisible && $vuetify.breakpoint.mobile)
+      ? {'display': 'none'} : {'display': 'flex'}]"
+      :dateRange=selectedDateRange 
+      :officeSelectedEvent="officeSelectedEvent" 
+      :listings="listings"
+    />
+    
+    <MapContainer 
+      :style="[showMapContainer
+      ? {'display': 'flex'} : {'display': 'none'}]"
+      :dateRange="selectedDateRange" 
+      :selectedOffice="selectedOffice" 
+      :listings="listings"
+    />
+
+    <button 
+      id="control-fab"
+      v-if="$vuetify.breakpoint.mobile"
+      v-on:click="controlFabClicked()"
+    >
+      <v-icon color="#ffffff" style="margin-right: 0.5rem;">{{mapVisible ? "mdi-view-list" : "mdi-map"}}</v-icon>
+      <span>{{mapVisible ? "List" : "Map"}}</span>
+    </button>
+  </div>
 </template>
 
 <script>
@@ -54,11 +77,9 @@ export default {
       this.dateRangeSelectedEvent(dateRange);
     });
 
-    console.log(this.$vuetify.breakpoint.xs)
-    console.log(this.$vuetify.breakpoint.sm)
-    console.log(this.$vuetify.breakpoint.md)
-    console.log(this.$vuetify.breakpoint.lg)
-    console.log(this.$vuetify.breakpoint.xl)
+    this.$root.$on(EVENTS.listingSelected, () => {
+      this.listingSelectedEvent();
+    });    
 
     // this.createListing();
   },
@@ -72,15 +93,22 @@ export default {
     userData: Object
   },
 
+  computed: {
+    showMapContainer: function (){
+      return !this.$vuetify.breakpoint.mobile || this.mapVisible;
+    }
+  },
+
   data: () => ({
     listings: [],
     offices: [],
     selectedOffice: null,
     selectedDateRange: null,
     
-    
     isLoading: false,
-    loadingBarColor: "#4285f4"
+    loadingBarColor: "#4285f4",
+
+    mapVisible: false
   }),
 
   methods: {
@@ -107,10 +135,61 @@ export default {
     },    
 
     attemptRetrieveListings: async function(office) {
-
       if (this.getListingsConditionsNotMet()) {
         return;
       }
+
+      let reData = [
+        {
+          propertyMap: {
+            name: "Cozy Apartment - (July 21st - August 30th)",
+            price: "$2,500",
+            type: "Full Apartment",
+            desc: "Tidy apartment with beatiful furniture",
+            images: [
+              "https://stmedia.stimg.co/1010121201_mavenrendering.jpg?fit=crop&crop=faces",
+              "https://cloudfront-us-east-1.images.arcpublishing.com/gray/EJ77UNGM7VG3XGH5TVTPIGODEU.jpg",
+            ],
+            beds: 3,
+            bedrooms: 2,
+            baths: 2,
+            guests: 3,
+            contactInfo: {
+              name: "Emily Pierre",
+              phone: "777-777-777",
+              email: "epierre@google.com"
+            },
+            googlerOwned: true,
+            listingStartDate: 1595373644000, // July 21st
+            listingEndDate: 1598829644000,// August 30th
+            latitude: 37.395720,
+            longitude: -122.028570,
+            amenities: {
+              value: {
+                propertyMap: {
+                  wifi: true,
+                  pool: true,
+                  washer: true,
+                  gym: true,
+                  parking: true,
+                  ac: true
+                }
+              }
+            }
+          }
+        }
+
+      ];
+      this.listings = reData;
+      this.$root.$emit(EVENTS.newListings, reData);
+      this.$root.$emit(EVENTS.mapSubpageLoading, {
+        isLoading: false,
+        forEvent: EVENTS.newListings 
+      });
+
+      /*eslint-disable no-unreachable */
+      return;
+      /// DELETE EVERYTHING ABOVE THIS LINE TO reDATA
 
       this.$root.$emit(EVENTS.mapSubpageLoading, {
         isLoading: true,
@@ -140,7 +219,20 @@ export default {
 
     getListingsConditionsNotMet: function() {      
       return this.selectedOffice == null || this.selectedDateRange == null;
-    },    
+    },
+    
+    listingSelectedEvent: function() {
+      if (this.$vuetify.breakpoint.mobile) {
+        this.mapVisible = true;
+      }
+    },
+
+    controlFabClicked: function () {
+      if (this.mapVisible) {
+        this.$root.$emit(EVENTS.listingDeselected);
+      }
+      this.mapVisible = !this.mapVisible;
+    },
 
     createListing: async function() {
         
@@ -167,10 +259,35 @@ export default {
 
 <style scoped>
   #map-subpage {
+    position: relative;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     padding-bottom: 0;
     padding-right: 0;
+  }
+
+  #control-fab {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    position: absolute;
+    bottom: 70px;
+    width: fit-content;
+    padding: 10px 20px;
+
+    color: #ffffff;
+    background-color: var(--branding-blue);
+    border-radius: 30px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.20);
+
+  }
+
+  @media screen and (max-width: 1025px) {
+    #map-subpage {
+      flex-direction: column;
+      align-items: center;
+    }
   }
 </style>

@@ -302,7 +302,6 @@ export default {
       
       this.directionsService.route(request, function(result, status) {
         if (status == 'OK') {
-          console.log(this.selectedListing);
           this.directionsRenderer.setDirections(result);
         }
       }.bind(this));

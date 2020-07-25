@@ -56,11 +56,11 @@ export default {
   props: {
     listings: Array,
     selectedOffice: Object,
-    dateRange: Array,
-    selectedListing: Object,
+    dateRange: Array
   },
   data: () => ({
-    google: null
+    google: null,
+    selectedListing: null,
   }),
 
   computed: {
@@ -75,7 +75,6 @@ export default {
 
   methods: {
     listingSelectedEvent: function(listing) {
-      console.log("weee");
       this.selectedListing = listing;
     }
   }
