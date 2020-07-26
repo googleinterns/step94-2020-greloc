@@ -8,6 +8,7 @@
       v-model="busStopSelected"
       label="Bus Stops"
       color="var(--branding-blue)"
+      :dense="$vuetify.breakpoint.mobile"
     ></v-checkbox>
 
     <v-checkbox
@@ -16,6 +17,7 @@
       v-model="recreationSelected"
       label="Recreation"
       color="var(--branding-red)"
+      :dense="$vuetify.breakpoint.mobile"
     ></v-checkbox>
 
     <v-checkbox
@@ -24,6 +26,7 @@
       v-model="diningSelected"
       label="Dining"
       color="var(--branding-yellow)"
+      :dense="$vuetify.breakpoint.mobile"
     ></v-checkbox>
 
     <v-checkbox
@@ -32,6 +35,7 @@
       v-model="grocerySelected"
       label="Grocery"
       color="var(--branding-green)"
+      :dense="$vuetify.breakpoint.mobile"
     ></v-checkbox>        
   </div>
 </template>
@@ -171,7 +175,7 @@ export default {
     padding: 16px;
     position: absolute;
     bottom: 20px;
-    left: 20px;
+    left: 10px;
 
     background: #FAFAFA;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.12), 0px 0px 2px rgba(0, 0, 0, 0.14);
@@ -188,5 +192,16 @@ export default {
     margin: 0;
   }
 
+  @media screen and (max-width: 1025px) {
+    h1 {
+      font-size: 18px;
+      margin-bottom: 0.5rem;
+    }
+    
+    #map-options {
+      width: auto;
+      padding: 16px 16px 0px 16px;
+    }
+  }
 
 </style>

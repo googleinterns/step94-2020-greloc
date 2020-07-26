@@ -7,6 +7,7 @@
         v-for="(listing, index) in listings"
         :key="index"
         @click="onUserSelectsListing(listing)"
+        class="pa-0"
       >
         <Listing :listingInfo="listing"/>
         <v-divider></v-divider>
