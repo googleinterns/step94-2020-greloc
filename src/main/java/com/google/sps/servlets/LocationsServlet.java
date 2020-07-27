@@ -42,11 +42,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.sps.data.UserServiceHelper;
+import com.google.sps.data.UserServiceHelper.Callback;
+
 
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/locations")
-public class LocationsServlet extends HttpServlet {
-
+public abstract class LocationsServlet extends HttpServlet implements Callback {
   private final int numListings = 10;
   GmapsHelper gmaps = GmapsHelper.getInstance();
 
@@ -113,15 +115,9 @@ public class LocationsServlet extends HttpServlet {
     return filteredEntities;
   }
 
-  // MARK: POST
-  @Override // Creates a new listing
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    createListing(request);
-  }
-
-  private void createListing(HttpServletRequest request) throws IOException {
-
-    // To be used for timestamp
+  public void handleResponse(HttpServletResponse response, HttpServletRequest request, Type type) throws IOException {
+    System.out.println(type);
+     // To be used for timestamp
     long timestamp = System.currentTimeMillis();
     String userID = "0919199";
 
@@ -138,7 +134,37 @@ public class LocationsServlet extends HttpServlet {
     // Placing Entity in datastore for persistant storage
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(taskEntity);
+
+}
+
+
+  // MARK: POST
+  @Override // Creates a new listing
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // createListing(request);
+    UserServiceHelper.authUser(this, response, request);
   }
+
+
+  // private void createListing(HttpServletRequest request) throws IOException {
+  //     // To be used for timestamp
+  //   long timestamp = System.currentTimeMillis();
+  //   String userID = "0919199";
+
+  //   // Create JSON object with GSON
+  //   String requestData = request.getReader().lines().collect(Collectors.joining());
+  //   JsonObject listingJson = new Gson().fromJson(requestData, JsonObject.class);
+
+  //   // Creating DataStore Entity
+  //   Entity taskEntity = new Entity(EntityType.BUS_STOP.getValue());
+  //   taskEntity.setProperty("userID", userID);
+  //   taskEntity.setProperty("timestamp", timestamp);
+  //   addJsonPropertiesToListingEntity(listingJson, taskEntity);
+
+  //   // Placing Entity in datastore for persistant storage
+  //   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  //   datastore.put(taskEntity);
+  // }
 
   private void addJsonPropertiesToListingEntity(JsonObject listingJson, Entity taskEntity) {
     for (String key : listingJson.keySet()) {

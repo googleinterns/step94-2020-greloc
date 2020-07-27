@@ -21,7 +21,7 @@ public final class UserHelper {
     UserService userService = UserServiceFactory.getUserService();
 
     // Creating a Query to search through the datastore
-    Query query = new Query("testData");
+    Query query = new Query("UserData");
     PreparedQuery results = datastore.prepare(query);
 
     if (request.getUserPrincipal().getName() == null) {
@@ -34,8 +34,8 @@ public final class UserHelper {
       Long userType = (Long) entity.getProperty("Type");
 
       // Checking to see if user has an account in the entity
-      if (userType == 4) {
-      } else if (emailStored == null) {
+     if (userType == UserType.UNKNOWN.getValue()) {
+      } else if(emailStored == null) {
       } else if (currentEmail.equals(emailStored)) {
         return true;
       }
@@ -43,13 +43,13 @@ public final class UserHelper {
     return false;
   }
 
-  public com.google.sps.data.Type getUserType(HttpServletRequest request) {
-    com.google.sps.data.Type type = null;
+  public UserType getUserType(HttpServletRequest request) {
+    UserType type = null;
 
     if (doesUserEmailExist(request) == true) {
       type = AuthorizationServlet.processType(request);
     }
-    System.out.println(type);
+    System.out.println("Type from UserHelper" + type); 
     return type;
   }
 }
