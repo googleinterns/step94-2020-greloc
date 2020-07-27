@@ -29,7 +29,10 @@ import com.google.sps.object.Office;
 import com.google.sps.util.CoordinateCalculator;
 import com.google.sps.util.OfficeManager;
 import com.google.sps.util.QueryHelper;
+import com.google.sps.util.GmapsHelper;
+import com.google.maps.model.LatLng;
 import java.io.IOException;
+import com.google.maps.errors.ApiException;
 import java.lang.reflect.Type;
 import java.time.Instant;
 import java.util.Date;
@@ -45,10 +48,12 @@ import javax.servlet.http.HttpServletResponse;
 public class LocationsServlet extends HttpServlet {
 
   private final int numListings = 10;
+  GmapsHelper gmaps = GmapsHelper.getInstance();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+    // Reading query string parameters
     String office = request.getParameter("office");
     Instant startDate = Instant.ofEpochMilli(Long.parseLong(request.getParameter("startMillis")));
     Instant endDate = Instant.ofEpochMilli(Long.parseLong(request.getParameter("endMillis")));
@@ -60,27 +65,38 @@ public class LocationsServlet extends HttpServlet {
         QueryHelper.getDistanceBasedEntities(
             EntityType.LISTING, numListings, selectedOffice, distanceInKilometers);
 
-    List<Entity> filteredEntityListByLatitude =
-        CoordinateCalculator.filterOutOfRangeLatitudeEntities(
-            distanceInKilometers,
-            selectedOffice.getLatitude(),
-            selectedOffice.getLongitude(),
-            entityList);
-
-    List<Entity> filteredListByDateRange;
     try {
-      filteredListByDateRange =
-          QueryHelper.filterOutOfDateRangeListings(
-              filteredEntityListByLatitude, startDate, endDate);
+      entityList = runAllFiltersOnListings(entityList, selectedOffice, distanceInKilometers, startDate, endDate);
     } catch (InvalidDateRangeException e) {
-      // If DateRange malformed
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return;
+    } catch (ApiException | InterruptedException | IOException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
 
     Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(filteredListByDateRange));
+    response.getWriter().println(gson.toJson(entityList));
+  }
+
+  private List<Entity> runAllFiltersOnListings(List<Entity> originalEntities, Office selectedOffice, double distanceInKilometers, Instant startDate, Instant endDate) throws InvalidDateRangeException, ApiException, InterruptedException, IOException {
+
+    List<Entity> filteredEntities =
+        CoordinateCalculator.filterOutOfRangeLatitudeEntities(
+            distanceInKilometers,
+            selectedOffice.getLatitude(),
+            selectedOffice.getLongitude(),
+            originalEntities);
+
+    filteredEntities =
+    QueryHelper.filterOutOfDateRangeListings(filteredEntities, startDate, endDate);
+
+    int distanceFromOfficeKilometers = 2;
+    LatLng officeCoordinates = new LatLng(selectedOffice.getLatitude(), selectedOffice.getLongitude());
+    filteredEntities = QueryHelper.filterOutEntitiesWithGmapsRouteDistance(officeCoordinates, filteredEntities, distanceInKilometers, gmaps);
+
+    return filteredEntities;
   }
 
   // MARK: POST

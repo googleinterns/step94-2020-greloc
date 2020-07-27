@@ -14,6 +14,11 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import com.google.maps.model.LatLng;
+import com.google.sps.util.CoordinateCalculator.CoordinateType;
+import com.google.maps.model.DistanceMatrixRow;
+import com.google.maps.errors.ApiException;
+import java.io.IOException;
 
 public final class QueryHelper {
 
@@ -40,6 +45,37 @@ public final class QueryHelper {
     PreparedQuery results = datastore.prepare(query);
 
     return results.asList(FetchOptions.Builder.withLimit(entityLimit));
+  }
+
+  /**
+   * Lorem ipsum
+   *
+   * @param entities: The type of entity to be queried
+   * @param origin: The max number of entityType to return
+   * @param kilometers: Distance in kilometers to create a range with from the office's center
+   * @return List of filtered entities
+   */
+  public static List<Entity> filterOutEntitiesWithGmapsRouteDistance(LatLng destination, List<Entity> originEntities, double distanceLimitKilometers, GmapsHelper gmaps) throws ApiException, InterruptedException, IOException {
+    
+    LatLng[] origins = new LatLng[originEntities.size()];
+    for (int i = 0; i < originEntities.size(); i++) {
+      Entity entity = originEntities.get(i);
+      double entityLat = (double) entity.getProperty(CoordinateType.LATITUDE.getValue());
+      double entityLong = (double) entity.getProperty(CoordinateType.LONGITUDE.getValue());
+      origins[i] = new LatLng(entityLat, entityLong);
+    }
+
+    DistanceMatrixRow[] results = gmaps.routeDistanceBetweenPoints(destination, origins);
+    
+    List<Entity> filteredList = new ArrayList<>();
+    for (int i = 0; i < results.length; i++) {      
+      double distanceLimitMeters = (distanceLimitKilometers * 1000);
+      if (results[i].elements[0].distance.inMeters < distanceLimitMeters) {
+        filteredList.add(originEntities.get(i));
+      }
+    }
+
+    return filteredList;
   }
 
   /**

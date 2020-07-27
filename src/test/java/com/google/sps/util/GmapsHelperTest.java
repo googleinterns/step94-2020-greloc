@@ -20,6 +20,8 @@ import com.google.maps.model.PlaceType;
 import com.google.maps.model.PlacesSearchResult;
 import com.google.sps.enums.CategoryGroup;
 import com.google.sps.exception.InvalidCategoryGroupException;
+import com.google.maps.model.LatLng;
+import com.google.maps.model.DistanceMatrixRow;
 import java.io.IOException;
 import org.junit.After;
 import org.junit.Assert;
@@ -37,7 +39,7 @@ public final class GmapsHelperTest {
 
   @Before
   public void setUp() {
-    gmaps = new GmapsHelper(false);
+    gmaps = GmapsHelper.getTestInstance();
   }
 
   @After
@@ -87,6 +89,18 @@ public final class GmapsHelperTest {
     Assert.assertEquals(true, isJSONValid(results));
   }
 
+  @Test
+  public void testrouteDistanceBetweenPoints()
+      throws ApiException, InterruptedException, IOException {
+    
+    // Google TC3 to Denny's (1 mile distance)
+    DistanceMatrixRow[] results = gmaps.routeDistanceBetweenPoints(new LatLng(37.402971, -122.032619), new LatLng(37.396145, -122.027790));
+    System.out.println("Distance: " + results[0].elements[0].distance);
+    System.out.println("Duration: " + results[0].elements[0].duration);
+    System.out.println("durationInTraffic: " + results[0].elements[0].durationInTraffic);
+    System.out.println("durationInTraffic: " + results[0].elements[0].status); 
+  }
+
   private boolean isJSONValid(String jsonInString) {
     Gson gson = new Gson();
     try {
@@ -94,17 +108,6 @@ public final class GmapsHelperTest {
       return true;
     } catch (com.google.gson.JsonSyntaxException ex) {
       return false;
-    }
-  }
-
-  private void runTestCode() {
-    GmapsHelper gmaps = new GmapsHelper(false);
-    try {
-      String results =
-          gmaps.searchNearbyCategoryGroup(CategoryGroup.GROCERY, 37.4030, -122.0326, 5000);
-      System.out.println(results);
-    } catch (Exception e) {
-      e.printStackTrace();
     }
   }
 }
