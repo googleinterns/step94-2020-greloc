@@ -44,11 +44,11 @@ public class AuthorizationServlet extends HttpServlet {
     System.out.println("Entered doPOST method");
 
     // Creating a user from the registration page
-    final String emailEntered = request.getUserPrincipal().toString();
+    final String emailEntered = request.getUserPrincipal().getName();
     final String typeEntered = processType(request).toString();
 
     // Creating an UserEntity
-    Entity taskEntity = new Entity("User Data");
+    Entity taskEntity = new Entity("UserData");
     taskEntity.setProperty("Email", emailEntered);
     taskEntity.setProperty("Type", typeEntered);
 
@@ -56,12 +56,9 @@ public class AuthorizationServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(taskEntity);
 
-    // After user registers, send to the dashboard page
+    // After user email is stored in database, send to the dashboard page
     response.sendRedirect("/dashboard/index.html");
   }
-
-  // After user is logged in, send to the dashboard
-  // response.sendRedirect("/dashboard/index.html");
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -77,7 +74,7 @@ public class AuthorizationServlet extends HttpServlet {
 
     // Iterating through the entity
     for (Entity entity : results.asIterable()) {
-      final String currentEmail = request.getUserPrincipal().toString();
+      final String currentEmail = request.getUserPrincipal().getName();
       String emailStored = (String) entity.getProperty("Email");
       String userType = (String) entity.getProperty("Type");
 
