@@ -22,10 +22,10 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.maps.model.LatLng;
 import com.google.sps.enums.EntityType;
 import com.google.sps.exception.InvalidDateRangeException;
 import com.google.sps.object.Office;
-import com.google.maps.model.LatLng;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -169,10 +169,13 @@ public final class QueryHelperTest {
     int distanceFromOfficeKilometers = 2;
     GmapsHelper gmaps = GmapsHelper.getTestInstance();
     List<Entity> listings = getGmapsDistanceTestEntities();
-    
-    LatLng testOfficeCoordinates = new LatLng(ROUTE_TEST_OFFICE.getLatitude(), ROUTE_TEST_OFFICE.getLongitude());
-    List<Entity> results = QueryHelper.filterOutEntitiesWithGmapsRouteDistance(testOfficeCoordinates, listings, distanceFromOfficeKilometers, gmaps);
-        
+
+    LatLng testOfficeCoordinates =
+        new LatLng(ROUTE_TEST_OFFICE.getLatitude(), ROUTE_TEST_OFFICE.getLongitude());
+    List<Entity> results =
+        QueryHelper.filterOutEntitiesWithGmapsRouteDistance(
+            testOfficeCoordinates, listings, distanceFromOfficeKilometers, gmaps);
+
     Assert.assertEquals(1, results.size());
     Assert.assertEquals("near", (String) results.get(0).getProperty("name"));
   }
