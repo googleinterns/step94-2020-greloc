@@ -6,6 +6,7 @@
       @click="onCloseClick()"
       dark
       fab
+      v-if="!$vuetify.breakpoint.mobile"
     >
       <v-icon>mdi-chevron-down</v-icon>
     </v-btn>
@@ -22,7 +23,7 @@
     </div>
   
     <div id="content-container">
-      <div id="image-container">
+      <div id="image-container" v-if="!$vuetify.breakpoint.mobile">
         <img 
           class="carousel-image" 
           v-for="(image, index) in selectedListing.propertyMap.images"
@@ -31,6 +32,19 @@
           :alt="index"
         >
       </div>
+      <v-carousel 
+        v-else
+        id="mobile-image-carousel"        
+        hide-delimiter-background
+        :show-arrows="false"
+        height="250px"
+      >
+        <v-carousel-item
+          v-for="(image, index) in selectedListing.propertyMap.images"
+          :key="index"
+          :src="image"
+        ></v-carousel-item>
+      </v-carousel>      
       <p id="description-cont">
         {{selectedListing.propertyMap.desc}}
       </p>
@@ -40,21 +54,18 @@
       <div id="contact-card">
         <h3 class="sidebar-titles">Owner</h3>
       </div>
-
-      <ul 
-        v-if="visibleAmenities.length > 0"
-        id="amenities-card"
-      >
+      <div id="amenities-card" v-if="visibleAmenities.length > 0">
         <h3 class="sidebar-titles">Amenities</h3>
-        <li 
-        v-for="(amenity, index) in visibleAmenities"
-        :key="index"
-        >
-          <v-icon class="amenity-icon">{{amenityMap[amenity]["icon"]}}</v-icon> 
-          <span class="amenity-title">{{amenityMap[amenity]["name"]}}</span>
-        </li>
-      </ul>
-
+        <ul id="amenity-list">
+          <li 
+          v-for="(amenity, index) in visibleAmenities"
+          :key="index"
+          >
+            <v-icon class="amenity-icon">{{amenityMap[amenity]["icon"]}}</v-icon> 
+            <span class="amenity-title">{{amenityMap[amenity]["name"]}}</span>
+          </li>
+        </ul>
+      </div>      
     </div>
 
     <div id="footing-container">
@@ -214,8 +225,13 @@ export default {
     row-gap: 1rem;
     column-gap: 1rem;
     grid-template-columns: repeat(4, min-content);
-
   }
+
+  #mobile-image-carousel {
+    margin: 1rem 0;
+    border-radius: 10px;
+    width: calc(100vw - 32px);
+  }  
 
   .carousel-image {
     height: 250px;
@@ -262,12 +278,15 @@ export default {
     box-sizing: border-box;
     border-radius: 5px;    
 
-    list-style: none;
     padding: 16px 16px 0px 16px;
   }
 
   #amenities-card li {
     margin: 1.5rem 0;
+  }
+
+  #amenity-list {
+    list-style: none;
   }
 
   .amenity-title {
@@ -286,7 +305,71 @@ export default {
   #source-descriptor {
     margin-left: 1rem;
     font-size: 18px;
-    color: gray;
+    color: var(--text-main);
   }
 
+  @media screen and (max-width: 1025px) {
+    #info-container {
+      grid-template-areas: 
+        "header"
+        "content"
+        "sidebar"
+        "footer ";
+      overflow-y: scroll;
+      overflow-x: hidden;
+      grid-template-columns: none;
+      padding: 16px;
+
+    }
+
+    #header-container {
+      flex-direction: column;
+    }
+
+    #header-container h1 {
+      font-size: 34px;
+    }
+
+    #header-type {
+      font-size: 24px;
+    }
+
+    .header-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .header-row span {
+      font-size: 20px
+    }    
+
+    #sidebar-container {
+      display: flex;
+      flex-direction: column-reverse;
+      justify-self: start;
+      width: 100%;
+    }
+
+    #amenities-card {
+      margin-bottom: 1rem;
+      border: none;
+      padding: 0;
+    }
+
+    #amenities-card li{
+      margin: 0;
+    }
+
+    #amenity-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: min-content min-content min-content;
+      gap: 0px;
+      list-style: none;
+      padding: 0;
+      row-gap: 2rem;
+      margin-top: 1rem;
+    }
+
+  }
 </style>

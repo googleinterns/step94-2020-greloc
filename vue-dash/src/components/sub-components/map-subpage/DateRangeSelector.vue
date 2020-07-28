@@ -2,12 +2,12 @@
   <div class="date-range-selector">
     
     <div class="picker-container" id="start-date-cont">      
-      <span class="range-label">Start Date:</span>
+      <span class="range-label">Start Date</span>
       <span class="picker-button" @click="dateSelectorOpen=true">{{formattedStartDate}}</span>
     </div>
     
     <div class="picker-container" id="end-date">
-      <span class="range-label">End Date:</span>
+      <span class="range-label">End Date</span>
       <span class="picker-button" @click="dateSelectorOpen=true">{{formattedEndDate}}</span>
     </div>
 
@@ -18,7 +18,7 @@
         v-model="dateRange" 
         scrollable
         multiple
-        landscape
+        :landscape="!$vuetify.breakpoint.mobile"
         elevation="5"
         range
         show-current
@@ -157,4 +157,23 @@ function getFormattedDate(date) {
     opacity: 0;
   }
 
+  @media screen and (max-width: 1025px) {
+    
+    .date-range-selector {
+      justify-content: space-between;
+    }
+
+    #start-date-cont {
+      margin-right: 4rem;
+    }
+
+    .picker-container {
+      flex-direction: column;
+    }
+
+    .range-label {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+  }
 </style>

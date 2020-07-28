@@ -1,5 +1,5 @@
 <template>
-  <div class="indv-listing">
+  <div class="indv-listing pa-0">
     <img class="listing-thumbnail" :src="listingInfo.propertyMap.images[0]" alt="listing-image">
     <div class="info-box">
       <div class="top-row">
@@ -82,5 +82,37 @@ export default {
     height: 100%; 
     width:100%; 
     background-color: transparent;
+  }
+
+  @media screen and (max-width: 1025px) {
+    .indv-listing {
+      height: auto;
+      flex-direction: column;
+    }
+
+    .listing-thumbnail {
+      width: 100%;
+      object-fit: cover;
+      margin-right: 0rem;
+      height: auto;
+      border-radius: 10px;
+    }
+
+    .info-box {
+      flex-direction: column;
+      margin-top: 1rem;
+      width: 100%;      
+    }
+
+    .top-row {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    .top-row h1{
+      font-size: 20px;
+      font-weight: normal;
+      text-overflow: clip;
+    }
   }
 </style>

@@ -1,10 +1,13 @@
 package com.google.sps.util;
 
 import com.google.gson.Gson;
+import com.google.maps.DistanceMatrixApi;
 import com.google.maps.GaeRequestHandler;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PlacesApi;
 import com.google.maps.errors.ApiException;
+import com.google.maps.model.DistanceMatrix;
+import com.google.maps.model.DistanceMatrixRow;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.PlaceType;
 import com.google.maps.model.PlacesSearchResponse;
@@ -17,6 +20,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class GmapsHelper {
+
+  private static GmapsHelper instance = null;
 
   GeoApiContext context;
 
@@ -51,7 +56,7 @@ public class GmapsHelper {
     PlaceType.GROCERY_OR_SUPERMARKET, PlaceType.PHARMACY, PlaceType.PET_STORE, PlaceType.DRUGSTORE
   };
 
-  public GmapsHelper(boolean useAppEngineContextBuilder) {
+  private GmapsHelper(boolean useAppEngineContextBuilder) {
     Dotenv dotenv = Dotenv.load();
     String key = dotenv.get("GMAPS_API_KEY");
 
@@ -60,6 +65,27 @@ public class GmapsHelper {
     } else {
       this.context = new GeoApiContext.Builder().apiKey(key).build();
     }
+  }
+
+  /**
+   * Returns an instance of GmapsHelper using GeoApiContext with GaeRequestHandler, which optimizes
+   * requests for App Engine
+   *
+   * @return GmapsHelper Singleton Instance
+   */
+  public static GmapsHelper getInstance() {
+    if (instance == null) instance = new GmapsHelper(true);
+    return instance;
+  }
+
+  /**
+   * Returns an instance of GmapsHelper using GeoApiContext without GaeRequestHandler
+   *
+   * @return GmapsHelper Singleton Instance
+   */
+  public static GmapsHelper getTestInstance() {
+    if (instance == null) instance = new GmapsHelper(false);
+    return instance;
   }
 
   /**
@@ -146,5 +172,15 @@ public class GmapsHelper {
             .language("en")
             .await();
     return response.results;
+  }
+
+  public DistanceMatrixRow[] routeDistanceBetweenPoints(LatLng destination, LatLng... origins)
+      throws ApiException, InterruptedException, IOException {
+    DistanceMatrix results =
+        DistanceMatrixApi.newRequest(this.context)
+            .origins(origins)
+            .destinations(destination)
+            .await();
+    return results.rows;
   }
 }

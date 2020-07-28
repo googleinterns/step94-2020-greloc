@@ -38,7 +38,6 @@
         v-for="i in 5"
         :key="i"
         color="#555555"
-        min-width="500px"
       > 
       </v-skeleton-loader>
     </div>    
@@ -145,6 +144,23 @@ export default {
   .comment-skeleton {
     width: 100%; 
     margin-bottom: 1rem;
+  }
+
+  /* Media queries cannot accept CSS variables https://stackoverflow.com/a/40723269 */
+  @media screen and (max-width: 1025px) {
+    #listings-cont {
+      min-width: 0 !important;
+      width: 100%;
+      height: 100%;
+
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+
+      border-right: 1px solid #dbdbdb;
+      padding: 16px;
+    }
   }  
 
 </style>
