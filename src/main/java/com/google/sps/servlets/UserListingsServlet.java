@@ -49,11 +49,6 @@ public class UserListingsServlet extends HttpServlet {
       
     // Need to get the Users Unique ID
     String userID = "0919199";
-    //Filter propertyFilter = new FilterPredicate("userID", FilterOperator.EQUAL, userID);
-    //Query query = new Query("Listing").setFilter(propertyFilter);
-
-    //DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    //PreparedQuery results = datastore.prepare(query);
 
     List<Entity> userEntities = QueryHelper.getUserListings(EntityType.LISTING, userID);
 

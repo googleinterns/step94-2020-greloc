@@ -15,31 +15,15 @@ export default {
   },
 
   data: () => ({
-
-    listings: [
-      {
-        name: "Long Stay Villa",
-        type: "Full House",
-        roomsInfo: "6 Guests | 4 Bedroom | 6 Beds | 3 Bath",
-        thumbnail: "assets/long_stay.png",
-        price: "$5,000",
-        googlerOwned: true
-      },
-
-      {
-        name: "Long Stay Villa",
-        type: "Full House",
-        roomsInfo: "6 Guests | 4 Bedroom | 6 Beds | 3 Bath",
-        thumbnail: "assets/long_stay.png",
-        price: "$5,000",
-        googlerOwned: true
-      }      
-    ]
   }),
 
   methods: {
 
-  }
+  },
+
+  props : {
+    listings: Array,
+  },
 }
 </script>
 

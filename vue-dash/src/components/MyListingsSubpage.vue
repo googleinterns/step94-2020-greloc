@@ -12,9 +12,9 @@
 </template>
 
 <script>
+//import MyListingsContainer from './sub-components/myListings-subpage/MyListingsContainer.vue' 
 import ListingForm from './sub-components/myListings-subpage/EditListing.vue'
 import {WEBSITE_URL} from '../utils/constants.js'
-//import MyListingsContainer from './sub-components/myListings-subpage/MyListingsContainer.vue' 
 
 export default {
 
