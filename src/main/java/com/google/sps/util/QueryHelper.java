@@ -7,9 +7,9 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.sps.enums.EntityType;
 import com.google.sps.exception.InvalidDateRangeException;
 import com.google.sps.object.Office;
@@ -76,7 +76,7 @@ public final class QueryHelper {
   }
 
   public static List<Entity> getUserListings(EntityType entityType, String userID) {
-    
+
     Filter propertyFilter = new FilterPredicate("userID", FilterOperator.EQUAL, userID);
     Query query = new Query("Listing").setFilter(propertyFilter);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
