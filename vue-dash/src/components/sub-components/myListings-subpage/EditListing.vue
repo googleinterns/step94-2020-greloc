@@ -141,7 +141,7 @@ export default {
   },
   data: () => ({
     
-    //files: [],
+    files: [],
     listingTitle: "",
     streetAddress: "",
     //listingImages = [], will use temp images for now
@@ -218,7 +218,13 @@ export default {
       const hasPool = this.poolCheckbox;
       const hasParking = this.parkingCheckbox;
       const hasGreenspace = this.greenspaceCheckbox;
-      //const files = this.files;
+      const files = this.files;
+      const imageLinks = [];
+
+      // Save image URL's to image links array
+      for (var i = 0; i < files.length; i++) {
+        this.generateImageURL(imageLinks, files[i]);
+      }
 
       let address = '';
       if (this.userSelectedPlace.address_components) {
@@ -228,6 +234,9 @@ export default {
           (this.userSelectedPlace.address_components[2] && this.userSelectedPlace.address_components[2].short_name || '')
         ].join(' ');
       }
+
+      let startDateMillis = Date.parse(this.dateRange[0]);
+      let endDateMillis= Date.parse(this.dateRange[1]);
 
       // Create Listing Object
       const currentListing = {
@@ -255,11 +264,11 @@ export default {
           greenspace: hasGreenspace
         },
         streetAddress: address,
-        totalBeds: totalBeds,
-        totalBedrooms: totalBedrooms,
-        totalBaths: totalBaths,
-        startTimeStamp: this.dateRange[0],
-        endTimeStamp: this.dateRange[1],
+        beds: totalBeds,
+        bedrooms: totalBedrooms,
+        baths: totalBaths,
+        listingStartDate: startDateMillis,
+        listingEndDate: endDateMillis,
         longitude: this.userSelectedPlace.geometry.location.lng(),
         latitude: this.userSelectedPlace.geometry.location.lat(),
       }
@@ -287,6 +296,17 @@ export default {
     onUserSelectedAddress: function(place) {
       this.userSelectedPlace = place;
     },
+
+    generateImageURL: function(imageArr, img) {
+      const reader = new FileReader();
+      reader.readAsDataURL(img);
+
+      reader.onload =  function(e){
+        const link = e.target.result;
+        imageArr.push(String(link));
+      };
+
+    }
 
   }
 }
