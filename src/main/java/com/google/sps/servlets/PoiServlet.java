@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/poi")
 public class PoiServlet extends HttpServlet {
 
-  private final GmapsHelper gmapsHelper = new GmapsHelper(true);
+  private final GmapsHelper gmapsHelper = GmapsHelper.getInstance();
   private final int radiusMeters = 5000;
 
   @Override

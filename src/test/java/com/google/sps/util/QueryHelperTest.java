@@ -22,6 +22,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.maps.model.LatLng;
 import com.google.sps.enums.EntityType;
 import com.google.sps.exception.InvalidDateRangeException;
 import com.google.sps.object.Office;
@@ -45,6 +46,7 @@ public final class QueryHelperTest {
 
   private DatastoreService ds;
   private final Office TEST_OFFICE = new Office("test", 1, 1);
+  private final Office ROUTE_TEST_OFFICE = new Office("Google_TC3", 37.403001, -122.032618);
 
   private final String JULY_LISTING_ID = "JULY_11_21";
   private final String AUGUST_LISTING_ID = "AUGUST_2_15";
@@ -162,9 +164,25 @@ public final class QueryHelperTest {
     QueryHelper.filterOutOfDateRangeListings(listings, julyTwentySecond, JULY_TWENTY_FIRST);
   }
 
+  @Test
+  public void testFilterOutEntitiesWithGmapsRouteDistance() throws Exception {
+    int distanceFromOfficeKilometers = 2;
+    GmapsHelper gmaps = GmapsHelper.getTestInstance();
+    List<Entity> listings = getGmapsDistanceTestEntities();
+
+    LatLng testOfficeCoordinates =
+        new LatLng(ROUTE_TEST_OFFICE.getLatitude(), ROUTE_TEST_OFFICE.getLongitude());
+    List<Entity> results =
+        QueryHelper.filterOutEntitiesWithGmapsRouteDistance(
+            testOfficeCoordinates, listings, distanceFromOfficeKilometers, gmaps);
+
+    Assert.assertEquals(1, results.size());
+    Assert.assertEquals("near", (String) results.get(0).getProperty("name"));
+  }
+
   private void insertNearListing() {
 
-    // Located roughly 1km from (1,1)
+    // Located roughly 1km linear distance from (1,1)
     Entity testListingNear = new Entity("Listing");
     testListingNear.setProperty("name", "near");
     testListingNear.setProperty("latitude", 1.0063);
@@ -177,7 +195,7 @@ public final class QueryHelperTest {
 
   private void insertFarListing() {
 
-    // Located roughly 10km from (1,1)
+    // Located roughly 10km linear distance from (1,1)
     Entity testListingFar = new Entity("Listing");
     testListingFar.setProperty("name", "far");
     testListingFar.setProperty("latitude", 1.063);
@@ -206,6 +224,28 @@ public final class QueryHelperTest {
 
     testingListings.add(inDateRangeEntity);
     testingListings.add(outDateRangeEntity);
+
+    return testingListings;
+  }
+
+  private List<Entity> getGmapsDistanceTestEntities() {
+
+    List<Entity> testingListings = new ArrayList<>();
+
+    // Located rougly 1.77028km DRIVING distance from ROUTE_TEST_OFFICE
+    Entity testListingNear = new Entity("Listing");
+    testListingNear.setProperty("name", "near");
+    testListingNear.setProperty("latitude", 37.396158);
+    testListingNear.setProperty("longitude", -122.027779);
+
+    // Located rougly 4.18429km DRIVING distance from ROUTE_TEST_OFFICE
+    Entity testListingFar = new Entity("Listing");
+    testListingFar.setProperty("name", "far");
+    testListingFar.setProperty("latitude", 37.373779);
+    testListingFar.setProperty("longitude", -122.032289);
+
+    testingListings.add(testListingNear);
+    testingListings.add(testListingFar);
 
     return testingListings;
   }
