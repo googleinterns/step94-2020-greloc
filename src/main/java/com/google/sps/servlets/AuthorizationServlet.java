@@ -55,42 +55,42 @@ public class AuthorizationServlet extends HttpServlet {
     }
   }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
-      // Creating a user from the registration page
-      final String emailEntered = request.getUserPrincipal().getName();
-      UserType typeEnteredEnum = processType(request);
-      final int typeEnteredInt = typeEnteredEnum.getValue();
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  
+    // Creating a user from the registration page
+    final String emailEntered = request.getUserPrincipal().getName();
+    UserType typeEnteredEnum = processType(request);
+    final int typeEnteredInt = typeEnteredEnum.getValue();
 
 
-      // Creating an UserEntity
-      Entity taskEntity = new Entity("UserData");
-      taskEntity.setProperty("Email", emailEntered);
-      taskEntity.setProperty("Type", typeEnteredInt);
+    // Creating an UserEntity
+    Entity taskEntity = new Entity("UserData");
+    taskEntity.setProperty("Email", emailEntered);
+    taskEntity.setProperty("Type", typeEnteredInt);
 
-      // Storing the Entity in datastore
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      datastore.put(taskEntity);
+    // Storing the Entity in datastore
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(taskEntity);
 
-      // After user email is stored in database, send to the dashboard page
-      response.sendRedirect("/dashboard/index.html");
-    }
+    // After user email is stored in database, send to the dashboard page
+    response.sendRedirect("/dashboard/index.html");
+  }
 
 
   // A helper method that helps identifies the UserType
   public static UserType processType(HttpServletRequest request) {
-    UserType type = null;
-    String userType = request.getParameter("type");
-    if ("renter".equals(userType)) {
-      type = UserType.RENTER;
-    } else if ("host".equals(userType)) {
-      type = UserType.HOST;
-    } else if ("both".equals(userType)) {
-      type = UserType.BOTH;
-    } else if (userType == null) {
-      type = UserType.UNKNOWN;
-    }
-    return type;
+  UserType type = null;
+  String userType = request.getParameter("type");
+  if ("renter".equals(userType)) {
+    type = UserType.RENTER;
+  } else if ("host".equals(userType)) {
+    type = UserType.HOST;
+  } else if ("both".equals(userType)) {
+    type = UserType.BOTH;
+  } else if (userType == null) {
+    type = UserType.UNKNOWN;
   }
+  return type;
+}
 
 }
