@@ -26,6 +26,9 @@ import com.google.sps.enums.EntityType;
 import com.google.sps.exception.InvalidDateRangeException;
 import com.google.sps.object.Office;
 import com.google.maps.model.LatLng;
+import com.google.maps.model.Distance;
+import com.google.maps.model.DistanceMatrixElement;
+import com.google.maps.model.DistanceMatrixRow;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -37,6 +40,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 public final class QueryHelperTest {
@@ -47,6 +52,8 @@ public final class QueryHelperTest {
   private DatastoreService ds;
   private final Office TEST_OFFICE = new Office("test", 1, 1);
   private final Office ROUTE_TEST_OFFICE = new Office("Google_TC3", 37.403001, -122.032618);
+  
+  private final int ROUTE_DISTANCE_FROM_OFFICE_KM = 2;
 
   private final String JULY_LISTING_ID = "JULY_11_21";
   private final String AUGUST_LISTING_ID = "AUGUST_2_15";
@@ -165,18 +172,32 @@ public final class QueryHelperTest {
   }
 
   @Test
-  public void testFilterOutEntitiesWithGmapsRouteDistance() throws Exception {
-    int distanceFromOfficeKilometers = 2;
-    GmapsHelper gmaps = GmapsHelper.getTestInstance();
-    List<Entity> listings = getGmapsDistanceTestEntities();
-    
+  public void testFilterOutEntitiesWithGmapsRouteDistanceReturnsInRange() throws Exception {
+
+    GmapsHelper mockGmaps = setUpGmapsMock();
+
+    List<Entity> listings = getGmapsDistanceTestEntities();    
     LatLng testOfficeCoordinates = new LatLng(ROUTE_TEST_OFFICE.getLatitude(), ROUTE_TEST_OFFICE.getLongitude());
-    List<Entity> results = QueryHelper.filterOutEntitiesWithGmapsRouteDistance(testOfficeCoordinates, listings, distanceFromOfficeKilometers, gmaps);
+    List<Entity> results = QueryHelper.filterOutEntitiesWithGmapsRouteDistance(testOfficeCoordinates, listings, ROUTE_DISTANCE_FROM_OFFICE_KM, mockGmaps);
         
     Assert.assertEquals(1, results.size());
     Assert.assertEquals("near", (String) results.get(0).getProperty("name"));
   }
 
+  @Test
+  public void testFilterOutEntitiesWithGmapsRouteDistanceDoesNotReturnOutOfRange() throws Exception {
+    
+    GmapsHelper mockGmaps = setUpGmapsMock();
+
+    int distanceTooCloseToGetAnyResultsKilometers = ROUTE_DISTANCE_FROM_OFFICE_KM - 1;
+    List<Entity> listings = getGmapsDistanceTestEntities();
+    LatLng testOfficeCoordinates = new LatLng(ROUTE_TEST_OFFICE.getLatitude(), ROUTE_TEST_OFFICE.getLongitude());
+    List<Entity> results = QueryHelper.filterOutEntitiesWithGmapsRouteDistance(testOfficeCoordinates, listings, distanceTooCloseToGetAnyResultsKilometers, mockGmaps);
+        
+    Assert.assertEquals(0, results.size());
+  }
+
+  // MARK: Helpers
   private void insertNearListing() {
 
     // Located roughly 1km linear distance from (1,1)
@@ -245,5 +266,40 @@ public final class QueryHelperTest {
     testingListings.add(testListingFar);
 
     return testingListings;
+  }
+
+  private GmapsHelper setUpGmapsMock() throws Exception {
+    final GmapsHelper mockGmaps = Mockito.mock(GmapsHelper.class);
+    DistanceMatrixRow[] mockRows = getMockMatrixRows();
+    
+    Mockito.doReturn(mockRows)
+      .when(mockGmaps)
+      .routeDistanceBetweenPoints(
+          ArgumentMatchers.any(LatLng.class),
+          ArgumentMatchers.<LatLng>any());
+    return mockGmaps;
+  }
+
+  private DistanceMatrixRow[] getMockMatrixRows() {
+    
+    final DistanceMatrixRow mockNearRow = Mockito.mock(DistanceMatrixRow.class);
+    final DistanceMatrixRow mockFarRow = Mockito.mock(DistanceMatrixRow.class);
+
+    final DistanceMatrixElement mockNearElement = Mockito.mock(DistanceMatrixElement.class);
+    final DistanceMatrixElement mockFarElement = Mockito.mock(DistanceMatrixElement.class);
+
+    final Distance mockNearDistance = Mockito.mock(Distance.class);
+    final Distance mockFarDistance = Mockito.mock(Distance.class);
+
+    mockNearDistance.inMeters = 1500;
+    mockFarDistance.inMeters = 5000;
+
+    mockNearElement.distance = mockNearDistance;
+    mockFarElement.distance = mockFarDistance;
+
+    mockNearRow.elements = new DistanceMatrixElement[]{mockNearElement};
+    mockFarRow.elements = new DistanceMatrixElement[]{mockFarElement};
+
+    return new DistanceMatrixRow[]{mockNearRow, mockFarRow};
   }
 }

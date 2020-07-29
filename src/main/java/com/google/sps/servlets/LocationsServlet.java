@@ -92,7 +92,6 @@ public class LocationsServlet extends HttpServlet {
     filteredEntities =
     QueryHelper.filterOutOfDateRangeListings(filteredEntities, startDate, endDate);
 
-    int distanceFromOfficeKilometers = 2;
     LatLng officeCoordinates = new LatLng(selectedOffice.getLatitude(), selectedOffice.getLongitude());
     filteredEntities = QueryHelper.filterOutEntitiesWithGmapsRouteDistance(officeCoordinates, filteredEntities, distanceInKilometers, gmaps);
 
