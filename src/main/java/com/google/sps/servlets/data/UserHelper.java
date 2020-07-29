@@ -8,7 +8,6 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.servlets.AuthorizationServlet;
 import javax.servlet.http.HttpServletRequest;
-import com.google.sps.data.Type;
 
 public final class UserHelper {
 

@@ -16,8 +16,6 @@ package com.google.sps.util;
 
 import com.google.gson.Gson;
 import com.google.maps.errors.ApiException;
-import com.google.maps.model.DistanceMatrixRow;
-import com.google.maps.model.LatLng;
 import com.google.maps.model.PlaceType;
 import com.google.maps.model.PlacesSearchResult;
 import com.google.sps.enums.CategoryGroup;

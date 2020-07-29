@@ -22,14 +22,13 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.maps.model.Distance;
+import com.google.maps.model.DistanceMatrixElement;
+import com.google.maps.model.DistanceMatrixRow;
 import com.google.maps.model.LatLng;
 import com.google.sps.enums.EntityType;
 import com.google.sps.exception.InvalidDateRangeException;
 import com.google.sps.object.Office;
-import com.google.maps.model.LatLng;
-import com.google.maps.model.Distance;
-import com.google.maps.model.DistanceMatrixElement;
-import com.google.maps.model.DistanceMatrixRow;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ public final class QueryHelperTest {
   private DatastoreService ds;
   private final Office TEST_OFFICE = new Office("test", 1, 1);
   private final Office ROUTE_TEST_OFFICE = new Office("Google_TC3", 37.403001, -122.032618);
-  
+
   private final int ROUTE_DISTANCE_FROM_OFFICE_KM = 2;
 
   private final String JULY_LISTING_ID = "JULY_11_21";
@@ -177,24 +176,31 @@ public final class QueryHelperTest {
 
     GmapsHelper mockGmaps = setUpGmapsMock();
 
-    List<Entity> listings = getGmapsDistanceTestEntities();    
-    LatLng testOfficeCoordinates = new LatLng(ROUTE_TEST_OFFICE.getLatitude(), ROUTE_TEST_OFFICE.getLongitude());
-    List<Entity> results = QueryHelper.filterOutEntitiesWithGmapsRouteDistance(testOfficeCoordinates, listings, ROUTE_DISTANCE_FROM_OFFICE_KM, mockGmaps);
-        
+    List<Entity> listings = getGmapsDistanceTestEntities();
+    LatLng testOfficeCoordinates =
+        new LatLng(ROUTE_TEST_OFFICE.getLatitude(), ROUTE_TEST_OFFICE.getLongitude());
+    List<Entity> results =
+        QueryHelper.filterOutEntitiesWithGmapsRouteDistance(
+            testOfficeCoordinates, listings, ROUTE_DISTANCE_FROM_OFFICE_KM, mockGmaps);
+
     Assert.assertEquals(1, results.size());
     Assert.assertEquals("near", (String) results.get(0).getProperty("name"));
   }
 
   @Test
-  public void testFilterOutEntitiesWithGmapsRouteDistanceDoesNotReturnOutOfRange() throws Exception {
-    
+  public void testFilterOutEntitiesWithGmapsRouteDistanceDoesNotReturnOutOfRange()
+      throws Exception {
+
     GmapsHelper mockGmaps = setUpGmapsMock();
 
     int distanceTooCloseToGetAnyResultsKilometers = ROUTE_DISTANCE_FROM_OFFICE_KM - 1;
     List<Entity> listings = getGmapsDistanceTestEntities();
-    LatLng testOfficeCoordinates = new LatLng(ROUTE_TEST_OFFICE.getLatitude(), ROUTE_TEST_OFFICE.getLongitude());
-    List<Entity> results = QueryHelper.filterOutEntitiesWithGmapsRouteDistance(testOfficeCoordinates, listings, distanceTooCloseToGetAnyResultsKilometers, mockGmaps);
-        
+    LatLng testOfficeCoordinates =
+        new LatLng(ROUTE_TEST_OFFICE.getLatitude(), ROUTE_TEST_OFFICE.getLongitude());
+    List<Entity> results =
+        QueryHelper.filterOutEntitiesWithGmapsRouteDistance(
+            testOfficeCoordinates, listings, distanceTooCloseToGetAnyResultsKilometers, mockGmaps);
+
     Assert.assertEquals(0, results.size());
   }
 
@@ -272,17 +278,16 @@ public final class QueryHelperTest {
   private GmapsHelper setUpGmapsMock() throws Exception {
     final GmapsHelper mockGmaps = Mockito.mock(GmapsHelper.class);
     DistanceMatrixRow[] mockRows = getMockMatrixRows();
-    
+
     Mockito.doReturn(mockRows)
-      .when(mockGmaps)
-      .routeDistanceBetweenPoints(
-          ArgumentMatchers.any(LatLng.class),
-          ArgumentMatchers.<LatLng>any());
+        .when(mockGmaps)
+        .routeDistanceBetweenPoints(
+            ArgumentMatchers.any(LatLng.class), ArgumentMatchers.<LatLng>any());
     return mockGmaps;
   }
 
   private DistanceMatrixRow[] getMockMatrixRows() {
-    
+
     final DistanceMatrixRow mockNearRow = Mockito.mock(DistanceMatrixRow.class);
     final DistanceMatrixRow mockFarRow = Mockito.mock(DistanceMatrixRow.class);
 
@@ -298,9 +303,9 @@ public final class QueryHelperTest {
     mockNearElement.distance = mockNearDistance;
     mockFarElement.distance = mockFarDistance;
 
-    mockNearRow.elements = new DistanceMatrixElement[]{mockNearElement};
-    mockFarRow.elements = new DistanceMatrixElement[]{mockFarElement};
+    mockNearRow.elements = new DistanceMatrixElement[] {mockNearElement};
+    mockFarRow.elements = new DistanceMatrixElement[] {mockFarElement};
 
-    return new DistanceMatrixRow[]{mockNearRow, mockFarRow};
+    return new DistanceMatrixRow[] {mockNearRow, mockFarRow};
   }
 }

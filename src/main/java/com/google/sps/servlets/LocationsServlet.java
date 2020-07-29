@@ -100,8 +100,11 @@ public class LocationsServlet extends HttpServlet {
     filteredEntities =
         QueryHelper.filterOutOfDateRangeListings(filteredEntities, startDate, endDate);
 
-    LatLng officeCoordinates = new LatLng(selectedOffice.getLatitude(), selectedOffice.getLongitude());
-    filteredEntities = QueryHelper.filterOutEntitiesWithGmapsRouteDistance(officeCoordinates, filteredEntities, distanceInKilometers, gmaps);
+    LatLng officeCoordinates =
+        new LatLng(selectedOffice.getLatitude(), selectedOffice.getLongitude());
+    filteredEntities =
+        QueryHelper.filterOutEntitiesWithGmapsRouteDistance(
+            officeCoordinates, filteredEntities, distanceInKilometers, gmaps);
 
     return filteredEntities;
   }
