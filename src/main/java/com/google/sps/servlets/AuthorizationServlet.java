@@ -17,12 +17,11 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.data.UserHelper;
+import com.google.sps.data.UserType;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,17 +32,34 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/authorization")
 public class AuthorizationServlet extends HttpServlet {
 
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.setContentType("text/html;");
+
+    UserService userService = UserServiceFactory.getUserService();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    UserHelper userHelper = new UserHelper(datastore);
+
+    // Checking to see if user has an account in the entity
+    if (userHelper.doesUserEmailExist(request)) {
+      response.sendRedirect("/dashboard/index.html");
+      return;
+    } else {
+      response.sendRedirect("/registration.html");
+    }
+  }
+
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("Entered doPOST method");
 
     // Creating a user from the registration page
     final String emailEntered = request.getUserPrincipal().getName();
-    final String typeEntered = processType(request).toString();
+    UserType typeEnteredEnum = processType(request);
+    final int typeEnteredInt = typeEnteredEnum.getValue();
 
     // Creating an UserEntity
     Entity taskEntity = new Entity("UserData");
     taskEntity.setProperty("Email", emailEntered);
-    taskEntity.setProperty("Type", typeEntered);
+    taskEntity.setProperty("Type", typeEnteredInt);
 
     // Storing the Entity in datastore
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -53,60 +69,18 @@ public class AuthorizationServlet extends HttpServlet {
     response.sendRedirect("/dashboard/index.html");
   }
 
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    PrintWriter out = response.getWriter();
-
-    UserService userService = UserServiceFactory.getUserService();
-
-    // Creating a Query to search through the datastore
-    Query query = new Query("User Data");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
-
-    // Iterating through the entity
-    for (Entity entity : results.asIterable()) {
-      final String currentEmail = request.getUserPrincipal().getName();
-      String emailStored = (String) entity.getProperty("Email");
-      String userType = (String) entity.getProperty("Type");
-
-      // Checking to see if user has an account in the entity
-      if (currentEmail.equals(emailStored) && userType != null) {
-        System.out.println("Email thats trying to login: " + currentEmail);
-        System.out.println("Email thats trying to match from entity: " + emailStored);
-        System.out.println("Its a match!");
-        if (userType == null) {
-          System.out.println("This user does not have a userType");
-          response.sendRedirect("/registration.html");
-          return;
-        }
-        response.sendRedirect("/dashboard/index.html");
-        return;
-      }
-
-      if (currentEmail == null) {
-        System.out.println("EMAIL IS NULL!!");
-        response.sendRedirect("/registration.html");
-        return;
-      }
-    }
-    System.out.println("Cannot find that email in the datastore");
-    response.sendRedirect("/registration.html");
-  }
-
   // A helper method that helps identifies the UserType
-  public static com.google.sps.data.Type processType(HttpServletRequest request) {
-    com.google.sps.data.Type type = null;
+  public static UserType processType(HttpServletRequest request) {
+    UserType type = null;
     String userType = request.getParameter("type");
     if ("renter".equals(userType)) {
-      type = com.google.sps.data.Type.RENTER;
+      type = UserType.RENTER;
     } else if ("host".equals(userType)) {
-      type = com.google.sps.data.Type.HOST;
+      type = UserType.HOST;
     } else if ("both".equals(userType)) {
-      type = com.google.sps.data.Type.BOTH;
+      type = UserType.BOTH;
     } else if (userType == null) {
-      type = com.google.sps.data.Type.UNKNOWN;
+      type = UserType.UNKNOWN;
     }
     return type;
   }

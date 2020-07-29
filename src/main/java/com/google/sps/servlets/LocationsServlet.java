@@ -25,6 +25,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.LatLng;
+import com.google.sps.data.UserServiceHelper;
+import com.google.sps.data.UserServiceHelper.Callback;
 import com.google.sps.enums.EntityType;
 import com.google.sps.exception.InvalidDateRangeException;
 import com.google.sps.object.Office;
@@ -45,14 +47,57 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/locations")
-public class LocationsServlet extends HttpServlet {
-
+public abstract class LocationsServlet extends HttpServlet implements Callback {
   private final int numListings = 10;
   GmapsHelper gmaps = GmapsHelper.getInstance();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    UserServiceHelper.authUser(this, response, request);
+  }
 
+  private List<Entity> runAllFiltersOnListings(
+      List<Entity> originalEntities,
+      Office selectedOffice,
+      double distanceInKilometers,
+      Instant startDate,
+      Instant endDate)
+      throws InvalidDateRangeException, ApiException, InterruptedException, IOException {
+
+    List<Entity> filteredEntities =
+        CoordinateCalculator.filterOutOfRangeLatitudeEntities(
+            distanceInKilometers,
+            selectedOffice.getLatitude(),
+            selectedOffice.getLongitude(),
+            originalEntities);
+
+    filteredEntities =
+        QueryHelper.filterOutOfDateRangeListings(filteredEntities, startDate, endDate);
+
+    LatLng officeCoordinates =
+        new LatLng(selectedOffice.getLatitude(), selectedOffice.getLongitude());
+    filteredEntities =
+        QueryHelper.filterOutEntitiesWithGmapsRouteDistance(
+            officeCoordinates, filteredEntities, distanceInKilometers, gmaps);
+
+    return filteredEntities;
+  }
+
+  public void handleResponse(HttpServletResponse response, HttpServletRequest request, Type type)
+      throws IOException {
+    try {
+      if (request.getMethod().equals("GET")) {
+        getLocations(request, response);
+      } else if (request.getMethod().equals("POST")) {
+        createListing(request);
+      }
+    } catch (IOException e) {
+
+    }
+  }
+
+  public void getLocations(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     // Reading query string parameters
     String office = request.getParameter("office");
     Instant startDate = Instant.ofEpochMilli(Long.parseLong(request.getParameter("startMillis")));
@@ -86,41 +131,13 @@ public class LocationsServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(entityList));
   }
 
-  private List<Entity> runAllFiltersOnListings(
-      List<Entity> originalEntities,
-      Office selectedOffice,
-      double distanceInKilometers,
-      Instant startDate,
-      Instant endDate)
-      throws InvalidDateRangeException, ApiException, InterruptedException, IOException {
-
-    List<Entity> filteredEntities =
-        CoordinateCalculator.filterOutOfRangeLatitudeEntities(
-            distanceInKilometers,
-            selectedOffice.getLatitude(),
-            selectedOffice.getLongitude(),
-            originalEntities);
-
-    filteredEntities =
-        QueryHelper.filterOutOfDateRangeListings(filteredEntities, startDate, endDate);
-
-    LatLng officeCoordinates =
-        new LatLng(selectedOffice.getLatitude(), selectedOffice.getLongitude());
-    filteredEntities =
-        QueryHelper.filterOutEntitiesWithGmapsRouteDistance(
-            officeCoordinates, filteredEntities, distanceInKilometers, gmaps);
-
-    return filteredEntities;
-  }
-
   // MARK: POST
   @Override // Creates a new listing
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    createListing(request);
+    UserServiceHelper.authUser(this, response, request);
   }
 
   private void createListing(HttpServletRequest request) throws IOException {
-
     // To be used for timestamp
     long timestamp = System.currentTimeMillis();
     String userID = "0919199";
@@ -130,7 +147,7 @@ public class LocationsServlet extends HttpServlet {
     JsonObject listingJson = new Gson().fromJson(requestData, JsonObject.class);
 
     // Creating DataStore Entity
-    Entity taskEntity = new Entity(EntityType.LISTING.getValue());
+    Entity taskEntity = new Entity(EntityType.BUS_STOP.getValue());
     taskEntity.setProperty("userID", userID);
     taskEntity.setProperty("timestamp", timestamp);
     addJsonPropertiesToListingEntity(listingJson, taskEntity);
