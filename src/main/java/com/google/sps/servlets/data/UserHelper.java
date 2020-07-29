@@ -21,7 +21,7 @@ public final class UserHelper {
     UserService userService = UserServiceFactory.getUserService();
 
     // Creating a Query to search through the datastore
-    Query query = new Query("User Data");
+    Query query = new Query("testData");
     PreparedQuery results = datastore.prepare(query);
 
     if (request.getUserPrincipal().getName() == null) {
@@ -43,8 +43,8 @@ public final class UserHelper {
     return false;
   }
 
-  public Type getUserType(HttpServletRequest request) {
-    Type type = null;
+  public com.google.sps.data.Type getUserType(HttpServletRequest request) {
+    com.google.sps.data.Type type = null;
 
     if (doesUserEmailExist(request) == true) {
       type = AuthorizationServlet.processType(request);

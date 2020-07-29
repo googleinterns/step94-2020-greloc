@@ -33,13 +33,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/authorization")
 public class AuthorizationServlet extends HttpServlet {
 
-  public enum Type {
-    RENTER,
-    HOST,
-    BOTH,
-    UNKNOWN;
-  }
-
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     System.out.println("Entered doPOST method");
 
@@ -103,17 +96,17 @@ public class AuthorizationServlet extends HttpServlet {
   }
 
   // A helper method that helps identifies the UserType
-  private Type processType(HttpServletRequest request) {
-    Type type = null;
+  public static com.google.sps.data.Type processType(HttpServletRequest request) {
+    com.google.sps.data.Type type = null;
     String userType = request.getParameter("type");
     if ("renter".equals(userType)) {
-      type = Type.RENTER;
+      type = com.google.sps.data.Type.RENTER;
     } else if ("host".equals(userType)) {
-      type = Type.HOST;
+      type = com.google.sps.data.Type.HOST;
     } else if ("both".equals(userType)) {
-      type = Type.BOTH;
+      type = com.google.sps.data.Type.BOTH;
     } else if (userType == null) {
-      type = Type.UNKNOWN;
+      type = com.google.sps.data.Type.UNKNOWN;
     }
     return type;
   }

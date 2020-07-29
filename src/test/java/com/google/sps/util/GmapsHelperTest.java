@@ -16,8 +16,6 @@ package com.google.sps.util;
 
 import com.google.gson.Gson;
 import com.google.maps.errors.ApiException;
-import com.google.maps.model.DistanceMatrixRow;
-import com.google.maps.model.LatLng;
 import com.google.maps.model.PlaceType;
 import com.google.maps.model.PlacesSearchResult;
 import com.google.sps.enums.CategoryGroup;
@@ -87,20 +85,6 @@ public final class GmapsHelperTest {
     String results =
         gmapsSpy.searchNearbyCategoryGroup(CategoryGroup.GROCERY, 37.4030, -122.0326, 5000);
     Assert.assertEquals(true, isJSONValid(results));
-  }
-
-  @Test
-  public void testrouteDistanceBetweenPoints()
-      throws ApiException, InterruptedException, IOException {
-
-    // Google TC3 to Denny's (1 mile distance)
-    DistanceMatrixRow[] results =
-        gmaps.routeDistanceBetweenPoints(
-            new LatLng(37.402971, -122.032619), new LatLng(37.396145, -122.027790));
-    System.out.println("Distance: " + results[0].elements[0].distance);
-    System.out.println("Duration: " + results[0].elements[0].duration);
-    System.out.println("durationInTraffic: " + results[0].elements[0].durationInTraffic);
-    System.out.println("durationInTraffic: " + results[0].elements[0].status);
   }
 
   private boolean isJSONValid(String jsonInString) {
