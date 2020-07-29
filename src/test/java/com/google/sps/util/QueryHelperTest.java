@@ -204,6 +204,23 @@ public final class QueryHelperTest {
     Assert.assertEquals(0, results.size());
   }
 
+  @Test
+  public void testGetUserListings() {
+    
+    // Insert Listings for different UserID's
+    insertListingWithUserID("X");
+    insertListingWithUserID("X");
+
+    insertListingWithUserID("Y");
+
+    List<Entity> xListings = QueryHelper.getUserListings(EntityType.LISTING, "X");
+    List<Entity> yListings = QueryHelper.getUserListings(EntityType.LISTING, "Y");
+
+    Assert.assertEquals(2, xListings.size());
+    Assert.assertEquals(1, yListings.size());
+
+  }
+
   // MARK: Helpers
   private void insertNearListing() {
 
@@ -307,5 +324,14 @@ public final class QueryHelperTest {
     mockFarRow.elements = new DistanceMatrixElement[] {mockFarElement};
 
     return new DistanceMatrixRow[] {mockNearRow, mockFarRow};
+  }
+
+  private void insertListingWithUserID(String userID) {
+
+    // Entity with a given userID
+    Entity testListing = new Entity("Listing");
+    testListing.setProperty("userID", userID);
+
+    ds.put(testListing);
   }
 }
