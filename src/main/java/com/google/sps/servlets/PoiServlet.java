@@ -25,18 +25,27 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.sps.data.UserServiceHelper;
+import com.google.sps.data.UserServiceHelper.Callback;
 
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/poi")
-public class PoiServlet extends HttpServlet {
+public abstract class PoiServlet extends HttpServlet implements Callback {
 
   private final GmapsHelper gmapsHelper = GmapsHelper.getInstance();
   private final int radiusMeters = 5000;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    UserServiceHelper.authUser(this, response, request);
+  }
 
-    String office = request.getParameter("office");
+  public void handleResponse(HttpServletResponse response, HttpServletRequest request) {
+    getOffice(request, response);
+  }
+
+  private void getOffice(HttpServletRequest request, HttpServletResponse response) {
+        String office = request.getParameter("office");
     int poiGroup = Integer.parseInt(request.getParameter("group"));
     Office selectedOffice = OfficeManager.offices.get(office);
 
@@ -59,5 +68,6 @@ public class PoiServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
+
   }
 }
