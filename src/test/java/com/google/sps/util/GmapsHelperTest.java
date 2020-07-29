@@ -89,20 +89,6 @@ public final class GmapsHelperTest {
     Assert.assertEquals(true, isJSONValid(results));
   }
 
-  @Test
-  public void testrouteDistanceBetweenPoints()
-      throws ApiException, InterruptedException, IOException {
-
-    // Google TC3 to Denny's (1 mile distance)
-    DistanceMatrixRow[] results =
-        gmaps.routeDistanceBetweenPoints(
-            new LatLng(37.402971, -122.032619), new LatLng(37.396145, -122.027790));
-    System.out.println("Distance: " + results[0].elements[0].distance);
-    System.out.println("Duration: " + results[0].elements[0].duration);
-    System.out.println("durationInTraffic: " + results[0].elements[0].durationInTraffic);
-    System.out.println("durationInTraffic: " + results[0].elements[0].status);
-  }
-
   private boolean isJSONValid(String jsonInString) {
     Gson gson = new Gson();
     try {
