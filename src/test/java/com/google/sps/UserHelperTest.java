@@ -1,6 +1,9 @@
 package com.google.sps.data;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -8,29 +11,22 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import static org.junit.Assert.assertEquals;
-import java.util.List;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import static org.mockito.Mockito.when;
 import java.security.Principal;
 import javax.servlet.http.HttpServletRequest;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import static org.junit.Assert.*;
-import com.google.appengine.api.datastore.PreparedQuery;
 
+public class UserHelperTest {
 
- public  class UserHelperTest {
-  
   private final LocalServiceTestHelper helper =
-  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-  
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+
   @Mock private HttpServletRequest request;
   @Mock private Principal userPrincipal;
-  private UserHelper userHelper; 
+  private UserHelper userHelper;
   private DatastoreService ds;
 
   @Before
@@ -41,12 +37,10 @@ import com.google.appengine.api.datastore.PreparedQuery;
     MockitoAnnotations.initMocks(this);
   }
 
-
   @After
   public void tearDown() {
     helper.tearDown();
   }
-
 
   @Test
   public void testCorrectUser() {
@@ -54,13 +48,11 @@ import com.google.appengine.api.datastore.PreparedQuery;
     assertTrue(userHelper.doesUserEmailExist(request));
   }
 
-
   @Test
   public void testNullUser() {
     addNullUser();
     assertFalse(userHelper.doesUserEmailExist(request));
   }
-
 
   @Test
   public void testNullType() {
@@ -80,12 +72,10 @@ import com.google.appengine.api.datastore.PreparedQuery;
     assertFalse(userHelper.doesUserEmailExist(request));
   }
 
-
   private void setCurrentUser() {
     when(userPrincipal.getName()).thenReturn("test@email.com");
     when(request.getUserPrincipal()).thenReturn(userPrincipal);
   }
-
 
   private void setcurrentEmailNull() {
     when(userPrincipal.getName()).thenReturn(null);
@@ -93,7 +83,6 @@ import com.google.appengine.api.datastore.PreparedQuery;
     when(request.getUserPrincipal()).thenReturn(userPrincipal);
   }
 
-  
   private void addUser() {
     setCurrentUser();
     Entity testEntity = new Entity("UserData");
@@ -104,17 +93,15 @@ import com.google.appengine.api.datastore.PreparedQuery;
     assertEquals(1, ds.prepare(new Query("UserData")).countEntities(withLimit(10)));
   }
 
-
   private void addDiffUser() {
     setCurrentUser();
     Entity testEntity = new Entity("UserData");
     testEntity.setProperty("Email", "hi@email.com");
-    testEntity.setProperty("Type", 2); 
+    testEntity.setProperty("Type", 2);
     ds.put(testEntity);
 
     assertEquals(1, ds.prepare(new Query("UserData")).countEntities(withLimit(10)));
   }
-
 
   private void addNullUser() {
     setcurrentEmailNull();
@@ -125,7 +112,6 @@ import com.google.appengine.api.datastore.PreparedQuery;
 
     assertEquals(1, ds.prepare(new Query("UserData")).countEntities(withLimit(10)));
   }
-
 
   private void addNullType() {
     setcurrentEmailNull();
@@ -146,7 +132,4 @@ import com.google.appengine.api.datastore.PreparedQuery;
 
     assertEquals(1, ds.prepare(new Query("UserData")).countEntities(withLimit(10)));
   }
-
-
 }
- 

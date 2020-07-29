@@ -25,6 +25,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.LatLng;
+import com.google.sps.data.UserServiceHelper;
+import com.google.sps.data.UserServiceHelper.Callback;
 import com.google.sps.enums.EntityType;
 import com.google.sps.exception.InvalidDateRangeException;
 import com.google.sps.object.Office;
@@ -42,9 +44,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.sps.data.UserServiceHelper;
-import com.google.sps.data.UserServiceHelper.Callback;
-
 
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/locations")
@@ -55,7 +54,6 @@ public abstract class LocationsServlet extends HttpServlet implements Callback {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserServiceHelper.authUser(this, response, request);
-
   }
 
   private List<Entity> runAllFiltersOnListings(
@@ -85,22 +83,22 @@ public abstract class LocationsServlet extends HttpServlet implements Callback {
     return filteredEntities;
   }
 
-  public void handleResponse(HttpServletResponse response, HttpServletRequest request, Type type) throws IOException {
+  public void handleResponse(HttpServletResponse response, HttpServletRequest request, Type type)
+      throws IOException {
     try {
-    if(request.getMethod().equals("GET")) {
-      getLocations(request, response);
-    } else if (request.getMethod().equals("POST")) {
-      createListing(request);
-    }
-  } catch (IOException e) {
-    
+      if (request.getMethod().equals("GET")) {
+        getLocations(request, response);
+      } else if (request.getMethod().equals("POST")) {
+        createListing(request);
+      }
+    } catch (IOException e) {
+
     }
   }
 
-
-
-  public void getLocations(HttpServletRequest request, HttpServletResponse response) throws IOException{
-      // Reading query string parameters
+  public void getLocations(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    // Reading query string parameters
     String office = request.getParameter("office");
     Instant startDate = Instant.ofEpochMilli(Long.parseLong(request.getParameter("startMillis")));
     Instant endDate = Instant.ofEpochMilli(Long.parseLong(request.getParameter("endMillis")));
@@ -139,9 +137,8 @@ public abstract class LocationsServlet extends HttpServlet implements Callback {
     UserServiceHelper.authUser(this, response, request);
   }
 
-
   private void createListing(HttpServletRequest request) throws IOException {
-      // To be used for timestamp
+    // To be used for timestamp
     long timestamp = System.currentTimeMillis();
     String userID = "0919199";
 

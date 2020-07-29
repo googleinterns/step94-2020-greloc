@@ -34,8 +34,8 @@ public final class UserHelper {
       Long userType = (Long) entity.getProperty("Type");
 
       // Checking to see if user has an account in the entity
-     if (userType == UserType.UNKNOWN.getValue()) {
-      } else if(emailStored == null) {
+      if (userType == UserType.UNKNOWN.getValue()) {
+      } else if (emailStored == null) {
       } else if (currentEmail.equals(emailStored)) {
         return true;
       }
@@ -49,7 +49,7 @@ public final class UserHelper {
     if (doesUserEmailExist(request) == true) {
       type = AuthorizationServlet.processType(request);
     }
-    System.out.println("Type from UserHelper" + type); 
+    System.out.println("Type from UserHelper" + type);
     return type;
   }
 }

@@ -20,6 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.sps.data.UserServiceHelper;
+import com.google.sps.data.UserServiceHelper.Callback;
 import com.google.sps.enums.EntityType;
 import com.google.sps.object.Office;
 import com.google.sps.util.CoordinateCalculator;
@@ -32,8 +34,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.sps.data.UserServiceHelper;
-import com.google.sps.data.UserServiceHelper.Callback;
 
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/busLocations")
@@ -53,7 +53,7 @@ public abstract class BusLocations extends HttpServlet implements Callback {
 
   public void handleResonse(HttpServletResponse response, HttpServletRequest request) {
     try {
-      if(request.getMethod().equals("GET")) {
+      if (request.getMethod().equals("GET")) {
         getBusStop(request, response);
       } else if (request.getMethod().equals("POST")) {
         createBusStop(request);
@@ -63,8 +63,8 @@ public abstract class BusLocations extends HttpServlet implements Callback {
     }
   }
 
-
-  private void getBusStop(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  private void getBusStop(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
 
     String office = request.getParameter("office");
     Office selectedOffice = OfficeManager.offices.get(office);
@@ -84,7 +84,6 @@ public abstract class BusLocations extends HttpServlet implements Callback {
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(filteredEntityList));
-
   }
 
   private void createBusStop(HttpServletRequest request) throws IOException {

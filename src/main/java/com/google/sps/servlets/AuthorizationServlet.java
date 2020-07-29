@@ -17,19 +17,15 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.data.UserHelper;
+import com.google.sps.data.UserType;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.sps.data.UserHelper;
-import com.google.sps.data.UserType;
-import com.google.sps.data.User;
 
 /* This class handles authorization of the user*/
 
@@ -43,25 +39,22 @@ public class AuthorizationServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserHelper userHelper = new UserHelper(datastore);
-  
-   
+
     // Checking to see if user has an account in the entity
     if (userHelper.doesUserEmailExist(request)) {
       response.sendRedirect("/dashboard/index.html");
       return;
-    }
-    else {
+    } else {
       response.sendRedirect("/registration.html");
     }
   }
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-  
+
     // Creating a user from the registration page
     final String emailEntered = request.getUserPrincipal().getName();
     UserType typeEnteredEnum = processType(request);
     final int typeEnteredInt = typeEnteredEnum.getValue();
-
 
     // Creating an UserEntity
     Entity taskEntity = new Entity("UserData");
@@ -76,21 +69,19 @@ public class AuthorizationServlet extends HttpServlet {
     response.sendRedirect("/dashboard/index.html");
   }
 
-
   // A helper method that helps identifies the UserType
   public static UserType processType(HttpServletRequest request) {
-  UserType type = null;
-  String userType = request.getParameter("type");
-  if ("renter".equals(userType)) {
-    type = UserType.RENTER;
-  } else if ("host".equals(userType)) {
-    type = UserType.HOST;
-  } else if ("both".equals(userType)) {
-    type = UserType.BOTH;
-  } else if (userType == null) {
-    type = UserType.UNKNOWN;
+    UserType type = null;
+    String userType = request.getParameter("type");
+    if ("renter".equals(userType)) {
+      type = UserType.RENTER;
+    } else if ("host".equals(userType)) {
+      type = UserType.HOST;
+    } else if ("both".equals(userType)) {
+      type = UserType.BOTH;
+    } else if (userType == null) {
+      type = UserType.UNKNOWN;
+    }
+    return type;
   }
-  return type;
-}
-
 }
