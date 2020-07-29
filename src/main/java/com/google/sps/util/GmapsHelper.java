@@ -56,7 +56,7 @@ public class GmapsHelper {
   };
 
   private GmapsHelper(boolean useAppEngineContextBuilder) {
-    
+
     String key;
     try {
       key = KeyManager.accessSecretVersion("GMAPS_API_KEY");
@@ -183,7 +183,8 @@ public class GmapsHelper {
       throws ApiException, InterruptedException, IOException {
     if (origins.length < 1) {
       return new DistanceMatrixRow[0];
-    };
+    }
+    ;
 
     DistanceMatrix results =
         DistanceMatrixApi.newRequest(this.context)
