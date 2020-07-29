@@ -25,7 +25,7 @@ public class SignOutServlet extends HttpServlet {
 
     System.out.println("ENTERED THE SIGN OUT SERVER");
     if (userService.isUserLoggedIn()) {
-      //resp.sendRedirect(userService.createLogoutURL(ind));
+      // resp.sendRedirect(userService.createLogoutURL(ind));
       System.out.println("USER STATUS: " + userService.isUserLoggedIn());
     }
   }
