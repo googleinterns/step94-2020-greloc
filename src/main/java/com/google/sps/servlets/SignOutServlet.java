@@ -20,11 +20,12 @@ public class SignOutServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
+    String thisUrl = req.getRequestURI();
     resp.setContentType("text/html");
 
     System.out.println("ENTERED THE SIGN OUT SERVER");
     if (userService.isUserLoggedIn()) {
-      resp.sendRedirect(userService.createLogoutURL("/index.html"));
+      // resp.sendRedirect(userService.createLogoutURL(ind));
       System.out.println("USER STATUS: " + userService.isUserLoggedIn());
     }
   }

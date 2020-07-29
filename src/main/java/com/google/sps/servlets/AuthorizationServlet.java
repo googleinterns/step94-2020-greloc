@@ -51,13 +51,17 @@ public class AuthorizationServlet extends HttpServlet {
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+    UserService userService = UserServiceFactory.getUserService();
+
     // Creating a user from the registration page
     final String emailEntered = request.getUserPrincipal().getName();
+    String userID = userService.getCurrentUser().getUserId();
     UserType typeEnteredEnum = processType(request);
     final int typeEnteredInt = typeEnteredEnum.getValue();
 
     // Creating an UserEntity
     Entity taskEntity = new Entity("UserData");
+    taskEntity.setProperty("userID", userID);
     taskEntity.setProperty("Email", emailEntered);
     taskEntity.setProperty("Type", typeEnteredInt);
 

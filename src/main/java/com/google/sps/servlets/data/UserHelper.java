@@ -31,7 +31,7 @@ public final class UserHelper {
     for (Entity entity : results.asIterable()) {
       final String currentEmail = request.getUserPrincipal().getName();
       String emailStored = (String) entity.getProperty("Email");
-      Long userType = (Long) entity.getProperty("Type");
+      long userType = (long) entity.getProperty("Type");
 
       // Checking to see if user has an account in the entity
       if (userType == UserType.UNKNOWN.getValue()) {

@@ -22,6 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.sps.data.UserServiceHelper;
 import com.google.sps.data.UserServiceHelper.Callback;
+import com.google.sps.data.UserType;
 import com.google.sps.enums.EntityType;
 import com.google.sps.object.Office;
 import com.google.sps.util.CoordinateCalculator;
@@ -37,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/busLocations")
-public abstract class BusLocations extends HttpServlet implements Callback {
+public class BusLocations extends HttpServlet implements Callback {
 
   private final int numStops = 10;
 
@@ -51,7 +52,9 @@ public abstract class BusLocations extends HttpServlet implements Callback {
     UserServiceHelper.authUser(this, response, request);
   }
 
-  public void handleResonse(HttpServletResponse response, HttpServletRequest request) {
+  @Override
+  public void handleResponse(
+      HttpServletResponse response, HttpServletRequest request, UserType type) {
     try {
       if (request.getMethod().equals("GET")) {
         getBusStop(request, response);

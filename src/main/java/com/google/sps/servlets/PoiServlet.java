@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.maps.errors.ApiException;
 import com.google.sps.data.UserServiceHelper;
 import com.google.sps.data.UserServiceHelper.Callback;
+import com.google.sps.data.UserType;
 import com.google.sps.enums.CategoryGroup;
 import com.google.sps.exception.InvalidCategoryGroupException;
 import com.google.sps.object.Office;
@@ -30,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/poi")
-public abstract class PoiServlet extends HttpServlet implements Callback {
+public class PoiServlet extends HttpServlet implements Callback {
 
   private final GmapsHelper gmapsHelper = GmapsHelper.getInstance();
   private final int radiusMeters = 5000;
@@ -40,7 +41,9 @@ public abstract class PoiServlet extends HttpServlet implements Callback {
     UserServiceHelper.authUser(this, response, request);
   }
 
-  public void handleResponse(HttpServletResponse response, HttpServletRequest request) {
+  @Override
+  public void handleResponse(
+      HttpServletResponse response, HttpServletRequest request, UserType type) {
     getOffice(request, response);
   }
 

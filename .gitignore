@@ -44,8 +44,8 @@ node_modules
 /target/gRelo-1/WEB-INF/lib
 /target/generated-sources
 /target/generated-test-sources
-target/gRelo-1/WEB-INF/lib
-
+/target/gRelo-1/WEB-INF/lib
+/target/appengine-staging/
 /target/gRelo-1/favicon.ico
 /target/gRelo-1/index.html
 /target/gRelo-1/registration.html
