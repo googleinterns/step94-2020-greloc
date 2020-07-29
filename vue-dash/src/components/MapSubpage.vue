@@ -139,58 +139,6 @@ export default {
         return;
       }
 
-      let reData = [
-        {
-          propertyMap: {
-            name: "Cozy Apartment - (July 21st - August 30th)",
-            price: "$2,500",
-            type: "Full Apartment",
-            desc: "Tidy apartment with beatiful furniture",
-            images: [
-              "https://stmedia.stimg.co/1010121201_mavenrendering.jpg?fit=crop&crop=faces",
-              "https://cloudfront-us-east-1.images.arcpublishing.com/gray/EJ77UNGM7VG3XGH5TVTPIGODEU.jpg",
-            ],
-            beds: 3,
-            bedrooms: 2,
-            baths: 2,
-            guests: 3,
-            contactInfo: {
-              name: "Emily Pierre",
-              phone: "777-777-777",
-              email: "epierre@google.com"
-            },
-            googlerOwned: true,
-            listingStartDate: 1595373644000, // July 21st
-            listingEndDate: 1598829644000,// August 30th
-            latitude: 37.395720,
-            longitude: -122.028570,
-            amenities: {
-              value: {
-                propertyMap: {
-                  wifi: true,
-                  pool: true,
-                  washer: true,
-                  gym: true,
-                  parking: true,
-                  ac: true
-                }
-              }
-            }
-          }
-        }
-
-      ];
-      this.listings = reData;
-      this.$root.$emit(EVENTS.newListings, reData);
-      this.$root.$emit(EVENTS.mapSubpageLoading, {
-        isLoading: false,
-        forEvent: EVENTS.newListings 
-      });
-
-      /*eslint-disable no-unreachable */
-      return;
-      /// DELETE EVERYTHING ABOVE THIS LINE TO reDATA
-
       this.$root.$emit(EVENTS.mapSubpageLoading, {
         isLoading: true,
         color: COLORS.BRANDING_BLUE,

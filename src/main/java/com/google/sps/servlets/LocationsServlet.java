@@ -71,10 +71,14 @@ public class LocationsServlet extends HttpServlet {
               entityList, selectedOffice, distanceInKilometers, startDate, endDate);
     } catch (InvalidDateRangeException e) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      e.printStackTrace();
       return;
     } catch (ApiException | InterruptedException | IOException e) {
+      e.printStackTrace();
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
+    } catch (Exception e) {
+      e.printStackTrace();
     }
 
     Gson gson = new Gson();

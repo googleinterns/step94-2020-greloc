@@ -15,7 +15,6 @@ import com.google.maps.model.PlacesSearchResult;
 import com.google.maps.model.RankBy;
 import com.google.sps.enums.CategoryGroup;
 import com.google.sps.exception.InvalidCategoryGroupException;
-import io.github.cdimascio.dotenv.Dotenv;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -57,8 +56,14 @@ public class GmapsHelper {
   };
 
   private GmapsHelper(boolean useAppEngineContextBuilder) {
-    Dotenv dotenv = Dotenv.load();
-    String key = dotenv.get("GMAPS_API_KEY");
+
+    String key;
+    try {
+      key = KeyManager.accessSecretVersion("GMAPS_API_KEY");
+    } catch (IOException e) {
+      key = "";
+      e.printStackTrace();
+    }
 
     if (useAppEngineContextBuilder) {
       this.context = new GeoApiContext.Builder(new GaeRequestHandler.Builder()).apiKey(key).build();
@@ -176,6 +181,11 @@ public class GmapsHelper {
 
   public DistanceMatrixRow[] routeDistanceBetweenPoints(LatLng destination, LatLng... origins)
       throws ApiException, InterruptedException, IOException {
+    if (origins.length < 1) {
+      return new DistanceMatrixRow[0];
+    }
+    ;
+
     DistanceMatrix results =
         DistanceMatrixApi.newRequest(this.context)
             .origins(origins)
