@@ -7,18 +7,18 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.DistanceMatrixRow;
+import com.google.maps.model.LatLng;
 import com.google.sps.enums.EntityType;
 import com.google.sps.exception.InvalidDateRangeException;
 import com.google.sps.object.Office;
+import com.google.sps.util.CoordinateCalculator.CoordinateType;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import com.google.maps.model.LatLng;
-import com.google.sps.util.CoordinateCalculator.CoordinateType;
-import com.google.maps.model.DistanceMatrixRow;
-import com.google.maps.errors.ApiException;
-import java.io.IOException;
 
 public final class QueryHelper {
 
@@ -55,8 +55,13 @@ public final class QueryHelper {
    * @param kilometers: Distance in kilometers to create a range with from the office's center
    * @return List of filtered entities
    */
-  public static List<Entity> filterOutEntitiesWithGmapsRouteDistance(LatLng destination, List<Entity> originEntities, double distanceLimitKilometers, GmapsHelper gmaps) throws ApiException, InterruptedException, IOException {
-    
+  public static List<Entity> filterOutEntitiesWithGmapsRouteDistance(
+      LatLng destination,
+      List<Entity> originEntities,
+      double distanceLimitKilometers,
+      GmapsHelper gmaps)
+      throws ApiException, InterruptedException, IOException {
+
     LatLng[] origins = new LatLng[originEntities.size()];
     for (int i = 0; i < originEntities.size(); i++) {
       Entity entity = originEntities.get(i);
@@ -66,9 +71,9 @@ public final class QueryHelper {
     }
 
     DistanceMatrixRow[] results = gmaps.routeDistanceBetweenPoints(destination, origins);
-    
+
     List<Entity> filteredList = new ArrayList<>();
-    for (int i = 0; i < results.length; i++) {      
+    for (int i = 0; i < results.length; i++) {
       double distanceLimitMeters = (distanceLimitKilometers * 1000);
       if (results[i].elements[0].distance.inMeters < distanceLimitMeters) {
         filteredList.add(originEntities.get(i));

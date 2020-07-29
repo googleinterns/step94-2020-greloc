@@ -1,14 +1,13 @@
 package com.google.sps.util;
 
 import com.google.gson.Gson;
+import com.google.maps.DistanceMatrixApi;
 import com.google.maps.GaeRequestHandler;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PlacesApi;
-import com.google.maps.DistanceMatrixApi;
-import com.google.maps.DistanceMatrixApiRequest;
-import com.google.maps.model.DistanceMatrixRow;
-import com.google.maps.model.DistanceMatrix;
 import com.google.maps.errors.ApiException;
+import com.google.maps.model.DistanceMatrix;
+import com.google.maps.model.DistanceMatrixRow;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.PlaceType;
 import com.google.maps.model.PlacesSearchResponse;
@@ -69,13 +68,13 @@ public class GmapsHelper {
   }
 
   /**
-   * Returns an instance of GmapsHelper using GeoApiContext with GaeRequestHandler, which optimizes requests for App Engine
+   * Returns an instance of GmapsHelper using GeoApiContext with GaeRequestHandler, which optimizes
+   * requests for App Engine
    *
    * @return GmapsHelper Singleton Instance
-   */  
-  public static GmapsHelper getInstance() { 
-    if (instance == null) 
-        instance = new GmapsHelper(true);
+   */
+  public static GmapsHelper getInstance() {
+    if (instance == null) instance = new GmapsHelper(true);
     return instance;
   }
 
@@ -83,10 +82,9 @@ public class GmapsHelper {
    * Returns an instance of GmapsHelper using GeoApiContext without GaeRequestHandler
    *
    * @return GmapsHelper Singleton Instance
-   */    
-  public static GmapsHelper getTestInstance() { 
-    if (instance == null) 
-        instance = new GmapsHelper(false);
+   */
+  public static GmapsHelper getTestInstance() {
+    if (instance == null) instance = new GmapsHelper(false);
     return instance;
   }
 
@@ -176,9 +174,10 @@ public class GmapsHelper {
     return response.results;
   }
 
-  public DistanceMatrixRow[] routeDistanceBetweenPoints(LatLng destination, LatLng... origins) throws ApiException, InterruptedException, IOException {
-    DistanceMatrix results
-        = DistanceMatrixApi.newRequest(this.context)
+  public DistanceMatrixRow[] routeDistanceBetweenPoints(LatLng destination, LatLng... origins)
+      throws ApiException, InterruptedException, IOException {
+    DistanceMatrix results =
+        DistanceMatrixApi.newRequest(this.context)
             .origins(origins)
             .destinations(destination)
             .await();

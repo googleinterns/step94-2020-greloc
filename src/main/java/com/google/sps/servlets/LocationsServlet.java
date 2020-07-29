@@ -23,16 +23,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.LatLng;
 import com.google.sps.enums.EntityType;
 import com.google.sps.exception.InvalidDateRangeException;
 import com.google.sps.object.Office;
 import com.google.sps.util.CoordinateCalculator;
+import com.google.sps.util.GmapsHelper;
 import com.google.sps.util.OfficeManager;
 import com.google.sps.util.QueryHelper;
-import com.google.sps.util.GmapsHelper;
-import com.google.maps.model.LatLng;
 import java.io.IOException;
-import com.google.maps.errors.ApiException;
 import java.lang.reflect.Type;
 import java.time.Instant;
 import java.util.Date;
@@ -66,7 +66,9 @@ public class LocationsServlet extends HttpServlet {
             EntityType.LISTING, numListings, selectedOffice, distanceInKilometers);
 
     try {
-      entityList = runAllFiltersOnListings(entityList, selectedOffice, distanceInKilometers, startDate, endDate);
+      entityList =
+          runAllFiltersOnListings(
+              entityList, selectedOffice, distanceInKilometers, startDate, endDate);
     } catch (InvalidDateRangeException e) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       return;
@@ -80,7 +82,13 @@ public class LocationsServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(entityList));
   }
 
-  private List<Entity> runAllFiltersOnListings(List<Entity> originalEntities, Office selectedOffice, double distanceInKilometers, Instant startDate, Instant endDate) throws InvalidDateRangeException, ApiException, InterruptedException, IOException {
+  private List<Entity> runAllFiltersOnListings(
+      List<Entity> originalEntities,
+      Office selectedOffice,
+      double distanceInKilometers,
+      Instant startDate,
+      Instant endDate)
+      throws InvalidDateRangeException, ApiException, InterruptedException, IOException {
 
     List<Entity> filteredEntities =
         CoordinateCalculator.filterOutOfRangeLatitudeEntities(
@@ -90,7 +98,7 @@ public class LocationsServlet extends HttpServlet {
             originalEntities);
 
     filteredEntities =
-    QueryHelper.filterOutOfDateRangeListings(filteredEntities, startDate, endDate);
+        QueryHelper.filterOutOfDateRangeListings(filteredEntities, startDate, endDate);
 
     LatLng officeCoordinates = new LatLng(selectedOffice.getLatitude(), selectedOffice.getLongitude());
     filteredEntities = QueryHelper.filterOutEntitiesWithGmapsRouteDistance(officeCoordinates, filteredEntities, distanceInKilometers, gmaps);
