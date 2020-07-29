@@ -44,10 +44,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.sps.data.UserType;
 
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/locations")
-public abstract class LocationsServlet extends HttpServlet implements Callback {
+public class LocationsServlet extends HttpServlet implements Callback {
   private final int numListings = 10;
   GmapsHelper gmaps = GmapsHelper.getInstance();
 
@@ -83,8 +84,8 @@ public abstract class LocationsServlet extends HttpServlet implements Callback {
     return filteredEntities;
   }
 
-  public void handleResponse(HttpServletResponse response, HttpServletRequest request, Type type)
-      throws IOException {
+  @Override
+  public void handleResponse(HttpServletResponse response, HttpServletRequest request, UserType type) {
     try {
       if (request.getMethod().equals("GET")) {
         getLocations(request, response);
@@ -147,7 +148,7 @@ public abstract class LocationsServlet extends HttpServlet implements Callback {
     JsonObject listingJson = new Gson().fromJson(requestData, JsonObject.class);
 
     // Creating DataStore Entity
-    Entity taskEntity = new Entity(EntityType.BUS_STOP.getValue());
+    Entity taskEntity = new Entity(EntityType.LISTING.getValue());
     taskEntity.setProperty("userID", userID);
     taskEntity.setProperty("timestamp", timestamp);
     addJsonPropertiesToListingEntity(listingJson, taskEntity);

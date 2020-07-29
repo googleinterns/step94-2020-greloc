@@ -27,10 +27,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.sps.data.UserType;
 
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/poi")
-public abstract class PoiServlet extends HttpServlet implements Callback {
+public class PoiServlet extends HttpServlet implements Callback {
 
   private final GmapsHelper gmapsHelper = GmapsHelper.getInstance();
   private final int radiusMeters = 5000;
@@ -40,7 +41,8 @@ public abstract class PoiServlet extends HttpServlet implements Callback {
     UserServiceHelper.authUser(this, response, request);
   }
 
-  public void handleResponse(HttpServletResponse response, HttpServletRequest request) {
+  @Override
+  public void handleResponse(HttpServletResponse response, HttpServletRequest request, UserType type) {
     getOffice(request, response);
   }
 

@@ -34,10 +34,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.sps.data.UserType;
+
 
 /** Servlet that handles adding and retreiving listings & locations */
 @WebServlet("/busLocations")
-public abstract class BusLocations extends HttpServlet implements Callback {
+public class BusLocations extends HttpServlet implements Callback {
 
   private final int numStops = 10;
 
@@ -51,7 +53,8 @@ public abstract class BusLocations extends HttpServlet implements Callback {
     UserServiceHelper.authUser(this, response, request);
   }
 
-  public void handleResonse(HttpServletResponse response, HttpServletRequest request) {
+@Override
+  public void handleResponse(HttpServletResponse response, HttpServletRequest request, UserType type) {
     try {
       if (request.getMethod().equals("GET")) {
         getBusStop(request, response);
