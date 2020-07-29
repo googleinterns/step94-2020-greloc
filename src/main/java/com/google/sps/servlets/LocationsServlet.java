@@ -133,7 +133,6 @@ public abstract class LocationsServlet extends HttpServlet implements Callback {
     response.getWriter().println(gson.toJson(entityList));
   }
 
-
   // MARK: POST
   @Override // Creates a new listing
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
