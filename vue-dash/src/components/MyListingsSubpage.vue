@@ -1,6 +1,6 @@
 <template>
-  <div class="subpage" id="my-listings-subpage">
-    <!--<MyListingsContainer class="property-list"/> -->
+  <div class="subpage" id="my-listings-subpage">  
+  <!--<MyListingsContainer class="property-list" :listings="listings"/> -->
     <ListingForm class="form"/>
 
       <div id="form-empty-state" v-if=false>
@@ -12,15 +12,42 @@
 </template>
 
 <script>
+//import MyListingsContainer from './sub-components/myListings-subpage/MyListingsContainer.vue' 
 import ListingForm from './sub-components/myListings-subpage/EditListing.vue'
+import {WEBSITE_URL} from '../utils/constants.js'
 
 export default {
+
+  data: () => ({
+    listings: [],
+  }),
+
   name: 'MyListingsSubpage',
+  mounted () {
+    this.getUserListings();
+  },
+
   props: {
     msg: String
   },
+
+  methods: {
+    getUserListings: async function () {
+      let response = await fetch(WEBSITE_URL + '/userListings');
+
+      let respData;
+      if (response.ok) {                
+        respData = await response.json();
+      } else {
+        respData = [];
+      }
+      this.listings = respData;
+    }
+  },
+
   components: {
     ListingForm,
+    //MyListingsContainer,
   }
 }
 </script>

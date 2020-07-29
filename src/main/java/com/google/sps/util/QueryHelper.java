@@ -7,6 +7,9 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.DistanceMatrixRow;
 import com.google.maps.model.LatLng;
@@ -111,5 +114,15 @@ public final class QueryHelper {
     }
 
     return filteredListings;
+  }
+
+  public static List<Entity> getUserListings(EntityType entityType, String userID) {
+
+    Filter propertyFilter = new FilterPredicate("userID", FilterOperator.EQUAL, userID);
+    Query query = new Query("Listing").setFilter(propertyFilter);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    return results.asList(FetchOptions.Builder.withLimit(10));
   }
 }
