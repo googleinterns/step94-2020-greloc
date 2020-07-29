@@ -206,7 +206,7 @@ public final class QueryHelperTest {
 
   @Test
   public void testGetUserListings() {
-    
+
     // Insert Listings for different UserID's
     insertListingWithUserID("X");
     insertListingWithUserID("X");
@@ -218,7 +218,6 @@ public final class QueryHelperTest {
 
     Assert.assertEquals(2, xListings.size());
     Assert.assertEquals(1, yListings.size());
-
   }
 
   // MARK: Helpers
