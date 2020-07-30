@@ -184,7 +184,6 @@ public class GmapsHelper {
     if (origins.length < 1) {
       return new DistanceMatrixRow[0];
     }
-    ;
 
     DistanceMatrix results =
         DistanceMatrixApi.newRequest(this.context)
