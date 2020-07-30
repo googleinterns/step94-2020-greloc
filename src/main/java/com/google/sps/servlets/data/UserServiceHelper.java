@@ -25,7 +25,6 @@ public class UserServiceHelper extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserHelper userHelper = new UserHelper(datastore);
 
-
     if (userService.isUserLoggedIn() && userHelper.doesUserEmailExist(req) == true) {
       // pass whatever info you need into handleReseponse() method.
       callback.handleResponse(resp, req);

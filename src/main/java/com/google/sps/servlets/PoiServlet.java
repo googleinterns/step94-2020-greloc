@@ -17,7 +17,6 @@ package com.google.sps.servlets;
 import com.google.maps.errors.ApiException;
 import com.google.sps.data.UserServiceHelper;
 import com.google.sps.data.UserServiceHelper.Callback;
-import com.google.sps.data.UserType;
 import com.google.sps.enums.CategoryGroup;
 import com.google.sps.exception.InvalidCategoryGroupException;
 import com.google.sps.object.Office;
