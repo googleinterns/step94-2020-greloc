@@ -52,9 +52,8 @@ public class BusLocations extends HttpServlet implements Callback {
     UserServiceHelper.authUser(this, response, request);
   }
 
-  @Override
-  public void handleResponse(
-      HttpServletResponse response, HttpServletRequest request, UserType type) {
+@Override
+  public void handleResponse(HttpServletResponse response, HttpServletRequest request) {
     try {
       if (request.getMethod().equals("GET")) {
         getBusStop(request, response);

@@ -43,13 +43,4 @@ public final class UserHelper {
     return false;
   }
 
-  public UserType getUserType(HttpServletRequest request) {
-    UserType type = null;
-
-    if (doesUserEmailExist(request) == true) {
-      type = AuthorizationServlet.processType(request);
-    }
-    System.out.println("Type from UserHelper" + type);
-    return type;
-  }
 }

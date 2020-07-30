@@ -85,8 +85,7 @@ public class LocationsServlet extends HttpServlet implements Callback {
   }
 
   @Override
-  public void handleResponse(
-      HttpServletResponse response, HttpServletRequest request, UserType type) {
+  public void handleResponse(HttpServletResponse response, HttpServletRequest request) {
     try {
       if (request.getMethod().equals("GET")) {
         getLocations(request, response);

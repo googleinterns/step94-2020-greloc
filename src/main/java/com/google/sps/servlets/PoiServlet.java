@@ -42,8 +42,7 @@ public class PoiServlet extends HttpServlet implements Callback {
   }
 
   @Override
-  public void handleResponse(
-      HttpServletResponse response, HttpServletRequest request, UserType type) {
+  public void handleResponse(HttpServletResponse response, HttpServletRequest request) {
     getOffice(request, response);
   }
 
