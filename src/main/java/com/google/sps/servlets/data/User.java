@@ -1,19 +1,25 @@
 package com.google.sps.data;
 
 public class User {
-  UserType type;
+  long type;
   String email;
+  String id;
 
-  public User(UserType type, String email) {
+  public User(long type, String email, String id) {
     this.type = type;
     this.email = email;
+    this.id = id;
   }
 
-  public UserType getType() {
+  public long getType() {
     return this.type;
   }
 
   public String getEmail() {
     return this.email;
+  }
+
+  public String getID() {
+    return this.id;
   }
 }
