@@ -27,7 +27,6 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.LatLng;
 import com.google.sps.data.UserServiceHelper;
 import com.google.sps.data.UserServiceHelper.Callback;
-import com.google.sps.data.UserType;
 import com.google.sps.enums.EntityType;
 import com.google.sps.exception.InvalidDateRangeException;
 import com.google.sps.object.Office;
@@ -86,7 +85,7 @@ public class LocationsServlet extends HttpServlet implements Callback {
 
   @Override
   public void handleResponse(
-      HttpServletResponse response, HttpServletRequest request, UserType type) {
+      HttpServletResponse response, HttpServletRequest request) {
     try {
       if (request.getMethod().equals("GET")) {
         getLocations(request, response);

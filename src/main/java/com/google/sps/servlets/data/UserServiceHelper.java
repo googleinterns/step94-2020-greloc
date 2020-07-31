@@ -13,7 +13,7 @@ public class UserServiceHelper extends HttpServlet {
 
   public interface Callback {
     // if test pass, put code you want to happen here
-    void handleResponse(HttpServletResponse resp, HttpServletRequest req, UserType type);
+    void handleResponse(HttpServletResponse resp, HttpServletRequest req);
   }
 
   public static void authUser(Callback callback, HttpServletResponse resp, HttpServletRequest req)
@@ -25,12 +25,9 @@ public class UserServiceHelper extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserHelper userHelper = new UserHelper(datastore);
 
-    UserType type = userHelper.getUserType(req);
-
     if (userService.isUserLoggedIn() && userHelper.doesUserEmailExist(req) == true) {
-      System.out.println("Type from serviceHelper " + type);
       // pass whatever info you need into handleReseponse() method.
-      callback.handleResponse(resp, req, type);
+      callback.handleResponse(resp, req);
     }
     if (!userService.isUserLoggedIn()) {
       // change the link variable to your specific redirect link
