@@ -52,8 +52,7 @@ public class BusLocations extends HttpServlet implements Callback {
   }
 
   @Override
-  public void handleResponse(
-      HttpServletResponse response, HttpServletRequest request) {
+  public void handleResponse(HttpServletResponse response, HttpServletRequest request) {
     try {
       if (request.getMethod().equals("GET")) {
         getBusStop(request, response);
