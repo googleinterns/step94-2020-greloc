@@ -9,11 +9,22 @@
       color="#3cba54">
       <v-icon >mdi-plus</v-icon>
     </v-btn>
+
+    <v-alert id="form-alert"
+    v-model="alert"
+    transition="scroll-y-transition"
+    :type="alertType"
+    elevation="10"
+    dismissible
+    absolute> 
+      {{alertMessage}}
+    </v-alert>
     
     <div class="listing-title"> 
       <v-text-field class="listing-title-entry"
       label = "Listing Title"
       v-model="listingTitle"
+      :rules="titleRules"
       filled>
       </v-text-field>
     </div>
@@ -38,6 +49,8 @@
         solo
         name="input-7-4"
         v-model="listingDescription"
+        :rules="descriptionRules"
+        :counter="200"
         label="Property Description">
         
       </v-textarea>
@@ -52,6 +65,7 @@
           <v-text-field class="listing-price"
             solo
             label='Price Per Month (Ex: "$2000")'
+            :rules="priceRules"
             v-model="price"
             filled>
           </v-text-field>
@@ -92,18 +106,21 @@
         solo
         label="Owner Full Name"
         v-model="ownerName"
+        :rules="ownerNameRules"
         filled>
       </v-text-field>
       <v-text-field class="email-entry"
         solo
         label="Contact Email"
         v-model="ownerEmail"
+        :rules="ownerEmailRules"
         filled>
       </v-text-field>
       <v-text-field class="phone-number-entry"
         solo
         label="Contact Number"
         v-model="ownerNumber"
+        :rules="ownerNumberRules"
         filled>
       </v-text-field>
     </div>
@@ -129,6 +146,7 @@ export default {
     this.$root.$on(EVENTS.userSelectedAddress, place => {
       console.log("From Listener!");
       console.log(place);
+      this.isPlaceSelected = true;
       this.onUserSelectedAddress(place);
     });
   },
@@ -140,10 +158,15 @@ export default {
     msg: String,
   },
   data: () => ({
+
+    alert: false,
+    alertMessage: "",
+    alertType: "info",
     
     files: [],
     listingTitle: "",
     streetAddress: "",
+    isPlaceSelected: false,
     //listingImages = [], will use temp images for now
     listingDescription: "",
     ownerName: "",
@@ -172,22 +195,26 @@ export default {
     totalBedrooms: ['1', '2', '3', '4', '5'],
     totalBaths: ['1', '1.5', '2', '2.5', '3', '3.5'],
     properties: ["Entire House", "Full Apartment", "Private Room",],
-    states: [
-      'Alabama', 'Alaska', 'American Samoa', 'Arizona',
-      'Arkansas', 'California', 'Colorado', 'Connecticut',
-      'Delaware', 'District of Columbia', 'Federated States of Micronesia',
-      'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho',
-      'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
-      'Louisiana', 'Maine', 'Marshall Islands', 'Maryland',
-      'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
-      'Missouri', 'Montana', 'Nebraska', 'Nevada',
-      'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
-      'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio',
-      'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico',
-      'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee',
-      'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia',
-      'Washington', 'West Virginia', 'Wisconsin', 'Wyoming',
+    titleRules: [
+      v => !!v || 'A Listing Title is Required',
     ],
+    descriptionRules: [
+      v => !!v || 'A Description of the Listing is Required',
+    ],
+    priceRules: [
+      v => !!v || 'Listing Price per Month is Required',
+    ],
+    ownerNameRules: [
+      v => !!v || 'Listing Owner Name is Required',
+    ],
+    ownerEmailRules: [
+      v => !!v || 'Listing Contact email is Required',
+      v => /.+@.+/.test(v) || 'A valid email is Required',
+    ],
+    ownerNumberRules: [
+      v => !!v || 'Owner Phone Number is Required',
+    ],
+
   }),
 
   computed: {
@@ -199,6 +226,12 @@ export default {
   methods: {
 
     addListing: async function() {
+
+      if (!this.isInputValid()) {
+        const alertMessage = "One or more entry fields is missing or invalid";
+        this.sendAlert(alertMessage, "warning");
+        return;
+      }
       
       // Set variables equal to inputs from forms
       const listingTitle = this.listingTitle;
@@ -220,6 +253,8 @@ export default {
       const hasGreenspace = this.greenspaceCheckbox;
       const files = this.files;
       const imageLinks = [];
+      const longitude = this.userSelectedPlace.geometry.location.lng();
+      const latitude = this.userSelectedPlace.geometry.location.lat();
 
       // Save image URL's to image links array
       for (var i = 0; i < files.length; i++) {
@@ -234,6 +269,7 @@ export default {
           (this.userSelectedPlace.address_components[2] && this.userSelectedPlace.address_components[2].short_name || '')
         ].join(' ');
       }
+
 
       let startDateMillis = Date.parse(this.dateRange[0]);
       let endDateMillis= Date.parse(this.dateRange[1]);
@@ -269,8 +305,8 @@ export default {
         baths: totalBaths,
         listingStartDate: startDateMillis,
         listingEndDate: endDateMillis,
-        longitude: this.userSelectedPlace.geometry.location.lng(),
-        latitude: this.userSelectedPlace.geometry.location.lat(),
+        longitude: longitude,
+        latitude: latitude,
       }
 
       let response = await fetch(WEBSITE_URL + '/locations', {
@@ -282,9 +318,9 @@ export default {
       })
 
       if (response.ok){
-        // Success Alert
+        this.sendAlert("Listing was Successfully Added!", "success");
       } else {
-        // Unsuccessful Alert
+        this.sendAlert("Uh-oh. Something went wrong. Try Again Later", "error");
       }
 
     },
@@ -306,6 +342,43 @@ export default {
         imageArr.push(String(link));
       };
 
+    },
+    
+    // Verify input fields of the form are filled
+    isInputValid: function() {
+
+      // Check entry fields for given input
+      if (this.listingTitle.trim().length == 0) {
+        return false;
+      } else if (!this.isPlaceSelected) {
+        return false;
+      } else if (this.dateRange.length != 2) {
+        return false;
+      } else if (this.files.length == 0) {
+        return false;
+      } else if (this.listingDescription.trim().length == 0) {
+        return false;
+      } else if (this.price.trim().length == 0) {
+        return false;
+      } else if (this.ownerName.trim().length == 0) {
+        return false;
+      } else if (this.ownerNumber.trim().length == 0) {
+        return false;
+      } else if (!this.isEmailValid(this.ownerEmail)) {
+        return false;
+      }
+
+      return true;
+    },
+
+    sendAlert: function(alertMessage, alertType) {
+      this.alert = true;
+      this.alertMessage = alertMessage;
+      this.alertType = alertType;
+    },
+
+    isEmailValid: function(email) {
+     return /.+@.+/.test(email);
     }
 
   }
@@ -359,4 +432,12 @@ export default {
 .add-button {
   margin-top: 50px;
 }
+
+#form-alert {
+  position: absolute;
+  top: 20px;
+  z-index: 5;
+  left: 50%;
+}
+
 </style>
