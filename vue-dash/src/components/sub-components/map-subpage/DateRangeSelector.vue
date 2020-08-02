@@ -51,14 +51,12 @@ export default {
     
     formattedStartDate: function () {
       if (this.dateRange.length < 1) return " ";
-      let localDate = getLocalDate(this.dateRange[0]);
-      return getFormattedDate(localDate);
+      return getFormattedDate(new Date(this.dateRange[0]));
     },
 
     formattedEndDate: function () {
       if (this.dateRange.length < 2) return " ";
-      let localDate = getLocalDate(this.dateRange[1]);
-      return getFormattedDate(localDate);
+      return getFormattedDate(new Date(this.dateRange[1]));
     }    
   },
   
@@ -83,12 +81,6 @@ export default {
       this.dateRange = [];
     }
   }
-}
-
-// MARK: HELPER FUNCTIONS
-function getLocalDate(dateString) {
-  let utcDate = new Date(dateString);
-  return new Date(utcDate.getTime() + utcDate.getTimezoneOffset() * 60000);
 }
 
 function getFormattedDate(date) {
