@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.gson.Gson;
 
 /* This class handles the sign out action of the app */
 
@@ -27,22 +28,11 @@ public class SignOutServlet extends HttpServlet {
     if (userService.isUserLoggedIn()) {
 
       String logoutUrl = userService.createLogoutURL("/index.html");
-      String json = createJSON(logoutUrl);
+      Gson gson = new Gson();
       resp.setContentType("application/json;");
-      resp.getWriter().println(json);
-
-      // System.out.println(userService.createLogoutURL("/index.html"));
-      System.out.println("USER STATUS: " + userService.isUserLoggedIn());
+      resp.getWriter().println(gson.toJson(logoutUrl));
     } else {
       resp.sendRedirect("/index.html");
     }
-  }
-
-  private String createJSON(String url) {
-    String json = "{";
-    json += "\"authURL\": ";
-    json += "\"" + url + "\"";
-    json += "}";
-    return json;
   }
 }

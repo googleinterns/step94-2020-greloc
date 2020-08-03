@@ -18,8 +18,6 @@ public class UsersServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
-
-    System.out.println(userService.isUserLoggedIn());
     String thisUrl = req.getRequestURI();
 
     resp.setContentType("text/html");

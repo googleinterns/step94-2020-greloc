@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/* This class is a library that handles authentication and can be implemented in specific servlets */
 public class UserServiceHelper extends HttpServlet {
 
   public interface Callback {

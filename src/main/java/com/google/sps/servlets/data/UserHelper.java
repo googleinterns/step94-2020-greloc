@@ -8,6 +8,8 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import javax.servlet.http.HttpServletRequest;
 
+/* This class verifies the user is located in the database */
+
 public final class UserHelper {
 
   private DatastoreService datastore;

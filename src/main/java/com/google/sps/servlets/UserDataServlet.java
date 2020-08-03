@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/* This servlet returns a specific users data as a JSON object*/
+
 @WebServlet("/userData")
 public class UserDataServlet extends HttpServlet {
 
