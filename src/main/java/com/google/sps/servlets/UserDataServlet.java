@@ -23,10 +23,10 @@ public class UserDataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) {
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    
-    String userId = userService.getCurrentUser().getUserId();
+  
     try {
       if (userService.isUserLoggedIn()) {
+          String userId = userService.getCurrentUser().getUserId();
           Filter userFilter = new FilterPredicate("userID", FilterOperator.EQUAL,userId);
           Query query = new Query("UserData").setFilter(userFilter);
           PreparedQuery resultsPR = datastore.prepare(query);

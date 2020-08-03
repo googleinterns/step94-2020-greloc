@@ -29,13 +29,17 @@ public class SignOutServlet extends HttpServlet {
 
       String logoutUrl = userService.createLogoutURL("/index.html");
       String json = createJSON(logoutUrl);
+      resp.setContentType("application/json;");
+      resp.getWriter().println(json);
       
      // System.out.println(userService.createLogoutURL("/index.html"));
       System.out.println("USER STATUS: " + userService.isUserLoggedIn());
+    } else {
+      resp.sendRedirect("/index.html");
     }
   }
 
-      private String createJSON(String url){
+      private String createJSON(String url) {
         String json = "{";
             json += "\"authURL\": ";
             json += "\"" + url + "\"";
