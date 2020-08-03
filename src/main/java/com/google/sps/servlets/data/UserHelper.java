@@ -6,7 +6,6 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.sps.servlets.AuthorizationServlet;
 import javax.servlet.http.HttpServletRequest;
 
 public final class UserHelper {
@@ -41,15 +40,5 @@ public final class UserHelper {
       }
     }
     return false;
-  }
-
-  public UserType getUserType(HttpServletRequest request) {
-    UserType type = null;
-
-    if (doesUserEmailExist(request) == true) {
-      type = AuthorizationServlet.processType(request);
-    }
-    System.out.println("Type from UserHelper" + type);
-    return type;
   }
 }

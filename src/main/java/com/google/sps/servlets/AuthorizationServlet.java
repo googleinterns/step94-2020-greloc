@@ -40,6 +40,8 @@ public class AuthorizationServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserHelper userHelper = new UserHelper(datastore);
 
+    System.out.println(userService.isUserLoggedIn());
+
     // Checking to see if user has an account in the entity
     if (userHelper.doesUserEmailExist(request)) {
       response.sendRedirect("/dashboard/index.html");

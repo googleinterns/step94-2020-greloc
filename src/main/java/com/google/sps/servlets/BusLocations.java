@@ -22,7 +22,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.sps.data.UserServiceHelper;
 import com.google.sps.data.UserServiceHelper.Callback;
-import com.google.sps.data.UserType;
 import com.google.sps.enums.EntityType;
 import com.google.sps.object.Office;
 import com.google.sps.util.CoordinateCalculator;
@@ -53,8 +52,7 @@ public class BusLocations extends HttpServlet implements Callback {
   }
 
   @Override
-  public void handleResponse(
-      HttpServletResponse response, HttpServletRequest request, UserType type) {
+  public void handleResponse(HttpServletResponse response, HttpServletRequest request) {
     try {
       if (request.getMethod().equals("GET")) {
         getBusStop(request, response);
