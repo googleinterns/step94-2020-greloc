@@ -12,15 +12,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(
     name = "UserAPI",
     description = "UserAPI: Login / Logout with UserService",
-    urlPatterns = "/userapi"
-)
+    urlPatterns = "/userapi")
 public class UsersServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
- 
-   System.out.println(userService.isUserLoggedIn());
+
+    System.out.println(userService.isUserLoggedIn());
     String thisUrl = req.getRequestURI();
 
     resp.setContentType("text/html");
@@ -35,7 +34,7 @@ public class UsersServlet extends HttpServlet {
                   + "\">sign out</a>.</p>");
     } else {
       System.out.println("LOGGED OUT");
-            resp.getWriter()
+      resp.getWriter()
           .println(
               "<p>Please <a href=\"" + userService.createLoginURL(thisUrl) + "\">sign in</a>.</p>");
     }
