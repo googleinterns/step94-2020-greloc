@@ -49,6 +49,7 @@ export default {
     height: 140px;
     width: 140px;
     margin-right: 0.5rem;
+    object-fit: cover;
   }  
 
   .info-box {

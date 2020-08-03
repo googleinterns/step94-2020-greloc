@@ -68,7 +68,7 @@
       </div>      
     </div>
 
-    <div id="footing-container">
+    <div id="footing-container" v-if="selectedListing.propertyMap.googlerOwned">
       <v-avatar>
         <img src="assets/google.svg" alt="Googler owned">
       </v-avatar>

@@ -1,6 +1,6 @@
 <template>
   <div class="subpage" id="my-listings-subpage">  
-  <!--<MyListingsContainer class="property-list" :listings="listings"/> -->
+  <MyListingsContainer class="property-list" :listings="listings"/>
     <ListingForm class="form"/>
 
       <div id="form-empty-state" v-if=false>
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-//import MyListingsContainer from './sub-components/myListings-subpage/MyListingsContainer.vue' 
+import MyListingsContainer from './sub-components/myListings-subpage/MyListingsContainer.vue' 
 import ListingForm from './sub-components/myListings-subpage/EditListing.vue'
 import {WEBSITE_URL} from '../utils/constants.js'
 
@@ -47,7 +47,7 @@ export default {
 
   components: {
     ListingForm,
-    //MyListingsContainer,
+    MyListingsContainer,
   }
 }
 </script>
