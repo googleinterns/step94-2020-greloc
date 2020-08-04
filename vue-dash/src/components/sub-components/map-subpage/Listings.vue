@@ -6,7 +6,7 @@
       <v-list-item
         v-for="(listing, index) in listings"
         :key="index"
-        @click="onUserSelectsListing(listing)"
+        @click="onUserSelectsListing(listing, index)"
         class="pa-0"
       >
         <Listing :listingInfo="listing"/>
@@ -40,8 +40,8 @@ export default {
   }),
 
   methods: {
-    onUserSelectsListing: function(listing) {
-      if (this.selectedListing != null) {
+    onUserSelectsListing: function(listing, index) {
+      if (this.selectedListing != null && this.selectedListing === index) {
         this.clearSelection();
       } else {
         this.$root.$emit(EVENTS.listingSelected, listing);
@@ -62,5 +62,6 @@ export default {
     width: 100%;
 
     background-color: transparent;
+    overflow-y: scroll;
   }
 </style>

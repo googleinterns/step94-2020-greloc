@@ -13,7 +13,7 @@
           <img v-if="listingInfo.propertyMap.googlerOwned" src="assets/google.svg" alt="Google">
           <div v-else class="unknown-source-symbol"></div>
         </v-avatar>
-        <span><b>{{listingInfo.propertyMap.price}}</b>/month</span>
+        <span><b>{{formattedPrice}}</b>/month</span>
       </div>
 
     </div>
@@ -23,6 +23,14 @@
 <script>
 export default {
   name: 'Listing',
+
+  computed: {
+    formattedPrice: function (){
+      let price = parseFloat(this.listingInfo.propertyMap.price);
+      return "$"  + price.toLocaleString();
+    } 
+  },
+
   props: {
     listingInfo: Object
   },
