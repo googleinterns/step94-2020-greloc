@@ -1,6 +1,6 @@
  
-// const WEBSITE_URL = "https://greloc.uc.r.appspot.com"
-const WEBSITE_URL = "https://8080-b83fc153-d2cf-481d-a321-9342cdf80f21.us-east1.cloudshell.dev";
+const WEBSITE_URL = "https://greloc.uc.r.appspot.com"
+// const WEBSITE_URL = "https://8080-b83fc153-d2cf-481d-a321-9342cdf80f21.us-east1.cloudshell.dev";
 
 const EVENTS = {
   officeChanged: "officeChanged",
@@ -51,6 +51,5 @@ const MarkerTypeEnum = Object.freeze({
   GROCERY: 4,
   SEARCH: 100,
 });
-
 
 export { EVENTS, WEBSITE_URL, OFFICES, COLORS, MarkerTypeEnum};
