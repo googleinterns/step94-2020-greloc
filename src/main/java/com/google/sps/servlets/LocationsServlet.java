@@ -83,6 +83,7 @@ public class LocationsServlet extends HttpServlet implements Callback {
     return filteredEntities;
   }
 
+
   @Override
   public void handleResponse(HttpServletResponse response, HttpServletRequest request) {
     try {
