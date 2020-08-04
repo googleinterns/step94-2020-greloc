@@ -1,4 +1,4 @@
-src/main/webapp/dashboard/
+src/main/webapp/WEB-INF/dashboard/
 target/classes/
 target/gRelo-1/WEB-INF/appengine-generated/
 target/gRelo-1/WEB-INF/classes/
