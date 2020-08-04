@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div class="listing-form"> 
     <v-btn class="add-button"
       absolute
@@ -35,7 +35,6 @@
       <DateRangeSelector/>
     </div>
     <div class="description-entry">
-      <!--<ImageInput/> -->
       <v-file-input
       v-model="files"
       accept="image/png, image/jpeg, image/bmp"
@@ -44,7 +43,7 @@
       label="Images"
       multiple
       chips
-    ></v-file-input>
+    ></v-file-input> 
       <v-textarea
         solo
         name="input-7-4"
@@ -88,6 +87,12 @@
             v-model="baths"
             label="Baths">
           </v-select>
+          <div class="divider"/>
+          <v-select class="total-guests"
+            :items="totalGuests"
+            v-model="guests"
+            label="Total Number of Guests">
+          </v-select>
         </div>
     </div>
     <div class="amenities">
@@ -124,6 +129,14 @@
         filled>
       </v-text-field>
     </div>
+    <div> 
+      <v-switch 
+        v-model="googlerOwned" 
+        inset
+        :label="`Is the Listing Googler Owned?`" 
+        color="success">
+      </v-switch>
+    </div>
     <v-btn 
     class="submit-button" 
     rounded color="primary"
@@ -140,6 +153,7 @@ import {EVENTS, WEBSITE_URL} from '../../../utils/constants.js'
 export default {
   name: 'ListingForm',
   created(){
+    this.fetchBlobstoreUrl();
     this.$root.$on(EVENTS.dateRangeSelected, dateRange => {
       this.dateRange = dateRange;
     });
@@ -158,16 +172,16 @@ export default {
     msg: String,
   },
   data: () => ({
-
+    
     alert: false,
     alertMessage: "",
     alertType: "info",
-    
     files: [],
     listingTitle: "",
     streetAddress: "",
     isPlaceSelected: false,
-    //listingImages = [], will use temp images for now
+    uploadUrls: [],
+    listingImages: [],
     listingDescription: "",
     ownerName: "",
     ownerEmail: "",
@@ -186,33 +200,36 @@ export default {
     poolCheckbox: false,
     parkingCheckbox: false,
     greenspaceCheckbox: false,
+    googlerOwned: true,
     userSelectedPlace: "",
     beds: "",
     bedrooms: "",
     baths: "",
+    guests: "",
     dateRange: [], 
     totalBeds: ['1', '2', '3', '4', '5'],
     totalBedrooms: ['1', '2', '3', '4', '5'],
     totalBaths: ['1', '1.5', '2', '2.5', '3', '3.5'],
     properties: ["Entire House", "Full Apartment", "Private Room",],
+    totalGuests: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
     titleRules: [
-      v => !!v || 'A Listing Title is Required',
+      input => !!input || 'A Listing Title is Required',
     ],
     descriptionRules: [
-      v => !!v || 'A Description of the Listing is Required',
+      input => !!input || 'A Description of the Listing is Required',
     ],
     priceRules: [
-      v => !!v || 'Listing Price per Month is Required',
+      input => !!input || 'Listing Price per Month is Required',
     ],
     ownerNameRules: [
-      v => !!v || 'Listing Owner Name is Required',
+      input => !!input || 'Listing Owner Name is Required',
     ],
     ownerEmailRules: [
-      v => !!v || 'Listing Contact email is Required',
-      v => /.+@.+/.test(v) || 'A valid email is Required',
+      input => !!input || 'Listing Contact email is Required',
+      input => /.+@.+/.test(input) || 'A valid email is Required',
     ],
     ownerNumberRules: [
-      v => !!v || 'Owner Phone Number is Required',
+      input => !!input || 'Owner Phone Number is Required',
     ],
 
   }),
@@ -232,7 +249,34 @@ export default {
         this.sendAlert(alertMessage, "warning");
         return;
       }
-      
+
+      // Generate upload URL's for images. Each image need's a unique URL(call to Servlet)
+      for (var i = 0; i < this.files.length; i++) {
+        this.fetchBlobstoreUrl();
+      }
+
+      // Iterate through User selected files and use unique URL to upload to Servlet
+      for (var j = 0; j < this.files.length; j++) {
+        
+        let formData = new FormData();
+        formData.append('image', this.files[j]);
+
+        let imgResponse = await fetch(this.uploadUrls[j], {
+          method: 'POST',
+          body: formData
+        });
+        let responseData;
+
+        // Push response data (Image URL) to ImageUrl array
+        if (imgResponse.ok){
+          responseData = await imgResponse.json();
+        } else {
+          responseData = [];
+        }
+
+        this.listingImages.push(responseData);
+      }
+
       // Set variables equal to inputs from forms
       const listingTitle = this.listingTitle;
       const listingDescription = this.listingDescription;
@@ -251,15 +295,11 @@ export default {
       const hasPool = this.poolCheckbox;
       const hasParking = this.parkingCheckbox;
       const hasGreenspace = this.greenspaceCheckbox;
-      const files = this.files;
-      const imageLinks = [];
+      const imageLinks = this.listingImages;
       const longitude = this.userSelectedPlace.geometry.location.lng();
       const latitude = this.userSelectedPlace.geometry.location.lat();
-
-      // Save image URL's to image links array
-      for (var i = 0; i < files.length; i++) {
-        this.generateImageURL(imageLinks, files[i]);
-      }
+      const isGooglerOwned = this.googlerOwned;
+      const totalGuests = this.guests;
 
       let address = '';
       if (this.userSelectedPlace.address_components) {
@@ -280,11 +320,7 @@ export default {
         price: listingPrice,
         type: propertyType,
         desc: listingDescription,
-
-        images: [
-          "https://cdngeneral.rentcafe.com/dmslivecafe/3/1104500/METRO%20GATEWAY%20IMG%2003(2).jpg?crop=(0,0,300,191.25000000000028)&cropxunits=300&cropyunits=200&quality=85&scale=both",
-          "https://cdngeneral.rentcafe.com/dmslivecafe/3/984399/Hearth-Model-Unit-IMG-0370_webopt_2MB.jpg?crop=(0,8,300,199.25000000000028)&cropxunits=300&cropyunits=200&quality=85&scale=both&"
-        ],
+        images: imageLinks,
         contactInfo: {
           name: ownerName,
           phone: ownerNumber,
@@ -307,6 +343,8 @@ export default {
         listingEndDate: endDateMillis,
         longitude: longitude,
         latitude: latitude,
+        googlerOwned: isGooglerOwned,
+        guests: totalGuests,
       }
 
       let response = await fetch(WEBSITE_URL + '/locations', {
@@ -331,17 +369,6 @@ export default {
 
     onUserSelectedAddress: function(place) {
       this.userSelectedPlace = place;
-    },
-
-    generateImageURL: function(imageArr, img) {
-      const reader = new FileReader();
-      reader.readAsDataURL(img);
-
-      reader.onload =  function(e){
-        const link = e.target.result;
-        imageArr.push(String(link));
-      };
-
     },
     
     // Verify input fields of the form are filled
@@ -379,7 +406,19 @@ export default {
 
     isEmailValid: function(email) {
      return /.+@.+/.test(email);
-    }
+    },
+
+    // Add unique Blobstore Upload URL to uploadUrl array
+    fetchBlobstoreUrl: function() {
+      console.log("this is running")
+      fetch(WEBSITE_URL + '/blobstore-upload-url')
+      .then((response) => {
+        return response.text();
+      }) 
+      .then((imageUploadUrl) => {
+        this.uploadUrls.push(imageUploadUrl);
+      });
+    },
 
   }
 }
@@ -438,6 +477,10 @@ export default {
   top: 20px;
   z-index: 5;
   left: 50%;
+}
+
+.hidden {
+  display: none;
 }
 
 </style>
