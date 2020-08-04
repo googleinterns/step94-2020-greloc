@@ -2,6 +2,7 @@ package com.example.appengine.users;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,18 +28,11 @@ public class SignOutServlet extends HttpServlet {
     if (userService.isUserLoggedIn()) {
 
       String logoutUrl = userService.createLogoutURL("/index.html");
-      String json = createJSON(logoutUrl);
-
-      // System.out.println(userService.createLogoutURL("/index.html"));
-      System.out.println("USER STATUS: " + userService.isUserLoggedIn());
+      Gson gson = new Gson();
+      resp.setContentType("application/json;");
+      resp.getWriter().println(gson.toJson(logoutUrl));
+    } else {
+      resp.sendRedirect("/index.html");
     }
-  }
-
-  private String createJSON(String url) {
-    String json = "{";
-    json += "\"authURL\": ";
-    json += "\"" + url + "\"";
-    json += "}";
-    return json;
   }
 }

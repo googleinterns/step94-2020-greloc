@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/* This servlet returns a specific users data as a JSON object*/
+
 @WebServlet("/userData")
 public class UserDataServlet extends HttpServlet {
 
@@ -24,9 +26,9 @@ public class UserDataServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    String userId = userService.getCurrentUser().getUserId();
     try {
       if (userService.isUserLoggedIn()) {
+        String userId = userService.getCurrentUser().getUserId();
         Filter userFilter = new FilterPredicate("userID", FilterOperator.EQUAL, userId);
         Query query = new Query("UserData").setFilter(userFilter);
         PreparedQuery resultsPR = datastore.prepare(query);

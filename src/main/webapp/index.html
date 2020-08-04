@@ -11,31 +11,24 @@
  
  </head>
  <script>
-   var close = document.getElementsByClassName("closebtn");
-    var i;
-
-    for (i = 0; i < close.length; i++) {
-      close[i].onclick = function(){
-      var div = this.parentElement;
-      div.style.opacity = "0";
-      setTimeout(function(){ div.style.display = "none"; }, 600);
-      }
-    }
  </script>
  <body>
-    <!-- <div class="alert">
-      <span class="closebtn">&times;</span>  
-      <strong>Info!</strong> You have successfully signed out!
-    </div> --> 
-    
+    <div class="header">
+      <p> </p>
+  </div>
+
+
     <!-- Heading-->
-    <h1> Welcome to gRelo!</h1>
-    <p> Use this tool to locate housing! </p>
-  
+      <h1> Welcome to gRelo!</h1>
+      <p> Use this tool to locate housing! </p>
+
     <hr>
 
     <!--Sign in Button-->
     <p> Sign in with Google! </p><a href="/signinapi" class="fa fa-google" action="/signinapi"></a>
 
+    <div class = "footer">
+      <p> Footer </p>
+    </div>
  </body>
 </html>

@@ -1,50 +1,32 @@
- 
-/* SIGN IN PAGE */
- 
-/* Style the form - display items horizontally */
-.form-inline {
- display: flex;
- flex-flow: row wrap;
- align-items: center;
+.header {
+  padding: 60px;
+  text-align: center;
+  background-image: url("background.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  max-width: 100%;
+  height: auto;
+  color: black ;
+  font-size: 30px;
 }
 
- /* Add some margins for each label */
-.form-inline label {
- margin: 5px 10px 5px 0;
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color:  #DB4437;;
+  color:  #DB4437;;
+  text-align: center;
 }
 
- /* Style the input fields */
-.form-inline input {
-   vertical-align: middle;
-   margin: 5px 10px 5px 0;
-   padding: 10px;
-   background-color: #fff;
-   border: 1px solid #ddd;
+h1 {
+
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
- /* Style the submit button */
- .form-inline button {
-   padding: 10px 20px;
-   background-color: dodgerblue;
-   border: 1px solid #ddd;
-   color: white;
-}
-
- .form-inline button:hover {
-   background-color: royalblue;
-}
- 
- /* Add responsiveness - display the form controls vertically instead of horizontally on screens that are less than 800px wide */
-@media (max-width: 800px) {
- .form-inline input {
-   margin: 10px 0;
-    }
-
-  
- .form-inline {
-   flex-direction: column;
-   align-items: stretch;
- }
+p {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 
@@ -129,7 +111,7 @@ a {
 }
 
 .fa-google {
-  background: #dd4b39;
+  background: #DB4437;
   color: white;
 }
 
