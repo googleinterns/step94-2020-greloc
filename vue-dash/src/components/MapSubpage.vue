@@ -69,6 +69,7 @@ export default {
   name: 'Template',
 
   created() {
+
     this.$root.$on(EVENTS.mapSubpageLoading, loadingEventData => {
       this.loadingEvent(loadingEventData);
     });
@@ -80,8 +81,7 @@ export default {
     this.$root.$on(EVENTS.listingSelected, () => {
       this.listingSelectedEvent();
     });    
-
-    // this.createListing();
+    
   },
 
   components: {

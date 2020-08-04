@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" v-if="isUserAuth">
     <v-app>
         <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons" rel="stylesheet">
         <div id="dashboard-container">          
@@ -14,14 +14,34 @@
         </div>
     </v-app>
   </div>
+
+  <div v-else>
+    Authorizing...
+  </div>
 </template>
 
 <script>
 import NavBar from './components/NavBar.vue'
 import NavBarMobileBottom from './components/NavBarMobileBottom.vue'
+import { fetchUserData, createUserCookieWithData } from './utils/authmanager.js'
 
 export default {
   name: 'App',
+  
+  async created() {
+    let userData = await fetchUserData();
+    if (userData !== null) {
+      this.isUserAuth = true;
+      this.$forceUpdate();
+      createUserCookieWithData(userData);
+    } else {
+      location.href = "/";      
+    }  
+  },
+
+  state: {
+    isUserAuth: false
+  },
   components: {
     NavBar,
     NavBarMobileBottom
@@ -71,6 +91,12 @@ export default {
     min-height: 100vh;
     width: 100vw;
     overflow: hidden;
+  }
+
+  #unauth-blank {
+    height: 100%;
+    width: 100%;
+    background-color: #ffffff;
   }
 
   #dashboard-container {
