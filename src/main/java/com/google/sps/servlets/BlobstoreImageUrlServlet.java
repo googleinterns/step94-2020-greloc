@@ -22,8 +22,8 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
+import com.google.gson.Gson;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -32,10 +32,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.Gson;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
 /**
  * When the user submits the form, Blobstore processes the file upload and then forwards the request
@@ -55,7 +51,6 @@ public class BlobstoreImageUrlServlet extends HttpServlet {
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(imageUrl));
   }
-
 
   // Helper function to return Image Url
   private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
