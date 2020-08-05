@@ -13,12 +13,13 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -26,7 +27,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.LatLng;
-import com.google.appengine.api.users.UserService;
 import com.google.sps.data.UserServiceHelper;
 import com.google.sps.data.UserServiceHelper.Callback;
 import com.google.sps.enums.EntityType;
