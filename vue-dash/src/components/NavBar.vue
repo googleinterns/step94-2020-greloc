@@ -39,12 +39,25 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        <v-list-item v-on:click="logout()" class="dash-nav-button">
+          <v-list-item-icon>
+            <v-icon>mdi-arrow-left-thin-circle-outline</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item-content>          
+        </v-list-item>
+        
       </v-list>
     </v-navigation-drawer>
   </div>
 </template>
 
 <script>
+import { WEBSITE_URL } from '../utils/constants.js';
+
 export default {
   name: 'Template',
   props: {
@@ -56,7 +69,19 @@ export default {
       { title: 'Map', icon: 'mdi-map', routePath: 'map'},
       { title: 'MyListings', icon: 'mdi-map-marker', routePath: 'mylistings' },
     ],
-  })
+  }),
+
+  methods: {
+    logout: async function () {
+      let response = await fetch(WEBSITE_URL + '/signoutapi');
+      if (response.ok) {
+        let respObject = await response.json();
+        window.location.href = WEBSITE_URL + respObject;
+      } else {
+        alert("There was an issue processing your request, please try again later");
+      }
+    }
+  }
 }
 </script>
 
