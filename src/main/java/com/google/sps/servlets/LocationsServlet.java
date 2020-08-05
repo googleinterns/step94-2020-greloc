@@ -13,7 +13,8 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
-
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.EmbeddedEntity;
@@ -25,6 +26,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.LatLng;
+import com.google.appengine.api.users.UserService;
 import com.google.sps.data.UserServiceHelper;
 import com.google.sps.data.UserServiceHelper.Callback;
 import com.google.sps.enums.EntityType;
@@ -140,7 +142,8 @@ public class LocationsServlet extends HttpServlet implements Callback {
   private void createListing(HttpServletRequest request) throws IOException {
     // To be used for timestamp
     long timestamp = System.currentTimeMillis();
-    String userID = "0919199";
+    UserService userService = UserServiceFactory.getUserService();
+    String userID = userService.getCurrentUser().getUserId();
 
     // Create JSON object with GSON
     String requestData = request.getReader().lines().collect(Collectors.joining());

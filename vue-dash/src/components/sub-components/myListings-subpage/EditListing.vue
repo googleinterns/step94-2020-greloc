@@ -317,7 +317,7 @@ export default {
       // Create Listing Object
       const currentListing = {
         name: listingTitle,
-        price: listingPrice,
+        price: Number(listingPrice.replace(/[^0-9.-]+/g,"")),
         type: propertyType,
         desc: listingDescription,
         images: imageLinks,
