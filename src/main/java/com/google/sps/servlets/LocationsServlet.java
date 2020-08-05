@@ -18,6 +18,8 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -140,7 +142,8 @@ public class LocationsServlet extends HttpServlet implements Callback {
   private void createListing(HttpServletRequest request) throws IOException {
     // To be used for timestamp
     long timestamp = System.currentTimeMillis();
-    String userID = "0919199";
+    UserService userService = UserServiceFactory.getUserService();
+    String userID = userService.getCurrentUser().getUserId();
 
     // Create JSON object with GSON
     String requestData = request.getReader().lines().collect(Collectors.joining());

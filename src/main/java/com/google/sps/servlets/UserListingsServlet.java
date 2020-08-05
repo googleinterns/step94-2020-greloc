@@ -16,6 +16,8 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.Entity;
 // import com.google.appengine.api.datastore.StructuredQuery.PropertyFilter;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.enums.EntityType;
 import com.google.sps.util.QueryHelper;
@@ -34,7 +36,8 @@ public class UserListingsServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     // Need to get the Users Unique ID
-    String userID = "0919199";
+    UserService userService = UserServiceFactory.getUserService();
+    String userID = userService.getCurrentUser().getUserId();
 
     List<Entity> userEntities = QueryHelper.getUserListings(EntityType.LISTING, userID);
 
