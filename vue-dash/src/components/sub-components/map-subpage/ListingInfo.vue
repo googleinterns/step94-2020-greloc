@@ -53,11 +53,24 @@
     <div id="sidebar-container">
       <div id="contact-card">
         <h3 class="sidebar-titles">Owner</h3>
+        <div id="contact-info-box">
+          <v-list-item style="width: 100; padding: 0px;">
+            <v-list-item-avatar color="var(--branding-blue)">
+              <span class="white--text headline">{{selectedListing.propertyMap.contactInfo.value.propertyMap.name.charAt(0).toUpperCase()}}</span>
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title v-text="selectedListing.propertyMap.contactInfo.value.propertyMap.name"></v-list-item-title>
+              <v-list-item-subtitle v-text="selectedListing.propertyMap.contactInfo.value.propertyMap.email"></v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-btn dark color="var(--branding-blue)" :href="'mailto:' + selectedListing.propertyMap.contactInfo.value.propertyMap.email">Contact</v-btn>
+        </div>
       </div>
       <div id="amenities-card" v-if="visibleAmenities.length > 0">
         <h3 class="sidebar-titles">Amenities</h3>
         <ul id="amenity-list">
-          <li 
+          <li
           v-for="(amenity, index) in visibleAmenities"
           :key="index"
           >
@@ -250,7 +263,7 @@ export default {
   #sidebar-container {
     grid-area: sidebar;
     height: 100%;
-    width: 200px;
+    width: 300px;
     align-self: end;
     justify-self: end;
   }
@@ -261,13 +274,18 @@ export default {
 
   #contact-card {
     width: 100%;
-    height: 250px;
+    height: auto;
 
     border: 1px solid #C4C4C4;
     box-sizing: border-box;
     border-radius: 5px;
     margin-bottom: 1rem;
     padding: 16px;
+  }
+
+  #contact-info-box {
+    display: flex;    
+    flex-direction: column;
   }
 
   #amenities-card {
@@ -358,6 +376,20 @@ export default {
 
     #amenities-card li{
       margin: 0;
+    }
+    
+    #contact-card {
+      border: none;
+      padding: 0px;
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #contact-info-box {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
     }
 
     #amenity-list {

@@ -157,6 +157,7 @@ export default {
         respData = [];
       }
 
+      console.log(respData);
       this.listings = respData;
       this.$root.$emit(EVENTS.newListings, respData);
       this.$root.$emit(EVENTS.mapSubpageLoading, {
