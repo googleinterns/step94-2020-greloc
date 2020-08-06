@@ -49,7 +49,7 @@
         name="input-7-4"
         v-model="listingDescription"
         :rules="descriptionRules"
-        :counter="200"
+        :counter="600"
         label="Property Description">
         
       </v-textarea>
@@ -153,7 +153,7 @@ import {EVENTS, WEBSITE_URL} from '../../../utils/constants.js'
 export default {
   name: 'ListingForm',
   created(){
-    this.fetchBlobstoreUrl();
+    //this.fetchBlobstoreUrl();
     this.$root.$on(EVENTS.dateRangeSelected, dateRange => {
       this.dateRange = dateRange;
     });
@@ -180,7 +180,6 @@ export default {
     listingTitle: "",
     streetAddress: "",
     isPlaceSelected: false,
-    uploadUrls: [],
     listingImages: [],
     listingDescription: "",
     ownerName: "",
@@ -250,32 +249,6 @@ export default {
         return;
       }
 
-      // Generate upload URL's for images. Each image need's a unique URL(call to Servlet)
-      for (var i = 0; i < this.files.length; i++) {
-        this.fetchBlobstoreUrl();
-      }
-
-      // Iterate through User selected files and use unique URL to upload to Servlet
-      for (var j = 0; j < this.files.length; j++) {
-        
-        let formData = new FormData();
-        formData.append('image', this.files[j]);
-
-        let imgResponse = await fetch(this.uploadUrls[j], {
-          method: 'POST',
-          body: formData
-        });
-        let responseData;
-
-        // Push response data (Image URL) to ImageUrl array
-        if (imgResponse.ok){
-          responseData = await imgResponse.json();
-        } else {
-          responseData = [];
-        }
-
-        this.listingImages.push(responseData);
-      }
 
       // Set variables equal to inputs from forms
       const listingTitle = this.listingTitle;
@@ -295,7 +268,6 @@ export default {
       const hasPool = this.poolCheckbox;
       const hasParking = this.parkingCheckbox;
       const hasGreenspace = this.greenspaceCheckbox;
-      const imageLinks = this.listingImages;
       const longitude = this.userSelectedPlace.geometry.location.lng();
       const latitude = this.userSelectedPlace.geometry.location.lat();
       const isGooglerOwned = this.googlerOwned;
@@ -320,7 +292,12 @@ export default {
         price: Number(listingPrice.replace(/[^0-9.-]+/g,"")),
         type: propertyType,
         desc: listingDescription,
-        images: imageLinks,
+        images: [
+          "https://a0.muscache.com/im/pictures/bb6bc85d-e08f-4ce9-8325-67d3b875cfb4.jpg?im_w=1200",
+          "https://a0.muscache.com/im/pictures/5a69917e-2c6f-4887-b673-7a8f0b976039.jpg?im_w=720",
+          "https://a0.muscache.com/im/pictures/19f9e6cc-8ae3-4856-b5fc-ffc81f6ec720.jpg?im_w=1440",
+          "https://a0.muscache.com/im/pictures/be9bf9f4-ed00-4bbd-8a54-d29009b9c20e.jpg?im_w=1440"
+        ],
         contactInfo: {
           name: ownerName,
           phone: ownerNumber,
